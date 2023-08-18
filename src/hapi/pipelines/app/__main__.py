@@ -114,14 +114,13 @@ def main(
                     logger.info(f"Updating only scrapers: {scrapers_to_run}")
                 pipelines = Pipelines(
                     configuration,
-                    today,
                     session,
+                    today,
                     scrapers_to_run,
                     errors_on_exit,
                 )
                 pipelines.run()
-                # Breakpoint here.
-                # Then we need to write the results to the db
+                pipelines.output()
                 if testsession:
                     testsession.close()
     logger.info("HAPI pipelines completed!")
