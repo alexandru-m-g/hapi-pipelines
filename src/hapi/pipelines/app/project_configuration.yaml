@@ -15,10 +15,12 @@ scraper_adminone:
       - "M_TL"
       - "F_TL"
     output:
+# This should be standardised for all countries
       - "T_TL"
       - "M_TL"
       - "F_TL"
     output_hxl:
+# This should be standardised for all countries
       - "#population+total"
       - "#population+f+total"
       - "#population+m+total"
