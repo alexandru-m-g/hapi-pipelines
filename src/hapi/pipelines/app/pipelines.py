@@ -29,7 +29,7 @@ class Pipelines:
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
-            configuration["countries"],
+            configuration["HRPs"],
             today,
             errors_on_exit=errors_on_exit,
             scrapers_to_run=scrapers_to_run,

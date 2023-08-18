@@ -16,32 +16,32 @@ from hdx.utilities.easy_logging import setup_logging
 from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import script_dir_plus_file, temp_dir
 
-from .. import __version__
+from hapi.pipelines._version import __version__
 from hapi.pipelines.app.pipelines import Pipelines
 
 setup_logging()
 logger = logging.getLogger(__name__)
 
 
-lookup = "hapi-pipelines"
+lookup = "hapi-pipelines)"
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="HAPI pipelines")
-    parser.add_argument("-hk", "--hdx_key", default=None, help="HDX api key")
-    parser.add_argument("-ua", "--user_agent", default=None, help="user agent")
+    parser.add_argument("-hk", "--hdx-key", default=None, help="HDX api key")
+    parser.add_argument("-ua", "--user-agent", default=None, help="user agent")
     parser.add_argument("-pp", "--preprefix", default=None, help="preprefix")
     parser.add_argument(
-        "-hs", "--hdx_site", default=None, help="HDX site to use"
+        "-hs", "--hdx-site", default=None, help="HDX site to use"
     )
     parser.add_argument(
-        "-db", "--db_uri", default=None, help="Database connection string"
+        "-db", "--db-uri", default=None, help="Database connection string"
     )
     parser.add_argument(
         "-dp",
-        "--db_params",
+        "--db-params",
         default=None,
-        help="Database connection parameters. Overrides --db_uri.",
+        help="Database connection parameters. Overrides --db-uri.",
     )
     parser.add_argument(
         "-sc", "--scrapers", default=None, help="Scrapers to run"
@@ -55,7 +55,7 @@ def parse_args():
     )
     parser.add_argument(
         "-usv",
-        "--use_saved",
+        "--use-saved",
         default=False,
         action="store_true",
         help="Use saved data",
