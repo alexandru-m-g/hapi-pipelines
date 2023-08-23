@@ -61,7 +61,7 @@ dev = ["pre-commit"]
 packages = ["src/hapi"]
 
 [tool.hatch.build.hooks.vcs]
-version-file = "src/hapi/pipelines._version.py"
+version-file = "src/hapi/pipelines/_version.py"
 
 [tool.hatch.metadata]
 allow-direct-references = true
