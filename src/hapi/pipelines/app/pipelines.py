@@ -3,7 +3,7 @@ from hdx.location.country import Country
 from hdx.scraper.runner import Runner
 from hdx.scraper.utilities.sources import Sources
 
-from hapi.pipelines.database.dbresource import DBResource
+from hapi.pipelines.database.tables import Tables
 
 
 class Pipelines:
@@ -19,6 +19,7 @@ class Pipelines:
     ):
         self.configuration = configuration
         self.session = session
+        self.tables = Tables(self.session)
         self.use_live = use_live
         Country.countriesdata(
             use_live=use_live,
@@ -73,13 +74,13 @@ class Pipelines:
         # Gets Datasets and Resources
 
         #  Need to fix fake dataset_ref below once we have a dataset table
-        dbresource = DBResource(
+        dbresource = self.tables.Resource(
             code="e8f7fb08-af9c-4bdf-8a49-a54c56a4a1b0",
             dataset_ref=0,
             hdx_link="https://data.humdata.org/dataset/8520e386-9263-48c9-b1bf-b2349e019fbb/resource/e8f7fb08-af9c-4bdf-8a49-a54c56a4a1b0/download/col_admpop_adm1_2023.csv",
             filename="col_admpop_adm1_2023.csv",
-            mime_type="csv",
-            last_modified=self.runner.today,
+            format="csv",
+            update_date=self.runner.today,
             is_hxl=False,
             api_link="https://data.humdata.org/api/3/action/resource_show?id=e8f7fb08-af9c-4bdf-8a49-a54c56a4a1b0",
         )
