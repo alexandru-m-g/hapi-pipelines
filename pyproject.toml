@@ -34,7 +34,7 @@ classifiers = [
 requires-python = ">=3.8"
 
 dependencies = [
-    "hdx-python-scraper >= 2.1.8",
+    "hdx-python-scraper@git+ssh://git@github.com/OCHA-DAP/hdx-python-scraper@hapi_metadata#egg=hdx-python-scraper",
     "hdx-python-database[postgresql]>= 1.2.5",
 ]
 dynamic = ["version"]
@@ -61,7 +61,10 @@ dev = ["pre-commit"]
 packages = ["src/hapi"]
 
 [tool.hatch.build.hooks.vcs]
-version-file = "src/hapi/pipelines._version.py"
+version-file = "src/hapi/pipelines/_version.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 # Versioning
 

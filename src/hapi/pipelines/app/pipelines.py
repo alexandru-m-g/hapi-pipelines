@@ -68,7 +68,10 @@ class Pipelines:
         self.runner.get_results()
         #  Transform and write the results to population schema in db
         #  We need mapping from HXL hashtags in results to gender and age range codes
-        #  Probably should expand scraper framework to pull out all the resource stuff below (as well as dataset info)...
+
+        self.runner.get_hapi_metadata()
+        # Gets Datasets and Resources
+
         #  Need to fix fake dataset_ref below once we have a dataset table
         dbresource = DBResource(
             code="e8f7fb08-af9c-4bdf-8a49-a54c56a4a1b0",
