@@ -14,11 +14,13 @@ humanitarian related data, please upload your datasets to HDX.
 
 ## Running
 
+Ensure the `hapi` library is installed using `pip install .`.
+
 Use the
 [HAPI schema repository](https://github.com/OCHA-DAP/hapi-schemas)
 to create a SQLite HAPI database. Point to the file
 `hapi-schemas/databases/hapi-test.sqlite` when executing:
 
 ```shell
-python src/hapi/pipelines/app/main.py --db "sqlite:///path-to-hapi-test.sqlite"
+python src/hapi/pipelines/app/__main__.py --db "sqlite:///path-to-hapi-test.sqlite"
 ```
