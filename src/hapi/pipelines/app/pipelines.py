@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from hdx.location.adminlevel import AdminLevel
 from hdx.location.country import Country
 from hdx.scraper.runner import Runner
@@ -70,20 +72,34 @@ class Pipelines:
         #  Transform and write the results to population schema in db
         #  We need mapping from HXL hashtags in results to gender and age range codes
 
-        self.runner.get_hapi_metadata()
         # Gets Datasets and Resources
+        hapi_metadata = self.runner.get_hapi_metadata()
+        dataset = hapi_metadata[0]
+        resource = dataset["resource"]
 
-        #  Need to fix fake dataset_ref below once we have a dataset table
-        dbresource = self.tables.Resource(
-            code="e8f7fb08-af9c-4bdf-8a49-a54c56a4a1b0",
-            dataset_ref=0,
-            hdx_link="https://data.humdata.org/dataset/8520e386-9263-48c9-b1bf-b2349e019fbb/resource/e8f7fb08-af9c-4bdf-8a49-a54c56a4a1b0/download/col_admpop_adm1_2023.csv",
-            filename="col_admpop_adm1_2023.csv",
-            format="csv",
-            update_date=self.runner.today,
-            is_hxl=False,
-            api_link="https://data.humdata.org/api/3/action/resource_show?id=e8f7fb08-af9c-4bdf-8a49-a54c56a4a1b0",
+        # TODO: Should the code be the primary key instead?
+        db_dataset = self.tables.Dataset(
+            hdx_link=dataset["hdx_link"],
+            code=dataset["code"],
+            title=dataset["title"],
+            provider_code=dataset["provider_code"],
+            provider_name=dataset["provider_name"],
+            api_link=dataset["api_link"],
         )
-        self.session.add(dbresource)
+        self.session.add(db_dataset)
+        self.session.commit()
 
+        db_resource = self.tables.Resource(
+            code=resource["code"],
+            dataset_ref=db_dataset.id,
+            hdx_link=resource["hdx_link"],
+            filename=resource["filename"],
+            format=resource["mime_type"],  # TODO: where is format?
+            update_date=datetime.strptime(
+                resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
+            ).date(),
+            is_hxl=False,  # TODO: needs to be added?
+            api_link=resource["api_link"],
+        )
+        self.session.add(db_resource)
         self.session.commit()
