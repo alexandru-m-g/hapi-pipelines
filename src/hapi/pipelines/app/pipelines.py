@@ -5,7 +5,7 @@ from hdx.location.country import Country
 from hdx.scraper.runner import Runner
 from hdx.scraper.utilities.sources import Sources
 
-from hapi.pipelines.database.tables import Tables
+from hapi.pipelines.database import tables, validation
 
 
 class Pipelines:
@@ -21,7 +21,7 @@ class Pipelines:
     ):
         self.configuration = configuration
         self.session = session
-        self.tables = Tables(self.session)
+        validation.validate(session)
         self.use_live = use_live
         Country.countriesdata(
             use_live=use_live,
@@ -77,8 +77,7 @@ class Pipelines:
         dataset = hapi_metadata[0]
         resource = dataset["resource"]
 
-        # TODO: Should the code be the primary key instead?
-        db_dataset = self.tables.Dataset(
+        db_dataset = tables.Dataset(
             hdx_link=dataset["hdx_link"],
             code=dataset["code"],
             title=dataset["title"],
@@ -89,7 +88,7 @@ class Pipelines:
         self.session.add(db_dataset)
         self.session.commit()
 
-        db_resource = self.tables.Resource(
+        db_resource = tables.Resource(
             code=resource["code"],
             dataset_ref=db_dataset.id,
             hdx_link=resource["hdx_link"],
