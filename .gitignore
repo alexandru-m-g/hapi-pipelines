@@ -163,4 +163,4 @@ cython_debug/
 # DB
 hapi.db
 # Version file
-src/hapi/pipelines._version.py
+src/hapi/pipelines/_version.py
