@@ -5,7 +5,7 @@ from hdx.location.country import Country
 from hdx.scraper.runner import Runner
 from hdx.scraper.utilities.sources import Sources
 
-from hapi.pipelines.database import tables, validation
+from hapi.pipelines.database import tables
 
 
 class Pipelines:
@@ -21,7 +21,6 @@ class Pipelines:
     ):
         self.configuration = configuration
         self.session = session
-        validation.validate(session)
         self.use_live = use_live
         Country.countriesdata(
             use_live=use_live,
