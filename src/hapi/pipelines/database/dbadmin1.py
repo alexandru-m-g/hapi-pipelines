@@ -1,5 +1,6 @@
 """Admin1 table."""
 
+from hdx.database.no_timezone import Base
 from sqlalchemy import (
     Boolean,
     Column,
@@ -10,8 +11,6 @@ from sqlalchemy import (
     text,
 )
 from sqlalchemy.orm import relationship
-
-from hapi.pipelines.database.base import Base
 
 
 class DBAdmin1(Base):

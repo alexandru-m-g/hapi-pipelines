@@ -1,8 +1,7 @@
 """Gender table."""
 
+from hdx.database.no_timezone import Base
 from sqlalchemy import CHAR, Column, String
-
-from hapi.pipelines.database.base import Base
 
 
 class DBGender(Base):

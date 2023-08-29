@@ -1,5 +1,6 @@
 """Population table."""
 
+from hdx.database.no_timezone import Base
 from sqlalchemy import (
     Column,
     DateTime,
@@ -9,8 +10,6 @@ from sqlalchemy import (
     text,
 )
 from sqlalchemy.orm import relationship
-
-from hapi.pipelines.database.base import Base
 
 
 class DBPopulation(Base):

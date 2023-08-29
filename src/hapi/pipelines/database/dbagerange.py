@@ -1,8 +1,7 @@
 """Resource table."""
 
+from hdx.database.no_timezone import Base
 from sqlalchemy import Column, Integer, String
-
-from hapi.pipelines.database.base import Base
 
 
 class DBAgeRange(Base):

@@ -1,8 +1,7 @@
 """OrgType table."""
 
+from hdx.database.no_timezone import Base
 from sqlalchemy import Column, String
-
-from hapi.pipelines.database.base import Base
 
 
 class DBOrgType(Base):

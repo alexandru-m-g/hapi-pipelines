@@ -1,5 +1,6 @@
 """Resource table."""
 
+from hdx.database.no_timezone import Base
 from sqlalchemy import (
     Boolean,
     Column,
@@ -9,8 +10,6 @@ from sqlalchemy import (
     String,
 )
 from sqlalchemy.orm import relationship
-
-from hapi.pipelines.database.base import Base
 
 
 class DBResource(Base):

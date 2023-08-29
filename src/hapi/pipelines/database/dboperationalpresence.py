@@ -1,5 +1,6 @@
 """OperationalPresence table."""
 
+from hdx.database.no_timezone import Base
 from sqlalchemy import (
     Column,
     DateTime,
@@ -8,8 +9,6 @@ from sqlalchemy import (
     Text,
     text,
 )
-
-from hapi.pipelines.database.base import Base
 
 
 class DBOperationalPresence(Base):
