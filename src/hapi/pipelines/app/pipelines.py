@@ -92,7 +92,7 @@ class Pipelines:
             dataset_ref=db_dataset.id,
             hdx_link=resource["hdx_link"],
             filename=resource["filename"],
-            format=resource["mime_type"],  # TODO: where is format?
+            format=resource["format"],
             update_date=datetime.strptime(
                 resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
             ).date(),

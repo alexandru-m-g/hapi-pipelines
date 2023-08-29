@@ -29,7 +29,7 @@ class AgeRange(Base):
 class Dataset(Base):
     __tablename__ = "Dataset"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     hdx_link = Column(String(512), nullable=False)
     code = Column(String(128), nullable=False)
     title = Column(String(1024), nullable=False)
@@ -48,7 +48,7 @@ class Gender(Base):
 class Location(Base):
     __tablename__ = "Location"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     code = Column(String(128), nullable=False)
     name = Column(String(512), nullable=False)
     centroid_lat = Column(Float)
@@ -60,7 +60,7 @@ class Location(Base):
 class OperationalPresence(Base):
     __tablename__ = "OperationalPresence"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     resource_ref = Column(Integer, nullable=False)
     org_ref = Column(Integer, nullable=False)
     sector_code = Column(String(32), nullable=False)
@@ -73,7 +73,7 @@ class OperationalPresence(Base):
 class OrgType(Base):
     __tablename__ = "OrgType"
 
-    code = Column(String(32), primary_key=True, autoincrement=True)
+    code = Column(String(32), primary_key=True)
     description = Column(String(512), nullable=False)
 
 
@@ -89,7 +89,7 @@ class Sector(Base):
 class Admin1(Base):
     __tablename__ = "Admin1"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     location_ref = Column(ForeignKey("Location.id"))
     code = Column(String(128), nullable=False)
     name = Column(String(512), nullable=False)
@@ -105,7 +105,7 @@ class Admin1(Base):
 class Org(Base):
     __tablename__ = "Org"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     hdx_link = Column(String(1024), nullable=False)
     acronym = Column(String(32), nullable=False, index=True)
     name = Column(String(512), nullable=False)
@@ -119,7 +119,7 @@ class Org(Base):
 class Population(Base):
     __tablename__ = "Population"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     resource_ref = Column(Integer, nullable=False)
     admin2_ref = Column(Integer, nullable=False)
     gender_code = Column(ForeignKey("Gender.code"))
@@ -136,7 +136,7 @@ class Population(Base):
 class Resource(Base):
     __tablename__ = "Resource"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     dataset_ref = Column(ForeignKey("Dataset.id"), nullable=False)
     hdx_link = Column(String(512), nullable=False)
     code = Column(String(128), nullable=False)
@@ -152,7 +152,7 @@ class Resource(Base):
 class Admin2(Base):
     __tablename__ = "Admin2"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     admin1_ref = Column(ForeignKey("Admin1.id"))
     code = Column(String(128), nullable=False)
     name = Column(String(512), nullable=False)
