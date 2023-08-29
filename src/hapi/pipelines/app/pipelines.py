@@ -5,7 +5,7 @@ from hdx.location.country import Country
 from hdx.scraper.runner import Runner
 from hdx.scraper.utilities.sources import Sources
 
-from hapi.pipelines.database import tables
+from hapi.pipelines.database import dbdataset, dbresource
 
 
 class Pipelines:
@@ -76,7 +76,7 @@ class Pipelines:
         dataset = hapi_metadata[0]
         resource = dataset["resource"]
 
-        db_dataset = tables.Dataset(
+        dataset_row = dbdataset.Dataset(
             hdx_link=dataset["hdx_link"],
             code=dataset["code"],
             title=dataset["title"],
@@ -84,12 +84,12 @@ class Pipelines:
             provider_name=dataset["provider_name"],
             api_link=dataset["api_link"],
         )
-        self.session.add(db_dataset)
+        self.session.add(dataset_row)
         self.session.commit()
 
-        db_resource = tables.Resource(
+        resource_row = dbresource.Resource(
             code=resource["code"],
-            dataset_ref=db_dataset.id,
+            dataset_ref=dataset_row.id,
             hdx_link=resource["hdx_link"],
             filename=resource["filename"],
             format=resource["format"],
@@ -99,5 +99,5 @@ class Pipelines:
             is_hxl=False,  # TODO: needs to be added?
             api_link=resource["api_link"],
         )
-        self.session.add(db_resource)
+        self.session.add(resource_row)
         self.session.commit()
