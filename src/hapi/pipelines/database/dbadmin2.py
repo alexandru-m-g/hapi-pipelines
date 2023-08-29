@@ -1,4 +1,5 @@
 """Admin2 table."""
+
 from sqlalchemy import (
     Boolean,
     Column,
@@ -15,7 +16,7 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 
-class Admin2(Base):
+class DBAdmin2(Base):
     __tablename__ = "Admin2"
 
     id = Column(Integer, primary_key=True)

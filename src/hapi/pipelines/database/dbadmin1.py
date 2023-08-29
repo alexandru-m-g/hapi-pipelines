@@ -1,4 +1,5 @@
 """Admin1 table."""
+
 from sqlalchemy import (
     Boolean,
     Column,
@@ -15,7 +16,7 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 
-class Admin1(Base):
+class DBAdmin1(Base):
     __tablename__ = "Admin1"
 
     id = Column(Integer, primary_key=True)
@@ -28,4 +29,4 @@ class Admin1(Base):
     reference_period_start = Column(DateTime, nullable=False)
     reference_period_end = Column(DateTime, server_default=text("NULL"))
 
-    Location = relationship("Location")
+    Location = relationship("DBLocation")

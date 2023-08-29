@@ -76,7 +76,7 @@ class Pipelines:
         dataset = hapi_metadata[0]
         resource = dataset["resource"]
 
-        dataset_row = dbdataset.Dataset(
+        dataset_row = dbdataset.DBDataset(
             hdx_link=dataset["hdx_link"],
             code=dataset["code"],
             title=dataset["title"],
@@ -87,7 +87,7 @@ class Pipelines:
         self.session.add(dataset_row)
         self.session.commit()
 
-        resource_row = dbresource.Resource(
+        resource_row = dbresource.DBResource(
             code=resource["code"],
             dataset_ref=dataset_row.id,
             hdx_link=resource["hdx_link"],

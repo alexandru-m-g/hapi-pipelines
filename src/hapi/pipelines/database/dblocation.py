@@ -1,4 +1,5 @@
 """Gender table."""
+
 from sqlalchemy import (
     Column,
     DateTime,
@@ -11,7 +12,7 @@ from sqlalchemy import (
 from hapi.pipelines.database.base import Base
 
 
-class Location(Base):
+class DBLocation(Base):
     __tablename__ = "Location"
 
     id = Column(Integer, primary_key=True)

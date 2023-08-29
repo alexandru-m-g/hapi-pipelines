@@ -12,7 +12,7 @@ from sqlalchemy import (
 from hapi.pipelines.database.base import Base
 
 
-class OperationalPresence(Base):
+class DBOperationalPresence(Base):
     __tablename__ = "OperationalPresence"
 
     id = Column(Integer, primary_key=True)

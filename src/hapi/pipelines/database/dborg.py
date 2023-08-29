@@ -1,4 +1,5 @@
 """Org table."""
+
 from sqlalchemy import (
     Column,
     DateTime,
@@ -12,7 +13,7 @@ from sqlalchemy.orm import relationship
 from hapi.pipelines.database.base import Base
 
 
-class Org(Base):
+class DBOrg(Base):
     __tablename__ = "Org"
 
     id = Column(Integer, primary_key=True)
@@ -23,4 +24,4 @@ class Org(Base):
     reference_period_start = Column(DateTime, nullable=False, index=True)
     reference_period_end = Column(DateTime, server_default=text("NULL"))
 
-    OrgType = relationship("OrgType")
+    OrgType = relationship("DBOrgType")

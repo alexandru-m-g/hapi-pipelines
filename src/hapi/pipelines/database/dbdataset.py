@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String
 from hapi.pipelines.database.base import Base
 
 
-class Dataset(Base):
+class DBDataset(Base):
     __tablename__ = "Dataset"
 
     id = Column(Integer, primary_key=True)

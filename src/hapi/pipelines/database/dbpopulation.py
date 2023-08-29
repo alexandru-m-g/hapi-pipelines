@@ -1,4 +1,5 @@
 """Population table."""
+
 from sqlalchemy import (
     Column,
     DateTime,
@@ -12,7 +13,7 @@ from sqlalchemy.orm import relationship
 from hapi.pipelines.database.base import Base
 
 
-class Population(Base):
+class DBPopulation(Base):
     __tablename__ = "Population"
 
     id = Column(Integer, primary_key=True)
@@ -25,5 +26,5 @@ class Population(Base):
     reference_period_end = Column(DateTime, server_default=text("NULL"))
     source_data = Column(Text)
 
-    AgeRange = relationship("AgeRange")
-    Gender = relationship("Gender")
+    AgeRange = relationship("DBAgeRange")
+    Gender = relationship("DBGender")

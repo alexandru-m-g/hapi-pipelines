@@ -1,4 +1,5 @@
 """Resource table."""
+
 from sqlalchemy import (
     Boolean,
     Column,
@@ -12,7 +13,7 @@ from sqlalchemy.orm import relationship
 from hapi.pipelines.database.base import Base
 
 
-class Resource(Base):
+class DBResource(Base):
     __tablename__ = "Resource"
 
     id = Column(Integer, primary_key=True)
@@ -25,4 +26,4 @@ class Resource(Base):
     is_hxl = Column(Boolean, nullable=False, index=True)
     api_link = Column(String(1024), nullable=False)
 
-    Dataset = relationship("Dataset")
+    Dataset = relationship("DBDataset")

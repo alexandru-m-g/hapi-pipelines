@@ -5,7 +5,7 @@ from sqlalchemy import Column, String
 from hapi.pipelines.database.base import Base
 
 
-class OrgType(Base):
+class DBOrgType(Base):
     __tablename__ = "OrgType"
 
     code = Column(String(32), primary_key=True)

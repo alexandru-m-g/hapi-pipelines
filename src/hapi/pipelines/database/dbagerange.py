@@ -1,11 +1,12 @@
 """Resource table."""
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
 
-class AgeRange(Base):
+class DBAgeRange(Base):
     __tablename__ = "AgeRange"
 
     code = Column(String(32), primary_key=True)

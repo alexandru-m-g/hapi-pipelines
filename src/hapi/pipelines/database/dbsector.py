@@ -5,7 +5,7 @@ from sqlalchemy import Column, DateTime, String, text
 from hapi.pipelines.database.base import Base
 
 
-class Sector(Base):
+class DBSector(Base):
     __tablename__ = "Sector"
 
     code = Column(String(32), primary_key=True)
