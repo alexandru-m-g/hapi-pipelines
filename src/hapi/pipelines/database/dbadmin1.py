@@ -9,10 +9,9 @@ from sqlalchemy import (
     String,
     text,
 )
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-Base = declarative_base()
+from hapi.pipelines.database.base import Base
 
 
 class DBAdmin1(Base):

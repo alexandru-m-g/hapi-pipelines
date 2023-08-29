@@ -1,9 +1,8 @@
 """Gender table."""
 
 from sqlalchemy import CHAR, Column, String
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+from hapi.pipelines.database.base import Base
 
 
 class DBGender(Base):
