@@ -57,7 +57,7 @@ email-validator==2.0.0.post2
     # via hdx-python-api
 et-xmlfile==1.1.0
     # via openpyxl
-filelock==3.12.2
+filelock==3.12.3
     # via virtualenv
 frictionless==5.15.10
     # via hdx-python-utilities
@@ -75,7 +75,7 @@ hdx-python-api==6.0.9
     # via hdx-python-scraper
 hdx-python-country==3.5.2
     # via hdx-python-api
-hdx-python-database[postgresql]==1.2.5
+hdx-python-database[postgresql]==1.2.6
     # via hapi-pipelines (pyproject.toml)
 hdx-python-scraper @ git+ssh://git@github.com/OCHA-DAP/hdx-python-scraper@hapi_metadata
     # via hapi-pipelines (pyproject.toml)
@@ -139,7 +139,7 @@ petl==1.7.14
     # via frictionless
 platformdirs==3.10.0
     # via virtualenv
-pluggy==1.2.0
+pluggy==1.3.0
     # via pytest
 ply==3.11
     # via
@@ -163,11 +163,11 @@ pyasn1-modules==0.3.0
     # via google-auth
 pycparser==2.21
     # via cffi
-pydantic==2.2.1
+pydantic==2.3.0
     # via
     #   frictionless
     #   inflect
-pydantic-core==2.6.1
+pydantic-core==2.6.3
     # via pydantic
 pygments==2.16.1
     # via rich
