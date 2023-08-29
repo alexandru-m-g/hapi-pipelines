@@ -4,7 +4,6 @@ from sqlalchemy import (
     Boolean,
     Column,
     DateTime,
-    Float,
     ForeignKey,
     Integer,
     String,
@@ -23,8 +22,6 @@ class DBAdmin1(Base):
     location_ref = Column(ForeignKey("Location.id"))
     code = Column(String(128), nullable=False)
     name = Column(String(512), nullable=False)
-    centroid_lat = Column(Float)
-    centroid_lon = Column(Float)
     is_unspecified = Column(Boolean, server_default=text("FALSE"))
     reference_period_start = Column(DateTime, nullable=False)
     reference_period_end = Column(DateTime, server_default=text("NULL"))
