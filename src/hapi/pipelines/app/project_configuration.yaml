@@ -24,7 +24,28 @@ scraper_adminone:
       - "#population+total"
       - "#population+f+total"
       - "#population+m+total"
-
+  population_ukr:
+    dataset: "cod-ps-ukr"
+    resource: "ukr_admpop_adm1_2022.csv"
+    format: "csv"
+    admin:
+      - "ISO3"
+      - "ADM1_PCODE"
+    admin_exact: True
+    input:
+      - "T_TL"
+      - "M_TL"
+      - "F_TL"
+    output:
+# This should be standardised for all countries
+      - "T_TL"
+      - "M_TL"
+      - "F_TL"
+    output_hxl:
+# This should be standardised for all countries
+      - "#population+total"
+      - "#population+f+total"
+      - "#population+m+total"
 
 countries:
   - ABW

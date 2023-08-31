@@ -73,7 +73,7 @@ gspread==5.10.0
     # via hdx-python-scraper
 hdx-python-api==6.0.9
     # via hdx-python-scraper
-hdx-python-country==3.5.2
+hdx-python-country==3.5.3
     # via hdx-python-api
 hdx-python-database[postgresql]==1.2.6
     # via hapi-pipelines (pyproject.toml)
