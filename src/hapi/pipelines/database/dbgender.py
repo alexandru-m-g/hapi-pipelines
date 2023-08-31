@@ -5,7 +5,7 @@ from sqlalchemy import CHAR, Column, String
 
 
 class DBGender(Base):
-    __tablename__ = "Gender"
+    __tablename__ = "gender"
 
     code = Column(CHAR(1), primary_key=True)
     description = Column(String(256))
