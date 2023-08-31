@@ -16,6 +16,7 @@ scraper_adminone:
       - "F_TL"
     output:
 # This should be standardised for all countries
+# TODO: Mike do you mean that we should somehow generalize it in this file?
       - "T_TL"
       - "M_TL"
       - "F_TL"

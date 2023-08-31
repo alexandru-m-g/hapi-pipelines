@@ -10,7 +10,10 @@ from hdx.utilities.typehint import ListTuple
 from hxl import InputOptions
 from sqlalchemy.orm import Session
 
+from hapi.pipelines.app import population
+from hapi.pipelines.database.dbadmin1 import DBAdmin1
 from hapi.pipelines.database.dbdataset import DBDataset
+from hapi.pipelines.database.dbpopulation import DBPopulation
 from hapi.pipelines.database.dbresource import DBResource
 from hapi.pipelines.utilities.locations import Locations
 
@@ -69,16 +72,13 @@ class Pipelines:
         self.runner.run()
 
     def output(self):
+        # Populate the locations table
         self.locations.populate()
-        self.runner.get_results()
-        #  Transform and write the results to population schema in db
-        #  We need mapping from HXL hashtags in results to gender and age range codes
-
-        # Gets Datasets and Resources
+        # Gets metadata and populate dataset and resource table
+        # TODO: maybe make this its own method? Its' a bit long
         hapi_metadata = self.runner.get_hapi_metadata()
         for dataset in hapi_metadata:
             resource = dataset["resource"]
-
             dataset_row = DBDataset(
                 hdx_link=dataset["hdx_link"],
                 code=dataset["code"],
@@ -111,3 +111,46 @@ class Pipelines:
             )
             self.session.add(resource_row)
             self.session.commit()
+        # Get the population results and populate population table
+        # TODO: what happens to the structure when other themes are included?
+        #  Below it's written assuming admin1 population only,
+        #  will need to be changed
+        # TODO: How should the gender and age tables be populated?
+        #  For now this is taken care of in the schema itself.
+        #  For age in particular, should we populated it using the
+        #  data or pre-define all values here in the codebase?
+        population_results = self.runner.get_results()["adminone"]
+        for hxl_column, values in zip(
+            population_results["headers"][1], population_results["values"]
+        ):
+            mappings = population.hxl_mapping[hxl_column]
+            for admin_code, value in values.items():
+                # TODO: turn this into a lookup table?
+                # Query the table and retrieve the id where code is "ABC"
+                admin_code = "FOO-001"  # Remove this once table is populated
+                admin_row = (
+                    self.session.query(DBAdmin1)
+                    .filter(DBAdmin1.code == admin_code)
+                    .first()
+                )
+                if not admin_row:
+                    raise ValueError(f"Pcode {admin_code} missing")
+                population_row = DBPopulation(
+                    # TODO: Some open questions so filling with
+                    #  fake data for now
+                    # TODO: Somehow need to connect to resource
+                    resource_ref=resource_row.id,
+                    admin2_ref=admin_row.id,
+                    gender_code=mappings.gender_code,
+                    age_range_code=mappings.age_range_code,
+                    population=value,
+                    # TODO: These should also come from the metadata
+                    reference_period_start=datetime(2000, 1, 1),
+                    reference_period_end=datetime(2020, 1, 1),
+                    # TODO: I suppose this should also somehow
+                    #  come from the scraper?
+                    source_data="pretend source data for now",
+                )
+
+                self.session.add(population_row)
+        self.session.commit()
