@@ -8,9 +8,9 @@ from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.app.locations import Locations
 from hapi.pipelines.database.dbdataset import DBDataset
 from hapi.pipelines.database.dbresource import DBResource
+from hapi.pipelines.utilities.locations import Locations
 
 
 class Pipelines:
