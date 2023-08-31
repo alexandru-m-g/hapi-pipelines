@@ -1,11 +1,13 @@
 from datetime import datetime
 from typing import Dict, Optional
 
+import hxl
 from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.runner import Runner
 from hdx.scraper.utilities.sources import Sources
 from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
+from hxl import InputOptions
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.dbdataset import DBDataset
@@ -88,6 +90,13 @@ class Pipelines:
             self.session.add(dataset_row)
             self.session.commit()
 
+            hdx_link = resource["hdx_link"]
+            hxl_info = hxl.info(hdx_link, InputOptions(encoding="utf-8"))
+            is_hxlated = False
+            for sheet in hxl_info["sheets"]:
+                if sheet["is_hxlated"]:
+                    is_hxlated = True
+                    break
             resource_row = DBResource(
                 code=resource["code"],
                 dataset_ref=dataset_row.id,
@@ -97,7 +106,7 @@ class Pipelines:
                 update_date=datetime.strptime(
                     resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
                 ).date(),
-                is_hxl=False,  # TODO: needs to be added?
+                is_hxl=is_hxlated,
                 api_link=resource["api_link"],
             )
             self.session.add(resource_row)
