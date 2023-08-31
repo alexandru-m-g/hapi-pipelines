@@ -12,6 +12,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
+from hapi.pipelines.database.dbadmin1 import DBAdmin1  # noqa
+
 
 class DBAdmin2(Base):
     __tablename__ = "Admin2"
@@ -24,4 +26,4 @@ class DBAdmin2(Base):
     reference_period_start = Column(DateTime, nullable=False)
     reference_period_end = Column(DateTime, server_default=text("NULL"))
 
-    Admin1 = relationship("Admin1")
+    Admin1 = relationship("DBAdmin1")

@@ -11,7 +11,7 @@ from hxl import InputOptions
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.app import population
-from hapi.pipelines.database.dbadmin1 import DBAdmin1
+from hapi.pipelines.database.dbadmin2 import DBAdmin2
 from hapi.pipelines.database.dbdataset import DBDataset
 from hapi.pipelines.database.dbpopulation import DBPopulation
 from hapi.pipelines.database.dbresource import DBResource
@@ -126,11 +126,16 @@ class Pipelines:
             mappings = population.hxl_mapping[hxl_column]
             for admin_code, value in values.items():
                 # TODO: turn this into a lookup table?
+                # TODO: this actually needs to provide the lookup to
+                #  the admin2 table. If we're dealing with admin1
+                #  then how do we get that?
                 # Query the table and retrieve the id where code is "ABC"
-                admin_code = "FOO-001"  # Remove this once table is populated
+                admin_code = (
+                    "FOO-001-XXX"  # Remove this once table is populated
+                )
                 admin_row = (
-                    self.session.query(DBAdmin1)
-                    .filter(DBAdmin1.code == admin_code)
+                    self.session.query(DBAdmin2)
+                    .filter(DBAdmin2.code == admin_code)
                     .first()
                 )
                 if not admin_row:
