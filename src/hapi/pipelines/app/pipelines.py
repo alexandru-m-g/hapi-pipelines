@@ -1,32 +1,34 @@
 from datetime import datetime
+from typing import Dict, Optional
 
+import hxl
 from hdx.location.adminlevel import AdminLevel
-from hdx.location.country import Country
 from hdx.scraper.runner import Runner
 from hdx.scraper.utilities.sources import Sources
+from hdx.utilities.errors_onexit import ErrorsOnExit
+from hdx.utilities.typehint import ListTuple
+from hxl import InputOptions
+from sqlalchemy.orm import Session
 
-from hapi.pipelines.database import dbdataset, dbresource
+from hapi.pipelines.database.dbdataset import DBDataset
+from hapi.pipelines.database.dbresource import DBResource
+from hapi.pipelines.utilities.locations import Locations
 
 
 class Pipelines:
     def __init__(
         self,
-        configuration,
-        session,
-        today,
-        scrapers_to_run=None,
-        errors_on_exit=None,
-        use_live=True,
-        fallbacks_root=None,
+        configuration: Dict,
+        session: Session,
+        today: datetime,
+        scrapers_to_run: Optional[ListTuple[str]] = None,
+        errors_on_exit: Optional[ErrorsOnExit] = None,
+        use_live: bool = True,
+        fallbacks_root: Optional[str] = None,
     ):
         self.configuration = configuration
         self.session = session
-        self.use_live = use_live
-        Country.countriesdata(
-            use_live=use_live,
-            country_name_overrides=configuration["country_name_overrides"],
-            country_name_mappings=configuration["country_name_mappings"],
-        )
+        self.locations = Locations(configuration, session, use_live)
         self.adminone = AdminLevel(configuration["admin1"], admin_level=1)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
@@ -67,37 +69,45 @@ class Pipelines:
         self.runner.run()
 
     def output(self):
+        self.locations.populate()
         self.runner.get_results()
         #  Transform and write the results to population schema in db
         #  We need mapping from HXL hashtags in results to gender and age range codes
 
         # Gets Datasets and Resources
         hapi_metadata = self.runner.get_hapi_metadata()
-        dataset = hapi_metadata[0]
-        resource = dataset["resource"]
+        for dataset in hapi_metadata:
+            resource = dataset["resource"]
 
-        dataset_row = dbdataset.DBDataset(
-            hdx_link=dataset["hdx_link"],
-            code=dataset["code"],
-            title=dataset["title"],
-            provider_code=dataset["provider_code"],
-            provider_name=dataset["provider_name"],
-            api_link=dataset["api_link"],
-        )
-        self.session.add(dataset_row)
-        self.session.commit()
+            dataset_row = DBDataset(
+                hdx_link=dataset["hdx_link"],
+                code=dataset["code"],
+                title=dataset["title"],
+                provider_code=dataset["provider_code"],
+                provider_name=dataset["provider_name"],
+                api_link=dataset["api_link"],
+            )
+            self.session.add(dataset_row)
+            self.session.commit()
 
-        resource_row = dbresource.DBResource(
-            code=resource["code"],
-            dataset_ref=dataset_row.id,
-            hdx_link=resource["hdx_link"],
-            filename=resource["filename"],
-            format=resource["format"],
-            update_date=datetime.strptime(
-                resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
-            ).date(),
-            is_hxl=False,  # TODO: needs to be added?
-            api_link=resource["api_link"],
-        )
-        self.session.add(resource_row)
-        self.session.commit()
+            hdx_link = resource["hdx_link"]
+            hxl_info = hxl.info(hdx_link, InputOptions(encoding="utf-8"))
+            is_hxlated = False
+            for sheet in hxl_info["sheets"]:
+                if sheet["is_hxlated"]:
+                    is_hxlated = True
+                    break
+            resource_row = DBResource(
+                code=resource["code"],
+                dataset_ref=dataset_row.id,
+                hdx_link=resource["hdx_link"],
+                filename=resource["filename"],
+                format=resource["format"],
+                update_date=datetime.strptime(
+                    resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
+                ).date(),
+                is_hxl=is_hxlated,
+                api_link=resource["api_link"],
+            )
+            self.session.add(resource_row)
+            self.session.commit()
