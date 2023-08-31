@@ -17,14 +17,16 @@ class Locations:
             country_name_mappings=configuration["country_name_mappings"],
         )
         self.session = session
-        self.data = []
+        self.data = {}
 
     def populate(self):
         for country in Country.countriesdata()["countries"].values():
+            code = country["#country+code+v_iso3"]
             location_row = DBLocation(
-                code=country["#country+code+v_iso3"],
+                code=code,
                 name=country["#country+name+preferred"],
                 reference_period_start=parse_date(country["#date+start"]),
             )
             self.session.add(location_row)
-        self.session.commit()
+            self.session.commit()
+            self.data[code] = location_row.id
