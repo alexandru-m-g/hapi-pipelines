@@ -12,6 +12,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
+from hapi.pipelines.database.dblocation import DBLocation  # noqa: F401
+
 
 class DBAdmin1(Base):
     __tablename__ = "admin1"

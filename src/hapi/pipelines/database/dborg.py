@@ -11,6 +11,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
+from hapi.pipelines.database.dborgtype import DBOrgType  # noqa: F401
+
 
 class DBOrg(Base):
     __tablename__ = "org"

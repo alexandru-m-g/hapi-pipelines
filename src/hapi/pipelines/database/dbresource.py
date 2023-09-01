@@ -11,6 +11,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
+from hapi.pipelines.database.dbdataset import DBDataset  # noqa: F401
+
 
 class DBResource(Base):
     __tablename__ = "resource"

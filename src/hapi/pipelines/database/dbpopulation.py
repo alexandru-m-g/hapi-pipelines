@@ -11,6 +11,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
+from hapi.pipelines.database.dbagerange import DBAgeRange  # noqa: F401
+from hapi.pipelines.database.dbgender import DBGender  # noqa: F401
+
 
 class DBPopulation(Base):
     __tablename__ = "population"
