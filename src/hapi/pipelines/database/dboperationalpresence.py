@@ -12,7 +12,7 @@ from sqlalchemy import (
 
 
 class DBOperationalPresence(Base):
-    __tablename__ = "OperationalPresence"
+    __tablename__ = "operational_presence"
 
     id = Column(Integer, primary_key=True)
     resource_ref = Column(Integer, nullable=False)

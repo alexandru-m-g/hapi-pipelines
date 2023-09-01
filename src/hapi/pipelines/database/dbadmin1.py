@@ -16,14 +16,14 @@ from hapi.pipelines.database.dblocation import DBLocation  # noqa
 
 
 class DBAdmin1(Base):
-    __tablename__ = "Admin1"
+    __tablename__ = "admin1"
 
     id = Column(Integer, primary_key=True)
-    location_ref = Column(ForeignKey("Location.id"))
+    location_ref = Column(ForeignKey("location.id"))
     code = Column(String(128), nullable=False)
     name = Column(String(512), nullable=False)
     is_unspecified = Column(Boolean, server_default=text("FALSE"))
     reference_period_start = Column(DateTime, nullable=False)
     reference_period_end = Column(DateTime, server_default=text("NULL"))
 
-    Location = relationship("DBLocation")
+    location = relationship("DBLocation")

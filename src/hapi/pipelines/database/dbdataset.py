@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String
 
 
 class DBDataset(Base):
-    __tablename__ = "Dataset"
+    __tablename__ = "dataset"
 
     id = Column(Integer, primary_key=True)
     hdx_link = Column(String(512), nullable=False)
