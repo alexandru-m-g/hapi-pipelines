@@ -19,7 +19,9 @@ class DBAdmin1(Base):
     __tablename__ = "admin1"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    location_ref: Mapped[int] = mapped_column(ForeignKey("location.id"))
+    location_ref: Mapped[int] = mapped_column(
+        ForeignKey("location.id", onupdate="CASCADE", ondelete="CASCADE")
+    )
     code: Mapped[str] = mapped_column(String(128), nullable=False)
     name: Mapped[str] = mapped_column(String(512), nullable=False)
     is_unspecified: Mapped[bool] = mapped_column(

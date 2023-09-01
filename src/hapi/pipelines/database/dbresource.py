@@ -18,7 +18,8 @@ class DBResource(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     dataset_ref: Mapped[int] = mapped_column(
-        ForeignKey("dataset.id"), nullable=False
+        ForeignKey("dataset.id", onupdate="CASCADE", ondelete="CASCADE"),
+        nullable=False,
     )
     hdx_link: Mapped[str] = mapped_column(String(512), nullable=False)
     code: Mapped[str] = mapped_column(String(128), nullable=False)
