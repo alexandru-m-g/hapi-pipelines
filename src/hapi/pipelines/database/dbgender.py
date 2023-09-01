@@ -1,11 +1,12 @@
 """Gender table."""
 
 from hdx.database.no_timezone import Base
-from sqlalchemy import CHAR, Column, String
+from sqlalchemy import CHAR, String
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class DBGender(Base):
     __tablename__ = "gender"
 
-    code = Column(CHAR(1), primary_key=True)
-    description = Column(String(256))
+    code: Mapped[str] = mapped_column(CHAR(1), primary_key=True)
+    description: Mapped[str] = mapped_column(String(256))

@@ -1,11 +1,12 @@
 """OrgType table."""
 
 from hdx.database.no_timezone import Base
-from sqlalchemy import Column, String
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class DBOrgType(Base):
     __tablename__ = "org_type"
 
-    code = Column(String(32), primary_key=True)
-    description = Column(String(512), nullable=False)
+    code: Mapped[str] = mapped_column(String(32), primary_key=True)
+    description: Mapped[str] = mapped_column(String(512), nullable=False)
