@@ -11,6 +11,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from hapi.pipelines.database.dborgtype import DBOrgType  # noqa: F401
+
 
 class DBOrg(Base):
     __tablename__ = "org"
@@ -19,7 +21,9 @@ class DBOrg(Base):
     hdx_link: Mapped[str] = mapped_column(String(1024), nullable=False)
     acronym = mapped_column(String(32), nullable=False, index=True)
     name: Mapped[str] = mapped_column(String(512), nullable=False)
-    org_type_code: Mapped[str] = mapped_column(ForeignKey("org_type.code"))
+    org_type_code: Mapped[str] = mapped_column(
+        ForeignKey("org_type.code", onupdate="CASCADE", ondelete="CASCADE")
+    )
     reference_period_start: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, index=True
     )

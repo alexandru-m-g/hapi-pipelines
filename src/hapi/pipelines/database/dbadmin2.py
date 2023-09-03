@@ -12,12 +12,16 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from hapi.pipelines.database.dbadmin1 import DBAdmin1  # noqa: F401
+
 
 class DBAdmin2(Base):
     __tablename__ = "admin2"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    admin1_ref: Mapped[int] = mapped_column(ForeignKey("admin1.id"))
+    admin1_ref: Mapped[int] = mapped_column(
+        ForeignKey("admin1.id", onupdate="CASCADE", ondelete="CASCADE")
+    )
     code: Mapped[str] = mapped_column(String(128), nullable=False)
     name: Mapped[str] = mapped_column(String(512), nullable=False)
     is_unspecified: Mapped[bool] = mapped_column(

@@ -4,22 +4,31 @@ from datetime import datetime
 from hdx.database.no_timezone import Base
 from sqlalchemy import (
     DateTime,
+    ForeignKey,
     Integer,
-    String,
     Text,
     text,
 )
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from hapi.pipelines.database.dbadmin2 import DBAdmin2  # noqa: F401
+from hapi.pipelines.database.dborg import DBOrg  # noqa: F401
+from hapi.pipelines.database.dbresource import DBResource  # noqa: F401
+from hapi.pipelines.database.dbsector import DBSector  # noqa: F401
 
 
 class DBOperationalPresence(Base):
     __tablename__ = "operational_presence"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    resource_ref = mapped_column(Integer, nullable=False)
-    org_ref = mapped_column(Integer, nullable=False)
-    sector_code: Mapped[str] = mapped_column(String(32), nullable=False)
-    admin2_ref: Mapped[int] = mapped_column(Integer, nullable=False)
+    resource_ref = mapped_column(
+        ForeignKey("resource.id", onupdate="CASCADE", ondelete="CASCADE")
+    )
+    org_ref = mapped_column(ForeignKey("org.id", onupdate="CASCADE"))
+    sector_code = mapped_column(ForeignKey("sector.code", onupdate="CASCADE"))
+    admin2_ref: Mapped[int] = mapped_column(
+        ForeignKey("admin2.id", onupdate="CASCADE")
+    )
     reference_period_start: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, index=True
     )
@@ -27,3 +36,8 @@ class DBOperationalPresence(Base):
         DateTime, nullable=True, server_default=text("NULL")
     )
     source_data: Mapped[str] = mapped_column(Text)
+
+    resource = relationship("DBResource")
+    org = relationship("DBOrg")
+    sector = relationship("DBSector")
+    admin2 = relationship("DBAdmin2")
