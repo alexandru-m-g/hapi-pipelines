@@ -30,7 +30,7 @@ class Pipelines:
         self.configuration = configuration
         self.session = session
         self.locations = Locations(configuration, session, use_live)
-        self.admins = Admins(session, self.locations)
+        self.admins = Admins(configuration, session, self.locations)
         self.adminone = AdminLevel(configuration["admin1"], admin_level=1)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
