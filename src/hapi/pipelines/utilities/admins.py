@@ -47,7 +47,17 @@ class Admins:
                         reference_period_start=reference_period_start,
                     )
                 else:
-                    admin_ref = self.data[parent]
+                    # TODO: remove when fixed in country data
+                    try:
+                        admin_ref = self.data[parent]
+                    except KeyError:
+                        logger.warning(f"Admin1 PCODE {parent} missing")
+                        continue
+                    if code == "Not reported" or (
+                        code == "TC301" and name == "Parrot Cay"
+                    ):
+                        continue
+                    # end of removal
                     admin_row = DBAdmin2(
                         admin1_ref=admin_ref,
                         code=code,
