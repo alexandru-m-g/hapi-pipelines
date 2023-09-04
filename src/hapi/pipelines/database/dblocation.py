@@ -1,14 +1,20 @@
 """Gender table."""
+from datetime import datetime
 
 from hdx.database.no_timezone import Base
-from sqlalchemy import Column, DateTime, Integer, String, text
+from sqlalchemy import DateTime, Integer, String, text
+from sqlalchemy.orm import Mapped, mapped_column
 
 
 class DBLocation(Base):
     __tablename__ = "location"
 
-    id = Column(Integer, primary_key=True)
-    code = Column(String(128), nullable=False)
-    name = Column(String(512), nullable=False)
-    reference_period_start = Column(DateTime, nullable=False)
-    reference_period_end = Column(DateTime, server_default=text("NULL"))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code: Mapped[str] = mapped_column(String(128), nullable=False)
+    name: Mapped[str] = mapped_column(String(512), nullable=False)
+    reference_period_start: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False
+    )
+    reference_period_end: Mapped[datetime] = mapped_column(
+        DateTime, nullable=True, server_default=text("NULL")
+    )

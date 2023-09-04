@@ -1,16 +1,16 @@
 """Admin2 table."""
+from datetime import datetime
 
 from hdx.database.no_timezone import Base
 from sqlalchemy import (
     Boolean,
-    Column,
     DateTime,
     ForeignKey,
     Integer,
     String,
     text,
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from hapi.pipelines.database.dbadmin1 import DBAdmin1  # noqa
 
@@ -18,12 +18,18 @@ from hapi.pipelines.database.dbadmin1 import DBAdmin1  # noqa
 class DBAdmin2(Base):
     __tablename__ = "admin2"
 
-    id = Column(Integer, primary_key=True)
-    admin1_ref = Column(ForeignKey("admin1.id"))
-    code = Column(String(128), nullable=False)
-    name = Column(String(512), nullable=False)
-    is_unspecified = Column(Boolean, server_default=text("FALSE"))
-    reference_period_start = Column(DateTime, nullable=False)
-    reference_period_end = Column(DateTime, server_default=text("NULL"))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    admin1_ref: Mapped[int] = mapped_column(ForeignKey("admin1.id"))
+    code: Mapped[str] = mapped_column(String(128), nullable=False)
+    name: Mapped[str] = mapped_column(String(512), nullable=False)
+    is_unspecified: Mapped[bool] = mapped_column(
+        Boolean, server_default=text("FALSE")
+    )
+    reference_period_start: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False
+    )
+    reference_period_end: Mapped[datetime] = mapped_column(
+        DateTime, nullable=True, server_default=text("NULL")
+    )
 
     admin1 = relationship("DBAdmin1")

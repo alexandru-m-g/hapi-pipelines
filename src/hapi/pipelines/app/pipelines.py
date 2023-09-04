@@ -15,6 +15,7 @@ from hapi.pipelines.database.dbadmin2 import DBAdmin2
 from hapi.pipelines.database.dbdataset import DBDataset
 from hapi.pipelines.database.dbpopulation import DBPopulation
 from hapi.pipelines.database.dbresource import DBResource
+from hapi.pipelines.utilities.admins import Admins
 from hapi.pipelines.utilities.locations import Locations
 
 
@@ -32,6 +33,7 @@ class Pipelines:
         self.configuration = configuration
         self.session = session
         self.locations = Locations(configuration, session, use_live)
+        self.admins = Admins(session, self.locations)
         self.adminone = AdminLevel(configuration["admin1"], admin_level=1)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
@@ -76,6 +78,12 @@ class Pipelines:
         self.locations.populate()
         # Gets metadata and populate dataset and resource table
         # TODO: maybe make this its own method? Its' a bit long
+        self.admins.populate()
+        self.runner.get_results()
+        #  Transform and write the results to population schema in db
+        #  We need mapping from HXL hashtags in results to gender and age range codes
+
+        # Gets Datasets and Resources
         hapi_metadata = self.runner.get_hapi_metadata()
         for dataset in hapi_metadata:
             resource = dataset["resource"]
