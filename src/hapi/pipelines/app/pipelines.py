@@ -30,8 +30,12 @@ class Pipelines:
         self.configuration = configuration
         self.session = session
         self.locations = Locations(configuration, session, use_live)
-        self.admins = Admins(configuration, session, self.locations)
-        self.adminone = AdminLevel(configuration["admin1"], admin_level=1)
+        libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
+        self.admins = Admins(
+            configuration, session, self.locations, libhxl_dataset
+        )
+        self.adminone = AdminLevel(admin_level=1)
+        self.adminone.setup_from_libhxl_dataset(libhxl_dataset)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(

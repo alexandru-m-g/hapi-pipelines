@@ -3,7 +3,6 @@ from typing import Dict
 
 import hxl
 from hdx.utilities.dateparse import parse_date
-from hxl import InputOptions
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -16,26 +15,24 @@ logger = logging.getLogger(__name__)
 
 class Admins:
     def __init__(
-        self, configuration: Dict, session: Session, locations: Locations
+        self,
+        configuration: Dict,
+        session: Session,
+        locations: Locations,
+        libhxl_dataset: hxl.Dataset,
     ):
         self.limit = configuration["commit_limit"]
         self.session = session
         self.locations = locations
+        self.libhxl_dataset = libhxl_dataset
         self.data = {}
 
     def populate(self):
-        try:
-            admin_info = hxl.data(
-                "https://data.humdata.org/dataset/cb963915-d7d1-4ffa-90dc-31277e24406f/resource/f65bc260-4d8b-416f-ac07-f2433b4d5142/download/global_pcodes_adm_1_2.csv",
-                InputOptions(encoding="utf-8"),
-            ).cache()
-        except OSError:
-            logger.exception("Download of admin info from dataset failed!")
-            return
-
         def update_admin_table(desired_adminlevel):
             for i, row in enumerate(
-                admin_info.with_rows(f"#geo+admin_level={desired_adminlevel}")
+                self.libhxl_dataset.with_rows(
+                    f"#geo+admin_level={desired_adminlevel}"
+                )
             ):
                 code = row.get("#adm+code")
                 name = row.get("#adm+name")
