@@ -3,14 +3,14 @@ commit_limit: 1000
 
 scraper_national: []
 
-scraper_adminone:
+scraper_admintwo:
   population_col:
     dataset: "cod-ps-col"
-    resource: "col_admpop_adm1_2023.csv"
+    resource: "col_admpop_adm2_2023.csv"
     format: "csv"
     admin:
-      - "ISO3"
-      - "ADM1_PCODE"
+      - ~
+      - "ADM2_PCODE"
     admin_exact: True
     input:
       - "T_TL"
@@ -26,13 +26,13 @@ scraper_adminone:
       - "#population+total"
       - "#population+f+total"
       - "#population+m+total"
-  population_ukr:
-    dataset: "cod-ps-ukr"
-    resource: "ukr_admpop_adm1_2022.csv"
+  population_eth:
+    dataset: "cod-ps-eth"
+    resource: "eth_admpop_adm2_2022_v2.csv"
     format: "csv"
     admin:
-      - "ISO3"
-      - "ADM1_PCODE"
+      - ~
+      - "ADM2_PCODE"
     admin_exact: True
     input:
       - "T_TL"
