@@ -77,44 +77,33 @@ class Pipelines:
         self.metadata.populate()
 
         # Get the population results and populate population table
+        # TODO: probably put this in its own class
         # TODO: what happens to the structure when other themes are included?
         #  Below it's written assuming admin1 population only,
         #  will need to be changed
-        # TODO: How should the gender and age tables be populated?
-        #  For now this is taken care of in the schema itself.
-        #  For age in particular, should we populated it using the
-        #  data or pre-define all values here in the codebase?
+        # TODO: Populate gender and age tables
         results = self.runner.get_hapi_results()
-        import pprint
-
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(results)
         for result in results:
+            resource_ref = self.metadata.data[result["resource"]["code"]]
+            reference_period_start = result["reference_period"]["startdate"]
+            reference_period_end = result["reference_period"]["enddate"]
             for hxl_column, values in zip(
                 result["headers"][1], result["values"]
             ):
                 mappings = population.hxl_mapping[hxl_column]
                 for admin_code, value in values.items():
-                    # TODO: get the admin1 code for now, but
-                    #  will need to change this to admin2
                     population_row = DBPopulation(
-                        # TODO: Some open questions so filling with
-                        #  fake data for now
-                        resource_ref=self.metadata.data[
-                            result["resource"]["code"]
-                        ],
+                        resource_ref=resource_ref,
                         # TODO: get the admin1 code for now, but
                         #  will need to change this to admin2
                         admin2_ref=self.admins.data[admin_code],
                         gender_code=mappings.gender_code,
                         age_range_code=mappings.age_range_code,
                         population=value,
-                        # TODO: These should also come from the metadata
-                        reference_period_start=datetime(2000, 1, 1),
-                        reference_period_end=datetime(2020, 1, 1),
-                        # TODO: I suppose this should also somehow
-                        #  come from the scraper?
-                        source_data="pretend source data for now",
+                        reference_period_start=reference_period_start,
+                        reference_period_end=reference_period_end,
+                        # TODO: Add to scraper
+                        source_data="not yet implemented",
                     )
 
                     self.session.add(population_row)
