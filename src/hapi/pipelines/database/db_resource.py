@@ -21,12 +21,15 @@ class DBResource(Base):
         ForeignKey("dataset.id", onupdate="CASCADE", ondelete="CASCADE"),
         nullable=False,
     )
-    hdx_link: Mapped[str] = mapped_column(String(512), nullable=False)
-    code: Mapped[str] = mapped_column(String(128), nullable=False)
+    hdx_id: Mapped[str] = mapped_column(
+        String(36), unique=True, nullable=False
+    )
     filename: Mapped[str] = mapped_column(String(256), nullable=False)
     format: Mapped[str] = mapped_column(String(32), nullable=False)
     update_date = mapped_column(DateTime, nullable=False, index=True)
+    download_url: Mapped[str] = mapped_column(
+        String(1024), nullable=False, unique=True
+    )
     is_hxl: Mapped[bool] = mapped_column(Boolean, nullable=False, index=True)
-    api_link: Mapped[str] = mapped_column(String(1024), nullable=False)
 
     dataset = relationship("DBDataset")
