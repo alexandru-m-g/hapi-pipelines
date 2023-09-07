@@ -81,14 +81,12 @@ class Pipelines:
         hapi_metadata = self.runner.get_hapi_metadata()
         for dataset in hapi_metadata:
             resource = dataset["resource"]
-
             dataset_row = DBDataset(
-                hdx_link=dataset["hdx_link"],
                 code=dataset["code"],
                 title=dataset["title"],
                 provider_code=dataset["provider_code"],
                 provider_name=dataset["provider_name"],
-                api_link=dataset["api_link"],
+                hdx_stub=dataset["hdx_link"].split("/")[-1],
             )
             self.session.add(dataset_row)
             self.session.commit()
@@ -103,14 +101,12 @@ class Pipelines:
             resource_row = DBResource(
                 code=resource["code"],
                 dataset_ref=dataset_row.id,
-                hdx_link=resource["hdx_link"],
                 filename=resource["filename"],
                 format=resource["format"],
                 update_date=datetime.strptime(
                     resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
                 ).date(),
                 is_hxl=is_hxlated,
-                api_link=resource["api_link"],
             )
             self.session.add(resource_row)
             self.session.commit()

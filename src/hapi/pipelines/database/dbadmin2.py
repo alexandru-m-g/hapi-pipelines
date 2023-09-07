@@ -22,7 +22,7 @@ class DBAdmin2(Base):
     admin1_ref: Mapped[int] = mapped_column(
         ForeignKey("admin1.id", onupdate="CASCADE", ondelete="CASCADE")
     )
-    code: Mapped[str] = mapped_column(String(128), nullable=False)
+    code: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(512), nullable=False)
     is_unspecified: Mapped[bool] = mapped_column(
         Boolean, server_default=text("FALSE")
