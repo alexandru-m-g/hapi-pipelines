@@ -4,7 +4,7 @@ from hdx.location.country import Country
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.dblocation import DBLocation
+from hapi.pipelines.database.db_location import DBLocation
 
 
 class Locations:

@@ -7,8 +7,8 @@ from hxl import InputOptions
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.dbadmin1 import DBAdmin1
-from hapi.pipelines.database.dbadmin2 import DBAdmin2
+from hapi.pipelines.database.db_admin1 import DBAdmin1
+from hapi.pipelines.database.db_admin2 import DBAdmin2
 from hapi.pipelines.utilities.locations import Locations
 
 logger = logging.getLogger(__name__)

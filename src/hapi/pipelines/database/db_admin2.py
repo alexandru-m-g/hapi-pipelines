@@ -1,4 +1,4 @@
-"""Admin1 table."""
+"""Admin2 table."""
 from datetime import datetime
 
 from hdx.database.no_timezone import Base
@@ -12,15 +12,15 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from hapi.pipelines.database.dblocation import DBLocation  # noqa: F401
+from hapi.pipelines.database.db_admin1 import DBAdmin1  # noqa: F401
 
 
-class DBAdmin1(Base):
-    __tablename__ = "admin1"
+class DBAdmin2(Base):
+    __tablename__ = "admin2"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    location_ref: Mapped[int] = mapped_column(
-        ForeignKey("location.id", onupdate="CASCADE", ondelete="CASCADE")
+    admin1_ref: Mapped[int] = mapped_column(
+        ForeignKey("admin1.id", onupdate="CASCADE", ondelete="CASCADE")
     )
     code: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(512), nullable=False)
@@ -34,4 +34,4 @@ class DBAdmin1(Base):
         DateTime, nullable=True, server_default=text("NULL")
     )
 
-    location = relationship("DBLocation")
+    admin1 = relationship("DBAdmin1")

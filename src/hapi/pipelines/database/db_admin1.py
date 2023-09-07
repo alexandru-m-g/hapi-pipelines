@@ -1,8 +1,9 @@
-"""Org table."""
+"""Admin1 table."""
 from datetime import datetime
 
 from hdx.database.no_timezone import Base
 from sqlalchemy import (
+    Boolean,
     DateTime,
     ForeignKey,
     Integer,
@@ -11,24 +12,26 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from hapi.pipelines.database.dborgtype import DBOrgType  # noqa: F401
+from hapi.pipelines.database.db_location import DBLocation  # noqa: F401
 
 
-class DBOrg(Base):
-    __tablename__ = "org"
+class DBAdmin1(Base):
+    __tablename__ = "admin1"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    hdx_link: Mapped[str] = mapped_column(String(1024), nullable=False)
-    acronym = mapped_column(String(32), nullable=False, index=True)
+    location_ref: Mapped[int] = mapped_column(
+        ForeignKey("location.id", onupdate="CASCADE", ondelete="CASCADE")
+    )
+    code: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(512), nullable=False)
-    org_type_code: Mapped[str] = mapped_column(
-        ForeignKey("org_type.code", onupdate="CASCADE", ondelete="CASCADE")
+    is_unspecified: Mapped[bool] = mapped_column(
+        Boolean, server_default=text("FALSE")
     )
     reference_period_start: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, index=True
+        DateTime, nullable=False
     )
     reference_period_end: Mapped[datetime] = mapped_column(
         DateTime, nullable=True, server_default=text("NULL")
     )
 
-    org_type = relationship("DBOrgType")
+    location = relationship("DBLocation")

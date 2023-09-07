@@ -11,10 +11,10 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from hapi.pipelines.database.dbadmin2 import DBAdmin2  # noqa: F401
-from hapi.pipelines.database.dbagerange import DBAgeRange  # noqa: F401
-from hapi.pipelines.database.dbgender import DBGender  # noqa: F401
-from hapi.pipelines.database.dbresource import DBResource  # noqa: F401
+from hapi.pipelines.database.db_admin2 import DBAdmin2  # noqa: F401
+from hapi.pipelines.database.db_age_range import DBAgeRange  # noqa: F401
+from hapi.pipelines.database.db_gender import DBGender  # noqa: F401
+from hapi.pipelines.database.db_resource import DBResource  # noqa: F401
 
 
 class DBPopulation(Base):
