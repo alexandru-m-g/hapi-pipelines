@@ -55,7 +55,7 @@ class Admins:
                     try:
                         admin_ref = self.data[parent]
                     except KeyError:
-                        logger.warning(f"Admin1 PCODE {parent} missing")
+                        # logger.warning(f"Admin1 PCODE {parent} missing")
                         continue
                     if code == "Not reported" or (
                         code == "TC301" and name == "Parrot Cay"

@@ -6,8 +6,8 @@ from hdx.scraper.runner import Runner
 from hxl import InputOptions
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.dbdataset import DBDataset
-from hapi.pipelines.database.dbresource import DBResource
+from hapi.pipelines.database.db_dataset import DBDataset
+from hapi.pipelines.database.db_resource import DBResource
 
 logger = logging.getLogger(__name__)
 
@@ -27,12 +27,11 @@ class Metadata:
             # First add dataset
             resource = dataset["resource"]
             dataset_row = DBDataset(
-                hdx_link=dataset["hdx_link"],
-                code=dataset["code"],
+                hdx_id=dataset["code"],
+                hdx_stub=dataset["hdx_link"].split("/")[-1],
                 title=dataset["title"],
                 provider_code=dataset["provider_code"],
                 provider_name=dataset["provider_name"],
-                api_link=dataset["api_link"],
             )
             self.session.add(dataset_row)
             self.session.commit()
@@ -46,16 +45,17 @@ class Metadata:
                     is_hxlated = True
                     break
             resource_row = DBResource(
-                code=resource["code"],
+                hdx_id=resource["code"],
                 dataset_ref=dataset_row.id,
-                hdx_link=resource["hdx_link"],
                 filename=resource["filename"],
                 format=resource["format"],
                 update_date=datetime.strptime(
                     resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
                 ).date(),
                 is_hxl=is_hxlated,
-                api_link=resource["api_link"],
+                download_url=resource[
+                    "api_link"
+                ],  # TODO: change to download link
             )
             self.session.add(resource_row)
             self.session.commit()
