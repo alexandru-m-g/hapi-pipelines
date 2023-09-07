@@ -9,7 +9,9 @@ class DBDataset(Base):
     __tablename__ = "dataset"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    code: Mapped[str] = mapped_column(String(36), unique=True, nullable=False)
+    hdx_id: Mapped[str] = mapped_column(
+        String(36), unique=True, nullable=False
+    )
     hdx_stub: Mapped[str] = mapped_column(
         String(128), unique=True, nullable=False
     )

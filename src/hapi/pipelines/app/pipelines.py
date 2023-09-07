@@ -82,7 +82,7 @@ class Pipelines:
         for dataset in hapi_metadata:
             resource = dataset["resource"]
             dataset_row = DBDataset(
-                code=dataset["code"],
+                hdx_id=dataset["code"],
                 title=dataset["title"],
                 provider_code=dataset["provider_code"],
                 provider_name=dataset["provider_name"],
@@ -99,13 +99,16 @@ class Pipelines:
                     is_hxlated = True
                     break
             resource_row = DBResource(
-                code=resource["code"],
+                hdx_id=resource["code"],
                 dataset_ref=dataset_row.id,
                 filename=resource["filename"],
                 format=resource["format"],
                 update_date=datetime.strptime(
                     resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
                 ).date(),
+                download_url=resource[
+                    "api_link"
+                ],  # TODO: change this to download link
                 is_hxl=is_hxlated,
             )
             self.session.add(resource_row)
