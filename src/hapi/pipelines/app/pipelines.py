@@ -10,8 +10,8 @@ from hdx.utilities.typehint import ListTuple
 from hxl import InputOptions
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.dbdataset import DBDataset
-from hapi.pipelines.database.dbresource import DBResource
+from hapi.pipelines.database.db_dataset import DBDataset
+from hapi.pipelines.database.db_resource import DBResource
 from hapi.pipelines.utilities.admins import Admins
 from hapi.pipelines.utilities.locations import Locations
 
