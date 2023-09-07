@@ -1,3 +1,4 @@
+import datetime
 import logging
 from typing import Dict
 
@@ -34,34 +35,73 @@ class Admins:
             return
 
         def update_admin_table(desired_adminlevel):
+            parent_dict = {"1": self.locations.data, "2": self.data}
             for i, row in enumerate(
                 admin_info.with_rows(f"#geo+admin_level={desired_adminlevel}")
             ):
+                # The locations table only contains HAPI countries.
+                # Only populate admin tables with these.
+                if not self.locations.data.get(row.get("#country+code")):
+                    continue
+                # Get the info needed
                 code = row.get("#adm+code")
                 name = row.get("#adm+name")
                 reference_period_start = parse_date(row.get("#date+start"))
                 parent = row.get("#adm+code+parent")
+                parent_ref = parent_dict[desired_adminlevel].get(parent)
+                # Catch edge cases
+                if not parent_ref:
+                    # TODO: should this be in the config somehow?
+                    # Abyei
+                    if code == "SS0001":
+                        # TODO: change this to blank ref
+                        parent_ref = self.data["SSD-XXX"]
+                    else:
+                        logger.warning(
+                            f"Missing parent {parent} for code {code}"
+                        )
+                        continue
                 if desired_adminlevel == "1":
-                    location_ref = self.locations.data.get(parent)
-                    if location_ref:
-                        admin_row = DBAdmin1(
-                            location_ref=location_ref,
-                            code=code,
-                            name=name,
-                            reference_period_start=reference_period_start,
-                        )
+                    admin_row = DBAdmin1(
+                        location_ref=parent_ref,
+                        code=code,
+                        name=name,
+                        reference_period_start=reference_period_start,
+                    )
                 else:
-                    admin_ref = self.data.get(parent)
-                    if admin_ref:
-                        admin_row = DBAdmin2(
-                            admin1_ref=admin_ref,
-                            code=code,
-                            name=name,
-                            reference_period_start=reference_period_start,
-                        )
+                    admin_row = DBAdmin2(
+                        admin1_ref=parent_ref,
+                        code=code,
+                        name=name,
+                        reference_period_start=reference_period_start,
+                    )
                 self.session.add(admin_row)
                 if i % self.limit == 0:
                     self.session.commit()
+            self.session.commit()
+            # Create null relation rows with parents
+            for parent_code, parent_ref in parent_dict[
+                desired_adminlevel
+            ].items():
+                if desired_adminlevel == "1":
+                    admin_row = DBAdmin1(
+                        location_ref=parent_ref,
+                        code=f"{parent_code}-XXX",
+                        name="UNSPECIFIED",
+                        is_unspecified=True,
+                        # TODO: should this be made nullable?
+                        #  Putting dummy data for now
+                        reference_period_start=datetime.datetime(2000, 1, 1),
+                    )
+                else:
+                    admin_row = DBAdmin2(
+                        admin1_ref=parent_ref,
+                        code=f"{parent_code}-XXX-XXX",
+                        name="UNSPECIFIED",
+                        is_unspecified=True,
+                        reference_period_start=datetime.datetime(2000, 1, 1),
+                    )
+                self.session.add(admin_row)
             self.session.commit()
 
         update_admin_table("1")
