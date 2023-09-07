@@ -11,10 +11,10 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from hapi.pipelines.database.dbadmin2 import DBAdmin2  # noqa: F401
-from hapi.pipelines.database.dborg import DBOrg  # noqa: F401
-from hapi.pipelines.database.dbresource import DBResource  # noqa: F401
-from hapi.pipelines.database.dbsector import DBSector  # noqa: F401
+from hapi.pipelines.database.db_admin2 import DBAdmin2  # noqa: F401
+from hapi.pipelines.database.db_org import DBOrg  # noqa: F401
+from hapi.pipelines.database.db_resource import DBResource  # noqa: F401
+from hapi.pipelines.database.db_sector import DBSector  # noqa: F401
 
 
 class DBOperationalPresence(Base):
