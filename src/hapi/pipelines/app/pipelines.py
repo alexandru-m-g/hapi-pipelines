@@ -9,7 +9,7 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.app import population
-from hapi.pipelines.database.dbpopulation import DBPopulation
+from hapi.pipelines.database.db_population import DBPopulation
 from hapi.pipelines.utilities.admins import Admins
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
@@ -29,7 +29,7 @@ class Pipelines:
         self.configuration = configuration
         self.session = session
         self.locations = Locations(configuration, session, use_live)
-        self.admins = Admins(session, self.locations)
+        self.admins = Admins(configuration, session, self.locations)
         self.adminone = AdminLevel(configuration["admin1"], admin_level=1)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
