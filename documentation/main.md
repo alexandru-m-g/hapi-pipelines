@@ -3,13 +3,13 @@
 
 # Information
 
-This library is part of the 
-[Humanitarian Data Exchange](https://data.humdata.org/) (HDX) project. If you 
+This library is part of the
+[Humanitarian Data Exchange](https://data.humdata.org/) (HDX) project. If you
 have humanitarian related data, please upload your datasets to HDX.
 
-The code for the library is 
-[here](https://github.com/OCHA-DAP/hdx-data-freshness). The library has 
-detailed API documentation which can be found in the menu at the top. 
+The code for the library is
+[here](https://github.com/OCHA-DAP/hdx-data-freshness). The library has
+detailed API documentation which can be found in the menu at the top.
 
 
 # Description
@@ -18,15 +18,15 @@ detailed API documentation which can be found in the menu at the top.
 ## Docker Setup
 
 The Dockerfile installs required packages and also the dependencies listed in
-`requirements.txt`. It uses the Python source files directly (rather than 
-using PyPI as was the case previously). 
+`requirements.txt`. It uses the Python source files directly (rather than
+using PyPI as was the case previously).
 
 # Usage
 
 In the command line usage examples below, common parameters are set as follows:
 
 Either db_uri or db_params must be provided or the environment variable DB_URI
-must be set. db_uri or DB_URI are of form: 
+must be set. db_uri or DB_URI are of form:
 `postgresql+psycopg://user:password@host:port/database`
 
 db_params is of form:
@@ -50,5 +50,4 @@ The PARAMETERS are:
                         Database connection string
     -dp DB_PARAMS, --db_params DB_PARAMS
                         Database connection parameters. Overrides --db_uri.
-    -s, --save            
-                        Save state for testing
+    -s, --save          Save state for testing
