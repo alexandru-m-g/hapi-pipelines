@@ -4,7 +4,6 @@ from typing import Dict, List, Literal
 
 import hxl
 from hdx.utilities.dateparse import parse_date
-from hxl import Dataset
 from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -27,26 +26,27 @@ class Admins:
         locations: Locations,
         libhxl_dataset: hxl.Dataset,
     ):
-        self.limit = configuration["commit_limit"]
-        self.session = session
-        self.locations = locations
-        self.libhxl_dataset = libhxl_dataset
+        self._limit = configuration["commit_limit"]
+        self._orphan_admin2s = configuration["orphan_admin2s"]
+        self._session = session
+        self._locations = locations
+        self._libhxl_dataset = libhxl_dataset
         self.data = {}
 
     def populate(self):
         self._update_admin_table(
             desired_admin_level="1",
-            parent_dict=self.locations.data,
+            parent_dict=self._locations.data,
         )
         self._add_admin1_connector_rows()
-        results = self.session.execute(select(DBAdmin1.id, DBAdmin1.code))
+        results = self._session.execute(select(DBAdmin1.id, DBAdmin1.code))
         self.data = {result[1]: result[0] for result in results}
         self._update_admin_table(
             desired_admin_level="2",
             parent_dict=self.data,
         )
         self._add_admin2_connector_rows()
-        results = self.session.execute(select(DBAdmin2.id, DBAdmin2.code))
+        results = self._session.execute(select(DBAdmin2.id, DBAdmin2.code))
         for result in results:
             self.data[result[1]] = result[0]
 
@@ -59,24 +59,26 @@ class Admins:
             raise ValueError(f"Admin levels must be one of {_ADMIN_LEVELS}")
         # Filter admin level and countries
         admin_filter = _AdminFilter(
-            source=self.libhxl_dataset,
+            source=self._libhxl_dataset,
             desired_admin_level=desired_admin_level,
-            country_codes=list(self.locations.data.keys()),
+            country_codes=list(self._locations.data.keys()),
         )
         for i, row in enumerate(admin_filter):
-            # Get the info needed
             code = row.get("#adm+code")
             name = row.get("#adm+name")
             reference_period_start = parse_date(row.get("#date+start"))
             parent = row.get("#adm+code+parent")
             parent_ref = parent_dict.get(parent)
-            # Catch edge cases
             if not parent_ref:
-                # TODO: should this be in the config somehow?
-                # Abyei
-                if code == "SS0001":
-                    logger.warning(f"Changing {code}")
-                    parent_ref = self.data["SSD-XXX"]
+                if (
+                    desired_admin_level == "2"
+                    and code in self._orphan_admin2s.keys()
+                ):
+                    parent_ref = self.data[
+                        get_admin1_to_location_connector_code(
+                            location_code=self._orphan_admin2s[code]
+                        )
+                    ]
                 else:
                     logger.warning(f"Missing parent {parent} for code {code}")
                     continue
@@ -94,15 +96,15 @@ class Admins:
                     name=name,
                     reference_period_start=reference_period_start,
                 )
-            self.session.add(admin_row)
-            if i % self.limit == 0:
-                self.session.commit()
-        self.session.commit()
+            self._session.add(admin_row)
+            if i % self._limit == 0:
+                self._session.commit()
+        self._session.commit()
 
     def _add_admin1_connector_rows(self):
-        for location_code, location_ref in self.locations.data.items():
+        for location_code, location_ref in self._locations.data.items():
             reference_period_start = (
-                self.session.query(DBLocation)
+                self._session.query(DBLocation)
                 .filter(DBLocation.id == location_ref)
                 .one()
                 .reference_period_start
@@ -116,13 +118,13 @@ class Admins:
                 is_unspecified=True,
                 reference_period_start=reference_period_start,
             )
-            self.session.add(admin_row)
-        self.session.commit()
+            self._session.add(admin_row)
+        self._session.commit()
 
     def _add_admin2_connector_rows(self):
         for admin1_code, admin1_ref in self.data.items():
             reference_period_start = (
-                self.session.query(DBAdmin1)
+                self._session.query(DBAdmin1)
                 .filter(DBAdmin1.id == admin1_ref)
                 .one()
                 .reference_period_start
@@ -136,8 +138,8 @@ class Admins:
                 is_unspecified=True,
                 reference_period_start=reference_period_start,
             )
-            self.session.add(admin_row)
-        self.session.commit()
+            self._session.add(admin_row)
+        self._session.commit()
 
 
 def get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
@@ -161,9 +163,11 @@ def get_admin1_to_location_connector_code(location_code: str) -> str:
 
 
 class _AdminFilter(AbstractStreamingFilter, ABC):
+    """Filter admin rows by level and country code."""
+
     def __init__(
         self,
-        source: Dataset,
+        source: hxl.Dataset,
         desired_admin_level: Literal[_ADMIN_LEVELS],
         country_codes: List[str],
     ):
