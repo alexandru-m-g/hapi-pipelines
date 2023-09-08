@@ -30,8 +30,12 @@ class Pipelines:
         self.configuration = configuration
         self.session = session
         self.locations = Locations(configuration, session, use_live)
-        self.admins = Admins(configuration, session, self.locations)
-        self.adminone = AdminLevel(configuration["admin1"], admin_level=1)
+        libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
+        self.admins = Admins(
+            configuration, session, self.locations, libhxl_dataset
+        )
+        self.admintwo = AdminLevel(admin_level=2)
+        self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -65,7 +69,7 @@ class Pipelines:
             )
 
         _create_configurable_scrapers("national")
-        _create_configurable_scrapers("adminone", adminlevel=self.adminone)
+        _create_configurable_scrapers("admintwo", adminlevel=self.admintwo)
 
     def run(self):
         self.runner.run()
@@ -73,13 +77,9 @@ class Pipelines:
     def output(self):
         self.locations.populate()
         self.admins.populate()
-        self.runner.get_results()
-        #  Transform and write the results to population schema in db
-        #  We need mapping from HXL hashtags in results to gender and age range codes
-
         # Gets Datasets and Resources
-        hapi_metadata = self.runner.get_hapi_metadata()
-        for dataset in hapi_metadata:
+        hapi_results = self.runner.get_hapi_results()
+        for dataset in hapi_results:
             resource = dataset["resource"]
             dataset_row = DBDataset(
                 hdx_id=dataset["code"],

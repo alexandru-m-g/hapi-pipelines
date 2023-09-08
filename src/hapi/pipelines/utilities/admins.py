@@ -4,7 +4,7 @@ from typing import Dict, List, Literal
 
 import hxl
 from hdx.utilities.dateparse import parse_date
-from hxl import Dataset, InputOptions
+from hxl import Dataset
 from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -21,26 +21,21 @@ _ADMIN_LEVELS = ("1", "2")
 
 class Admins:
     def __init__(
-        self, configuration: Dict, session: Session, locations: Locations
+        self,
+        configuration: Dict,
+        session: Session,
+        locations: Locations,
+        libhxl_dataset: hxl.Dataset,
     ):
         self.limit = configuration["commit_limit"]
         self.session = session
         self.locations = locations
+        self.libhxl_dataset = libhxl_dataset
         self.data = {}
 
     def populate(self):
-        try:
-            admin_info = hxl.data(
-                "https://data.humdata.org/dataset/cb963915-d7d1-4ffa-90dc-31277e24406f/resource/f65bc260-4d8b-416f-ac07-f2433b4d5142/download/global_pcodes_adm_1_2.csv",
-                InputOptions(encoding="utf-8"),
-            ).cache()
-        except OSError:
-            logger.exception("Download of admin info from dataset failed!")
-            return
-
         self._update_admin_table(
             desired_admin_level="1",
-            admin_info=admin_info,
             parent_dict=self.locations.data,
         )
         self._add_admin1_connector_rows()
@@ -48,7 +43,6 @@ class Admins:
         self.data = {result[1]: result[0] for result in results}
         self._update_admin_table(
             desired_admin_level="2",
-            admin_info=admin_info,
             parent_dict=self.data,
         )
         self._add_admin2_connector_rows()
@@ -59,14 +53,13 @@ class Admins:
     def _update_admin_table(
         self,
         desired_admin_level: Literal[_ADMIN_LEVELS],
-        admin_info: Dataset,
         parent_dict: Dict,
     ):
         if desired_admin_level not in _ADMIN_LEVELS:
             raise ValueError(f"Admin levels must be one of {_ADMIN_LEVELS}")
         # Filter admin level and countries
         admin_filter = _AdminFilter(
-            source=admin_info,
+            source=self.libhxl_dataset,
             desired_admin_level=desired_admin_level,
             country_codes=list(self.locations.data.keys()),
         )
