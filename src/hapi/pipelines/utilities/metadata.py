@@ -53,9 +53,7 @@ class Metadata:
                     resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
                 ).date(),
                 is_hxl=is_hxlated,
-                download_url=resource[
-                    "api_link"
-                ],  # TODO: change to download link
+                download_url=resource["download_url"],
             )
             self.session.add(resource_row)
             self.session.commit()

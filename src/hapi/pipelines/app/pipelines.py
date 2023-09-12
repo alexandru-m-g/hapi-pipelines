@@ -29,8 +29,12 @@ class Pipelines:
         self.configuration = configuration
         self.session = session
         self.locations = Locations(configuration, session, use_live)
-        self.admins = Admins(configuration, session, self.locations)
-        self.adminone = AdminLevel(configuration["admin1"], admin_level=1)
+        libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
+        self.admins = Admins(
+            configuration, session, self.locations, libhxl_dataset
+        )
+        self.admintwo = AdminLevel(admin_level=2)
+        self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -40,6 +44,7 @@ class Pipelines:
             scrapers_to_run=scrapers_to_run,
         )
         self.configurable_scrapers = dict()
+        self.metadata = Metadata(runner=self.runner, session=session)
 
         self.metadata = Metadata(runner=self.runner, session=session)
 
@@ -66,7 +71,7 @@ class Pipelines:
             )
 
         _create_configurable_scrapers("national")
-        _create_configurable_scrapers("adminone", adminlevel=self.adminone)
+        _create_configurable_scrapers("admintwo", adminlevel=self.admintwo)
 
     def run(self):
         self.runner.run()
@@ -75,13 +80,8 @@ class Pipelines:
         self.locations.populate()
         self.admins.populate()
         self.metadata.populate()
-
-        # Get the population results and populate population table
-        # TODO: probably put this in its own class
-        # TODO: what happens to the structure when other themes are included?
         #  Below it's written assuming admin1 population only,
         #  will need to be changed
-        # TODO: Populate gender and age tables
         results = self.runner.get_hapi_results()
         for result in results:
             resource_ref = self.metadata.data[result["resource"]["code"]]
