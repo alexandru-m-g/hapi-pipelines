@@ -8,8 +8,7 @@ from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.app import population
-from hapi.pipelines.database.db_population import DBPopulation
+from hapi.pipelines.app.population import populate_population
 from hapi.pipelines.utilities.admins import Admins
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
@@ -80,31 +79,10 @@ class Pipelines:
         self.locations.populate()
         self.admins.populate()
         self.metadata.populate()
-        #  Below it's written assuming admin1 population only,
-        #  will need to be changed
         results = self.runner.get_hapi_results()
-        for result in results:
-            resource_ref = self.metadata.data[result["resource"]["code"]]
-            reference_period_start = result["reference_period"]["startdate"]
-            reference_period_end = result["reference_period"]["enddate"]
-            for hxl_column, values in zip(
-                result["headers"][1], result["values"]
-            ):
-                mappings = population.hxl_mapping[hxl_column]
-                for admin_code, value in values.items():
-                    population_row = DBPopulation(
-                        resource_ref=resource_ref,
-                        # TODO: get the admin1 code for now, but
-                        #  will need to change this to admin2
-                        admin2_ref=self.admins.data[admin_code],
-                        gender_code=mappings.gender_code,
-                        age_range_code=mappings.age_range_code,
-                        population=value,
-                        reference_period_start=reference_period_start,
-                        reference_period_end=reference_period_end,
-                        # TODO: Add to scraper
-                        source_data="not yet implemented",
-                    )
-
-                    self.session.add(population_row)
-        self.session.commit()
+        populate_population(
+            results=results,
+            session=self.session,
+            metadata=self.metadata,
+            admins=self.admins,
+        )
