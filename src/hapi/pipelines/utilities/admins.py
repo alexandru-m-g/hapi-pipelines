@@ -154,7 +154,7 @@ def get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
     admin2_code = get_admin2_to_admin1_connector_code(admin1_code)
     ```
     """
-    return f"{admin1_code}-XXX-XXX"
+    return f"{admin1_code}-XXX"
 
 
 def get_admin1_to_location_connector_code(location_code: str) -> str:
