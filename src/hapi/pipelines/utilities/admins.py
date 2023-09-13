@@ -5,7 +5,6 @@ from typing import Dict, List, Literal
 import hxl
 from hdx.utilities.dateparse import parse_date
 from hxl.filters import AbstractStreamingFilter
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.db_admin1 import DBAdmin1
@@ -34,27 +33,42 @@ class Admins:
         self.data = {}
 
     def populate(self):
-        self._update_admin_table(
+        logger.info("Populating admin1 table")
+        admin1_codes_added = self._update_admin_table(
             desired_admin_level="1",
             parent_dict=self._locations.data,
         )
-        self._add_admin1_connector_rows()
-        results = self._session.execute(select(DBAdmin1.id, DBAdmin1.code))
-        self.data = {result[1]: result[0] for result in results}
-        self._update_admin_table(
+        admin1_codes_added += self._add_admin1_connector_rows()
+        self.data.update(
+            {
+                code: self._session.query(DBAdmin1)
+                .filter(DBAdmin1.code == code)
+                .one()
+                .id
+                for code in admin1_codes_added
+            }
+        )
+        logger.info("Populating admin2 table")
+        admin2_codes_added = self._update_admin_table(
             desired_admin_level="2",
             parent_dict=self.data,
         )
-        self._add_admin2_connector_rows()
-        results = self._session.execute(select(DBAdmin2.id, DBAdmin2.code))
-        for result in results:
-            self.data[result[1]] = result[0]
+        admin2_codes_added += self._add_admin2_connector_rows()
+        self.data.update(
+            {
+                code: self._session.query(DBAdmin2)
+                .filter(DBAdmin2.code == code)
+                .one()
+                .id
+                for code in admin2_codes_added
+            }
+        )
 
     def _update_admin_table(
         self,
         desired_admin_level: Literal[_ADMIN_LEVELS],
         parent_dict: Dict,
-    ):
+    ) -> List[str]:
         if desired_admin_level not in _ADMIN_LEVELS:
             raise ValueError(f"Admin levels must be one of {_ADMIN_LEVELS}")
         # Filter admin level and countries
@@ -63,6 +77,7 @@ class Admins:
             desired_admin_level=desired_admin_level,
             country_codes=list(self._locations.data.keys()),
         )
+        admin_codes_added = []
         for i, row in enumerate(admin_filter):
             code = row.get("#adm+code")
             name = row.get("#adm+name")
@@ -99,9 +114,12 @@ class Admins:
             self._session.add(admin_row)
             if i % self._limit == 0:
                 self._session.commit()
+            admin_codes_added.append(code)
         self._session.commit()
+        return admin_codes_added
 
-    def _add_admin1_connector_rows(self):
+    def _add_admin1_connector_rows(self) -> List[str]:
+        admin_codes_added = []
         for location_code, location_ref in self._locations.data.items():
             reference_period_start = (
                 self._session.query(DBLocation)
@@ -109,19 +127,23 @@ class Admins:
                 .one()
                 .reference_period_start
             )
+            code = get_admin1_to_location_connector_code(
+                location_code=location_code
+            )
             admin_row = DBAdmin1(
                 location_ref=location_ref,
-                code=get_admin1_to_location_connector_code(
-                    location_code=location_code
-                ),
+                code=code,
                 name="UNSPECIFIED",
                 is_unspecified=True,
                 reference_period_start=reference_period_start,
             )
             self._session.add(admin_row)
+            admin_codes_added.append(code)
         self._session.commit()
+        return admin_codes_added
 
-    def _add_admin2_connector_rows(self):
+    def _add_admin2_connector_rows(self) -> List[str]:
+        admin_codes_added = []
         for admin1_code, admin1_ref in self.data.items():
             reference_period_start = (
                 self._session.query(DBAdmin1)
@@ -129,17 +151,18 @@ class Admins:
                 .one()
                 .reference_period_start
             )
+            code = get_admin2_to_admin1_connector_code(admin1_code=admin1_code)
             admin_row = DBAdmin2(
                 admin1_ref=admin1_ref,
-                code=get_admin2_to_admin1_connector_code(
-                    admin1_code=admin1_code
-                ),
+                code=code,
                 name="UNSPECIFIED",
                 is_unspecified=True,
                 reference_period_start=reference_period_start,
             )
             self._session.add(admin_row)
+            admin_codes_added.append(code)
         self._session.commit()
+        return admin_codes_added
 
 
 def get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
