@@ -33,7 +33,7 @@ def populate_population(
     results: Dict, session: Session, metadata: Metadata, admins: Admins
 ):
     for result in results:
-        resource_ref = metadata.data[result["resource"]["code"]]
+        resource_ref = metadata.data[result["resource"]["hdx_id"]]
         reference_period_start = result["reference_period"]["startdate"]
         reference_period_end = result["reference_period"]["enddate"]
         for hxl_column, values in zip(result["headers"][1], result["values"]):
