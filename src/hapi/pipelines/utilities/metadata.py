@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 
 import hxl
 from hdx.scraper.runner import Runner
@@ -27,8 +26,8 @@ class Metadata:
             # First add dataset
             resource = dataset["resource"]
             dataset_row = DBDataset(
-                hdx_id=dataset["code"],
-                hdx_stub=dataset["hdx_link"].split("/")[-1],
+                hdx_id=dataset["hdx_id"],
+                hdx_stub=dataset["hdx_stub"],
                 title=dataset["title"],
                 provider_code=dataset["provider_code"],
                 provider_name=dataset["provider_name"],
@@ -37,29 +36,25 @@ class Metadata:
             self.session.commit()
 
             # Then add the resource
-            hdx_link = resource["hdx_link"]
-            hxl_info = hxl.info(hdx_link, InputOptions(encoding="utf-8"))
+            download_url = resource["download_url"]
+            hxl_info = hxl.info(download_url, InputOptions(encoding="utf-8"))
             is_hxlated = False
             for sheet in hxl_info["sheets"]:
                 if sheet["is_hxlated"]:
                     is_hxlated = True
                     break
+            resource_id = resource["hdx_id"]
             resource_row = DBResource(
-                hdx_id=resource["code"],
+                hdx_id=resource_id,
                 dataset_ref=dataset_row.id,
                 filename=resource["filename"],
                 format=resource["format"],
-                update_date=datetime.strptime(
-                    resource["update_date"], "%Y-%m-%dT%H:%M:%S.%f"
-                ).date(),
+                update_date=resource["update_date"].date(),
                 is_hxl=is_hxlated,
-                download_url=resource["download_url"],
+                download_url=download_url,
             )
             self.session.add(resource_row)
             self.session.commit()
 
             # Add resource to lookup table
-            # TODO: this assumes the resource codes are unique
-            # TODO: maybe once there is more data we will
-            #  want to do direct queries instead?
-            self.data[resource["code"]] = resource_row.id
+            self.data[resource_id] = resource_row.id
