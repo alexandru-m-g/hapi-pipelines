@@ -103,6 +103,20 @@ class Admins:
 
     def _add_admin1_connector_rows(self):
         for location_code, location_ref in self._locations.data.items():
+            connector_code = get_admin1_to_location_connector_code(
+                location_code=location_code
+            )
+            existing_data = (
+                self._session.query(DBAdmin1)
+                .filter_by(code=connector_code)
+                .first()
+            )
+            if existing_data:
+                msg = (
+                    f"Admin1 table already contains {connector_code}, skipping"
+                )
+                logger.warning(msg)
+                continue
             reference_period_start = (
                 self._session.query(DBLocation)
                 .filter(DBLocation.id == location_ref)
@@ -123,6 +137,20 @@ class Admins:
 
     def _add_admin2_connector_rows(self):
         for admin1_code, admin1_ref in self.data.items():
+            connector_code = get_admin2_to_admin1_connector_code(
+                admin1_code=admin1_code
+            )
+            existing_data = (
+                self._session.query(DBAdmin2)
+                .filter_by(code=connector_code)
+                .first()
+            )
+            if existing_data:
+                msg = (
+                    f"Admin2 table already contains {connector_code}, skipping"
+                )
+                logger.warning(msg)
+                continue
             reference_period_start = (
                 self._session.query(DBAdmin1)
                 .filter(DBAdmin1.id == admin1_ref)
@@ -131,9 +159,7 @@ class Admins:
             )
             admin_row = DBAdmin2(
                 admin1_ref=admin1_ref,
-                code=get_admin2_to_admin1_connector_code(
-                    admin1_code=admin1_code
-                ),
+                code=connector_code,
                 name="UNSPECIFIED",
                 is_unspecified=True,
                 reference_period_start=reference_period_start,
