@@ -8,10 +8,10 @@ from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.app.population import populate_population
 from hapi.pipelines.utilities.admins import Admins
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
+from hapi.pipelines.utilities.population import populate_population
 
 
 class Pipelines:
