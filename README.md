@@ -18,7 +18,7 @@ Ensure the `hapi` library is installed using `pip install .`.
 
 Use the
 [HAPI schema repository](https://github.com/OCHA-DAP/hapi-schemas)
-to create a SQLite HAPI database. Point to the file
+to create an empty SQLite HAPI database. Point to the file
 `hapi-schemas/databases/hapi-test.sqlite` when executing:
 
 ```shell

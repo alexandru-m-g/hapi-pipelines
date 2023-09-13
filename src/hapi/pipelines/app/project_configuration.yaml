@@ -16,17 +16,30 @@ scraper_admintwo:
       - "T_TL"
       - "M_TL"
       - "F_TL"
+      - "F_00_04"
+      - "F_100Plus"
+      - "T_00_04"
+      - "T_100Plus"
     output:
 # This should be standardised for all countries
 # TODO: Mike do you mean that we should somehow generalize it in this file?
       - "T_TL"
       - "M_TL"
       - "F_TL"
+      - "F_00_04"
+      - "F_100Plus"
+      - "T_00_04"
+      - "T_100Plus"
     output_hxl:
 # This should be standardised for all countries
+# TODO: how to validate this transcription
       - "#population+total"
       - "#population+f+total"
       - "#population+m+total"
+      - "#population+f+age_0_4"
+      - "#population+f+age_100_plus"
+      - "#population+age_0_4+total"
+      - "#population+age_100_plus+total"
   population_eth:
     dataset: "cod-ps-eth"
     resource: "eth_admpop_adm2_2022_v2.csv"
