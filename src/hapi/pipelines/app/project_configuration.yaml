@@ -154,3 +154,8 @@ country_name_mappings:
 
 orphan_admin2s:
   SS0001: "SSD"
+
+gender_descriptions:
+  f: "female"
+  m: "male"
+  x: "non-binary"

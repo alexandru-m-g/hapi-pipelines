@@ -9,6 +9,7 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.utilities.admins import Admins
+from hapi.pipelines.utilities.gender import Gender
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
 from hapi.pipelines.utilities.population import populate_population
@@ -35,6 +36,11 @@ class Pipelines:
         self.admintwo = AdminLevel(admin_level=2)
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
 
+        self.gender = Gender(
+            session=session,
+            gender_descriptions=configuration["gender_descriptions"],
+        )
+
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
             configuration["HRPs"],
@@ -45,8 +51,7 @@ class Pipelines:
         self.configurable_scrapers = dict()
         self.metadata = Metadata(runner=self.runner, session=session)
 
-        self.metadata = Metadata(runner=self.runner, session=session)
-
+        # TODO: what is this for?
         if fallbacks_root is not None:
             pass
         self.create_configurable_scrapers()
@@ -79,6 +84,7 @@ class Pipelines:
         self.locations.populate()
         self.admins.populate()
         self.metadata.populate()
+        self.gender.populate()
         results = self.runner.get_hapi_results()
         populate_population(
             results=results,

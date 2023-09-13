@@ -35,7 +35,7 @@ _HXL_MAPPING = {
 def populate_population(
     results: Dict, session: Session, metadata: Metadata, admins: Admins
 ):
-    logger.info("Populating populatoin table")
+    logger.info("Populating population table")
     for result in results:
         resource_ref = metadata.data[result["resource"]["hdx_id"]]
         reference_period_start = result["reference_period"]["startdate"]
