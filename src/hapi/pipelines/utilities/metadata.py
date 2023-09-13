@@ -49,7 +49,7 @@ class Metadata:
                 dataset_ref=dataset_row.id,
                 filename=resource["filename"],
                 format=resource["format"],
-                update_date=resource["update_date"].date(),
+                update_date=resource["update_date"],
                 is_hxl=is_hxlated,
                 download_url=download_url,
             )
