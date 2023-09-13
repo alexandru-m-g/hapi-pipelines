@@ -1,6 +1,7 @@
 """Functions specific to the population theme."""
 
 from dataclasses import dataclass
+from logging import getLogger
 from typing import Dict, Optional
 
 from sqlalchemy.orm import Session
@@ -8,6 +9,8 @@ from sqlalchemy.orm import Session
 from hapi.pipelines.database.db_population import DBPopulation
 from hapi.pipelines.utilities.admins import Admins
 from hapi.pipelines.utilities.metadata import Metadata
+
+logger = getLogger(__name__)
 
 
 @dataclass
@@ -32,6 +35,7 @@ _HXL_MAPPING = {
 def populate_population(
     results: Dict, session: Session, metadata: Metadata, admins: Admins
 ):
+    logger.info("Populating populatoin table")
     for result in results:
         resource_ref = metadata.data[result["resource"]["hdx_id"]]
         reference_period_start = result["reference_period"]["startdate"]
@@ -41,15 +45,13 @@ def populate_population(
             for admin_code, value in values.items():
                 population_row = DBPopulation(
                     resource_ref=resource_ref,
-                    # TODO: get the admin1 code for now, but
-                    #  will need to change this to admin2
                     admin2_ref=admins.data[admin_code],
                     gender_code=mappings.gender_code,
                     age_range_code=mappings.age_range_code,
                     population=value,
                     reference_period_start=reference_period_start,
                     reference_period_end=reference_period_end,
-                    # TODO: Add to scraper
+                    # TODO: For v2+, add to scraper
                     source_data="not yet implemented",
                 )
 
