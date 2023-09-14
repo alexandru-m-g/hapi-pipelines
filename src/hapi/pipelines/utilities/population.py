@@ -48,14 +48,14 @@ def populate_population(
                 age_range.populate_single(age_range_code=age_range_code)
             for admin_code, value in values.items():
                 if admin_level == "1":
-                    admin2_ref = get_admin2_to_admin1_connector_code(
+                    admin2_code = get_admin2_to_admin1_connector_code(
                         admin1_code=admin_code
                     )
                 elif admin_level == "2":
-                    admin2_ref = admins.admin2_data[admin_code]
+                    admin2_code = admin_code
                 population_row = DBPopulation(
                     resource_ref=resource_ref,
-                    admin2_ref=admin2_ref,
+                    admin2_ref=admins.admin2_data[admin2_code],
                     gender_code=gender_code,
                     age_range_code=age_range_code,
                     population=value,
