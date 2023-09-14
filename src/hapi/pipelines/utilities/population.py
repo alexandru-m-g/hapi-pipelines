@@ -39,8 +39,6 @@ def populate_population(
                 and age_range_code is not None
             ):
                 age_range.populate_single(age_range_code=age_range_code)
-            # TODO: add check that gender and age are in their
-            #  respective tables
             for admin_code, value in values.items():
                 population_row = DBPopulation(
                     resource_ref=resource_ref,
