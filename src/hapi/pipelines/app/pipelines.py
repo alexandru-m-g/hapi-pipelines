@@ -91,4 +91,5 @@ class Pipelines:
             session=self.session,
             metadata=self.metadata,
             admins=self.admins,
+            gender_code_list=self.gender.data,
         )
