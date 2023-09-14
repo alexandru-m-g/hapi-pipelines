@@ -9,6 +9,7 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.utilities.admins import Admins
+from hapi.pipelines.utilities.age_range import AgeRange
 from hapi.pipelines.utilities.gender import Gender
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
@@ -40,6 +41,7 @@ class Pipelines:
             session=session,
             gender_descriptions=configuration["gender_descriptions"],
         )
+        self.age_range = AgeRange(session=session)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -91,5 +93,6 @@ class Pipelines:
             session=self.session,
             metadata=self.metadata,
             admins=self.admins,
-            gender_code_list=self.gender.data,
+            gender=self.gender,
+            age_range=self.age_range,
         )
