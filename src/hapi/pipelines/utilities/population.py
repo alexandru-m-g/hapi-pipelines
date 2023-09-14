@@ -7,7 +7,10 @@ from typing import Dict
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.db_population import DBPopulation
-from hapi.pipelines.utilities.admins import Admins
+from hapi.pipelines.utilities.admins import (
+    Admins,
+    get_admin2_to_admin1_connector_code,
+)
 from hapi.pipelines.utilities.age_range import AgeRange
 from hapi.pipelines.utilities.gender import Gender
 from hapi.pipelines.utilities.metadata import Metadata
@@ -25,9 +28,13 @@ def populate_population(
 ):
     logger.info("Populating population table")
     for result in results:
-        resource_ref = metadata.data[result["resource"]["hdx_id"]]
+        resource_ref = metadata.resource_data[result["resource"]["hdx_id"]]
         reference_period_start = result["reference_period"]["startdate"]
         reference_period_end = result["reference_period"]["enddate"]
+        # Get admin level dict based on first pcode in dataset
+        admin_level = admins.get_admin_level(
+            pcode=next(iter(result["values"][0].keys()))
+        )
         for hxl_tag, values in zip(result["headers"][1], result["values"]):
             if not _validate_hxl_tag(hxl_tag):
                 raise ValueError(f"HXL tag {hxl_tag} not in valid format")
@@ -40,9 +47,15 @@ def populate_population(
             ):
                 age_range.populate_single(age_range_code=age_range_code)
             for admin_code, value in values.items():
+                if admin_level == "1":
+                    admin2_ref = get_admin2_to_admin1_connector_code(
+                        admin1_code=admin_code
+                    )
+                elif admin_level == "2":
+                    admin2_ref = admins.admin2_data[admin_code]
                 population_row = DBPopulation(
                     resource_ref=resource_ref,
-                    admin2_ref=admins.data[admin_code],
+                    admin2_ref=admin2_ref,
                     gender_code=gender_code,
                     age_range_code=age_range_code,
                     population=value,
