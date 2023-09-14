@@ -90,7 +90,3 @@ def _get_hxl_mapping(hxl_tag: str) -> (str, str):
         elif component != "total":
             gender_code = component
     return gender_code, age_range_code
-
-
-def _validate_gender_code(gender_code: str, gender_code_list) -> bool:
-    return gender_code in gender_code_list or gender_code is None
