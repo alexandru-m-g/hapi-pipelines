@@ -32,11 +32,11 @@ def populate_population(
             if not _validate_hxl_tag(hxl_tag):
                 raise ValueError(f"HXL tag {hxl_tag} not in valid format")
             gender_code, age_range_code = _get_hxl_mapping(hxl_tag=hxl_tag)
-            if gender_code not in gender.data and gender_code is not None:
+            if gender_code is not None and gender_code not in gender.data:
                 raise ValueError(f"Gender code {gender_code} not in table")
             if (
-                age_range_code not in age_range.data
-                and age_range_code is not None
+                age_range_code is not None
+                and age_range_code not in age_range.data
             ):
                 age_range.populate_single(age_range_code=age_range_code)
             for admin_code, value in values.items():
