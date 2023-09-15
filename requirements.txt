@@ -39,8 +39,6 @@ cryptography==41.0.3
     # via
     #   paramiko
     #   pyopenssl
-decorator==5.1.1
-    # via jsonpath-ng
 defopt==6.4.0
     # via hdx-python-api
 distlib==0.3.7
@@ -57,7 +55,7 @@ email-validator==2.0.0.post2
     # via hdx-python-api
 et-xmlfile==1.1.0
     # via openpyxl
-filelock==3.12.3
+filelock==3.12.4
     # via virtualenv
 frictionless==5.15.10
     # via hdx-python-utilities
@@ -71,15 +69,13 @@ greenlet==2.0.2
     # via sqlalchemy
 gspread==5.11.1
     # via hdx-python-scraper
-hdx-python-api==6.1.0
+hdx-python-api==6.1.1
     # via hdx-python-scraper
-hdx-python-country @ git+ssh://git@github.com/OCHA-DAP/hdx-python-country@admin_dataset
-    # via
-    #   hapi-pipelines (pyproject.toml)
-    #   hdx-python-api
+hdx-python-country==3.5.5
+    # via hdx-python-api
 hdx-python-database[postgresql]==1.2.7
     # via hapi-pipelines (pyproject.toml)
-hdx-python-scraper @ git+ssh://git@github.com/OCHA-DAP/hdx-python-scraper@hapi_metadata
+hdx-python-scraper==2.1.9
     # via hapi-pipelines (pyproject.toml)
 hdx-python-utilities==3.6.2
     # via hdx-python-country
@@ -103,7 +99,7 @@ jinja2==3.1.2
     # via frictionless
 jsonlines==4.0.0
     # via hdx-python-utilities
-jsonpath-ng==1.5.3
+jsonpath-ng==1.6.0
     # via libhxl
 jsonschema==4.17.3
     # via
@@ -241,7 +237,6 @@ six==1.16.0
     # via
     #   ckanapi
     #   isodate
-    #   jsonpath-ng
     #   pockets
     #   python-dateutil
     #   requests-file
