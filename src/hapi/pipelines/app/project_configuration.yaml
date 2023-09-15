@@ -150,3 +150,6 @@ country_name_overrides:
 
 country_name_mappings:
   "Congo DR": "COD"
+
+orphan_admin2s:
+  SS0001: "SSD"
