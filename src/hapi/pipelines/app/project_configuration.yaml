@@ -49,6 +49,16 @@ scraper_admintwo:
       - "#population+f+total"
       - "#population+m+total"
 
+sector:
+  dataset: "global-coordination-groups-beta"
+  resource: "Global Coordination Groups (Beta) CSV"
+  headers: 2
+
+orgtype:
+  dataset: "organization-types-beta"
+  resource: "Organization Types (Beta) - CSV"
+  headers: 2
+
 countries:
   - ABW
   - AFG

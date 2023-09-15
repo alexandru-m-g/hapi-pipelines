@@ -11,6 +11,8 @@ from sqlalchemy.orm import Session
 from hapi.pipelines.utilities.admins import Admins
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
+from hapi.pipelines.utilities.orgtype import OrgType
+from hapi.pipelines.utilities.sector import Sector
 
 
 class Pipelines:
@@ -33,6 +35,8 @@ class Pipelines:
         )
         self.admintwo = AdminLevel(admin_level=2)
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
+        self.org_type = OrgType(session=session, dataset_info=configuration["org_type"])
+        self.sector = Sector(session=session, dataset_info=configuration["sector"])
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -77,3 +81,5 @@ class Pipelines:
         self.admins.populate()
         self.metadata.populate()
         # TODO: Add population and 3W here
+        self.orgtype.populate()
+        self.sector.populate()
