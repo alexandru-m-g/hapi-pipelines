@@ -35,7 +35,8 @@ class Pipelines:
         )
         self.admintwo = AdminLevel(admin_level=2)
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
-        self.org_type = OrgType(session=session, dataset_info=configuration["org_type"])
+
+        self.orgtype = OrgType(session=session, dataset_info=configuration["orgtype"])
         self.sector = Sector(session=session, dataset_info=configuration["sector"])
 
         Sources.set_default_source_date_format("%Y-%m-%d")
