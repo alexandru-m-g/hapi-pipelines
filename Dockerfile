@@ -17,4 +17,4 @@ RUN --mount=source=.git,target=.git,type=bind \
     apk add --no-cache libpq && \
     rm -rf /var/lib/apk/*
 
-CMD "python3 -m hapi.pipelines.app"
+CMD python3 -m hapi.pipelines.app

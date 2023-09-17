@@ -40,4 +40,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: public.ecr.aws/unocha/hdx-data-freshness:main
+          tags: public.ecr.aws/unocha/hapi-pipelines:main
