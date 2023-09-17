@@ -13,8 +13,6 @@ RUN --mount=source=.git,target=.git,type=bind \
         python3-dev \
         py3-wheel && \
     python3 -m venv venv && \
-    . venv/bin/activate && \
-    pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir . && \
     apk del .build-deps && \
     apk add --no-cache libpq && \
