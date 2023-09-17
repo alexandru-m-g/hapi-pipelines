@@ -12,7 +12,6 @@ RUN --mount=source=.git,target=.git,type=bind \
         postgresql-dev \
         python3-dev \
         py3-wheel && \
-    python3 -m venv venv && \
     pip install --no-cache-dir . && \
     apk del .build-deps && \
     apk add --no-cache libpq && \
