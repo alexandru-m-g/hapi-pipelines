@@ -10,12 +10,16 @@ logger = logging.getLogger(__name__)
 
 
 class OrgType(BaseScraper):
-    def __init__(self, session: Session, dataset_info: Dict[str, str]):
-        self.session = session
-        self.dataset_info = dataset_info
+    def __init__(self, session: Session, datasetinfo: Dict[str, str]):
+        super().__init__(
+            "orgtype",
+            datasetinfo,
+            dict(),
+        )
+        self._session = session
         self.data = {}
 
-    def populate(self):
+    def run(self):
         logger.info("Populating org type table")
         reader = self.get_reader()
         headers, iterator = reader.read(self.datasetinfo)
@@ -26,6 +30,6 @@ class OrgType(BaseScraper):
                 code=code,
                 description=description,
             )
-            self.session.add(org_type_row)
+            self._session.add(org_type_row)
             self.data[description] = code
         self._session.commit()

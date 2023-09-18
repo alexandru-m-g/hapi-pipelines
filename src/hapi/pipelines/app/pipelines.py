@@ -36,8 +36,8 @@ class Pipelines:
         self.admintwo = AdminLevel(admin_level=2)
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
 
-        self.orgtype = OrgType(session=session, dataset_info=configuration["orgtype"])
-        self.sector = Sector(session=session, dataset_info=configuration["sector"])
+        self.orgtype = OrgType(session=session, datasetinfo=configuration["orgtype"])
+        self.sector = Sector(session=session, datasetinfo=configuration["sector"])
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -52,6 +52,12 @@ class Pipelines:
         if fallbacks_root is not None:
             pass
         self.create_configurable_scrapers()
+        self.runner.add_customs(
+            (
+                self.orgtype,
+                self.sector,
+            )
+        )
 
     def create_configurable_scrapers(self):
         def _create_configurable_scrapers(
@@ -82,5 +88,3 @@ class Pipelines:
         self.admins.populate()
         self.metadata.populate()
         # TODO: Add population and 3W here
-        self.orgtype.populate()
-        self.sector.populate()

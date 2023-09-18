@@ -52,11 +52,13 @@ scraper_admintwo:
 sector:
   dataset: "global-coordination-groups-beta"
   resource: "Global Coordination Groups (Beta) CSV"
+  format: "csv"
   headers: 2
 
 orgtype:
   dataset: "organization-types-beta"
   resource: "Organization Types (Beta) - CSV"
+  format: "csv"
   headers: 2
 
 countries:
