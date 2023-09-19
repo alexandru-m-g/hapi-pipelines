@@ -18,9 +18,9 @@ Ensure the `hapi` library is installed using `pip install .`.
 
 Use the
 [HAPI schema repository](https://github.com/OCHA-DAP/hapi-schemas)
-to create a SQLite HAPI database. Point to the file
-`hapi-schemas/databases/hapi-test.sqlite` when executing:
+to create a PostgreSQL HAPI database.
+Then execute using:
 
 ```shell
-python src/hapi/pipelines/app/__main__.py --db "sqlite:///path-to-hapi-test.sqlite"
+python src/hapi/pipelines/app/__main__.py --db "postgresql+psycopg2://postgres:postgres@localhost:5432/hapi"
 ```
