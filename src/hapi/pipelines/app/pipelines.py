@@ -13,7 +13,7 @@ from hapi.pipelines.utilities.age_range import AgeRange
 from hapi.pipelines.utilities.gender import Gender
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
-from hapi.pipelines.utilities.population import populate_population
+from hapi.pipelines.utilities.population import Population
 
 
 class Pipelines:
@@ -88,11 +88,11 @@ class Pipelines:
         self.metadata.populate()
         self.gender.populate()
         results = self.runner.get_hapi_results()
-        populate_population(
-            results=results,
+        population = Population(
             session=self.session,
             metadata=self.metadata,
             admins=self.admins,
             gender=self.gender,
             age_range=self.age_range,
         )
+        population.populate(results=results)

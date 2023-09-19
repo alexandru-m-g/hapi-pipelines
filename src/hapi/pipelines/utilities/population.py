@@ -14,50 +14,70 @@ from hapi.pipelines.utilities.metadata import Metadata
 
 logger = getLogger(__name__)
 
+_HXL_PATTERN = re.compile(
+    r"^#population(\+[a-z])*(\+age_(\d+_\d+|\d+_plus))*(\+total)?$"
+)
 
-def populate_population(
-    results: Dict,
-    session: Session,
-    metadata: Metadata,
-    admins: Admins,
-    gender: Gender,
-    age_range: AgeRange,
-):
-    logger.info("Populating population table")
-    for result in results:
-        resource_ref = metadata.data[result["resource"]["hdx_id"]]
-        reference_period_start = result["reference_period"]["startdate"]
-        reference_period_end = result["reference_period"]["enddate"]
-        for hxl_tag, values in zip(result["headers"][1], result["values"]):
-            if not _validate_hxl_tag(hxl_tag):
-                raise ValueError(f"HXL tag {hxl_tag} not in valid format")
-            gender_code, age_range_code = _get_hxl_mapping(hxl_tag=hxl_tag)
-            if gender_code is not None and gender_code not in gender.data:
-                raise ValueError(f"Gender code {gender_code} not in table")
-            if (
-                age_range_code is not None
-                and age_range_code not in age_range.data
-            ):
-                age_range.populate_single(age_range_code=age_range_code)
-            for admin_code, value in values.items():
-                population_row = DBPopulation(
-                    resource_ref=resource_ref,
-                    admin2_ref=admins.data[admin_code],
-                    gender_code=gender_code,
-                    age_range_code=age_range_code,
-                    population=value,
-                    reference_period_start=reference_period_start,
-                    reference_period_end=reference_period_end,
-                    # TODO: For v2+, add to scraper
-                    source_data="not yet implemented",
-                )
 
-                session.add(population_row)
-    session.commit()
+class Population:
+    def __init__(
+        self,
+        session: Session,
+        metadata: Metadata,
+        admins: Admins,
+        gender: Gender,
+        age_range: AgeRange,
+    ):
+        self._session = session
+        self._metadata = metadata
+        self._admins = admins
+        self._gender = gender
+        self._age_range = age_range
+
+    def populate(
+        self,
+        results: Dict,
+    ):
+        logger.info("Populating population table")
+        for result in results:
+            resource_ref = self._metadata.data[result["resource"]["hdx_id"]]
+            reference_period_start = result["reference_period"]["startdate"]
+            reference_period_end = result["reference_period"]["enddate"]
+            for hxl_tag, values in zip(result["headers"][1], result["values"]):
+                if not _validate_hxl_tag(hxl_tag):
+                    raise ValueError(f"HXL tag {hxl_tag} not in valid format")
+                gender_code, age_range_code = _get_hxl_mapping(hxl_tag=hxl_tag)
+                if (
+                    gender_code is not None
+                    and gender_code not in self._gender.data
+                ):
+                    raise ValueError(f"Gender code {gender_code} not in table")
+                if (
+                    age_range_code is not None
+                    and age_range_code not in self._age_range.data
+                ):
+                    self._age_range.populate_single(
+                        age_range_code=age_range_code
+                    )
+                for admin_code, value in values.items():
+                    population_row = DBPopulation(
+                        resource_ref=resource_ref,
+                        admin2_ref=self._admins.data[admin_code],
+                        gender_code=gender_code,
+                        age_range_code=age_range_code,
+                        population=int(value),
+                        reference_period_start=reference_period_start,
+                        reference_period_end=reference_period_end,
+                        # TODO: For v2+, add to scraper
+                        source_data="not yet implemented",
+                    )
+
+                    self._session.add(population_row)
+        self._session.commit()
 
 
 def _validate_hxl_tag(hxl_tag: str) -> bool:
-    # TODO: is this the right place to define the formats??
+    # TODO: add these definitions in a more central location
     """Validate HXL tags
 
     Assume they have the form:
@@ -68,9 +88,8 @@ def _validate_hxl_tag(hxl_tag: str) -> bool:
         #population+f+age_5_12
         #population+f+age_80_plus
     """
-    # TODO: test this
-    pattern = r"^#population(\+[a-z])*(\+age_(\d+_\d+|\d+_plus))*(\+total)?$"
-    return bool(re.match(pattern, hxl_tag))
+    # TODO: add tests for this
+    return bool(_HXL_PATTERN.match(hxl_tag))
 
 
 def _get_hxl_mapping(hxl_tag: str) -> (str, str):
