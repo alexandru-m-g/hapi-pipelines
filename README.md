@@ -22,5 +22,5 @@ to create a PostgreSQL HAPI database.
 Then execute using:
 
 ```shell
-python src/hapi/pipelines/app/__main__.py --db "postgresql+psycopg2://postgres:postgres@localhost:5432/hapi"
+python src/hapi/pipelines/app/__main__.py --db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
 ```

@@ -150,11 +150,11 @@ pockets==0.9.1
 pre-commit==3.4.0
     # via hapi-pipelines (pyproject.toml)
 psycopg[binary]==3.1.10
-    # via hdx-python-database
+    # via
+    #   hapi-pipelines (pyproject.toml)
+    #   hdx-python-database
 psycopg-binary==3.1.10
     # via psycopg
-psycopg2==2.9.7
-    # via hapi-pipelines (pyproject.toml)
 pyasn1==0.5.0
     # via
     #   hdx-python-api
