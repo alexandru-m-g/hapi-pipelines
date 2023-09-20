@@ -24,3 +24,10 @@ repos:
         name: pip-compile requirements.txt
         files: pyproject.toml
         args: [pyproject.toml, --resolver=backtracking, --all-extras, --upgrade, -q, -o, requirements.txt]
+  - repo: https://github.com/jazzband/pip-tools
+    rev: 6.13.0
+    hooks:
+      - id: pip-compile
+        name: pip-compile prod-requirements.txt
+        files: pyproject.toml
+        args: [pyproject.toml, --resolver=backtracking, --upgrade, -q, -o, prod-requirements.txt]
