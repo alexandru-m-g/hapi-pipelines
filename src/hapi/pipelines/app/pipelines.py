@@ -34,7 +34,9 @@ class Pipelines:
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
         )
+        self.adminone = AdminLevel(admin_level=1)
         self.admintwo = AdminLevel(admin_level=2)
+        self.adminone.setup_from_libhxl_dataset(libhxl_dataset)
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
 
         self.gender = Gender(
@@ -77,6 +79,7 @@ class Pipelines:
             )
 
         _create_configurable_scrapers("national")
+        _create_configurable_scrapers("adminone", adminlevel=self.adminone)
         _create_configurable_scrapers("admintwo", adminlevel=self.admintwo)
 
     def run(self):

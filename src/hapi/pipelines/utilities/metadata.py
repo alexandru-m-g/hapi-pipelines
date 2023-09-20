@@ -15,7 +15,8 @@ class Metadata:
     def __init__(self, runner: Runner, session: Session):
         self.runner = runner
         self.session = session
-        self.data = {}
+        self.dataset_data = {}
+        self.resource_data = {}
 
     def populate(self):
         logger.info("Populating metadata")
@@ -25,15 +26,21 @@ class Metadata:
         for dataset in hapi_metadata:
             # First add dataset
             resource = dataset["resource"]
-            dataset_row = DBDataset(
-                hdx_id=dataset["hdx_id"],
-                hdx_stub=dataset["hdx_stub"],
-                title=dataset["title"],
-                provider_code=dataset["provider_code"],
-                provider_name=dataset["provider_name"],
-            )
-            self.session.add(dataset_row)
-            self.session.commit()
+            dataset_id = dataset["hdx_id"]
+            # Make sure dataset hasn't already been added - hapi_metadata
+            # contains duplicate datasets since it contains
+            # dataset-resource pairs
+            if dataset_id not in self.dataset_data.keys():
+                dataset_row = DBDataset(
+                    hdx_id=dataset_id,
+                    hdx_stub=dataset["hdx_stub"],
+                    title=dataset["title"],
+                    provider_code=dataset["provider_code"],
+                    provider_name=dataset["provider_name"],
+                )
+                self.session.add(dataset_row)
+                self.session.commit()
+                self.dataset_data[dataset_id] = dataset_row.id
 
             # Then add the resource
             download_url = resource["download_url"]
@@ -57,4 +64,4 @@ class Metadata:
             self.session.commit()
 
             # Add resource to lookup table
-            self.data[resource_id] = resource_row.id
+            self.resource_data[resource_id] = resource_row.id

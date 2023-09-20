@@ -3,6 +3,41 @@ commit_limit: 1000
 
 scraper_national: []
 
+scraper_adminone:
+  population_col:
+    dataset: "cod-ps-col"
+    resource: "col_admpop_adm1_2023.csv"
+    format: "csv"
+    admin:
+      - ~
+      - "ADM1_PCODE"
+    admin_exact: True
+    input:
+      - "T_TL"
+      - "M_TL"
+      - "F_TL"
+      - "F_00_04"
+      - "F_100Plus"
+      - "T_00_04"
+      - "T_100Plus"
+    output:
+      - "T_TL"
+      - "M_TL"
+      - "F_TL"
+      - "F_00_04"
+      - "F_100Plus"
+      - "T_00_04"
+      - "T_100Plus"
+    output_hxl:
+      - "#population+total"
+      - "#population+f+total"
+      - "#population+m+total"
+      - "#population+f+age_0_4"
+      - "#population+f+age_100_plus"
+      - "#population+age_0_4+total"
+      - "#population+age_100_plus+total"
+
+
 scraper_admintwo:
   population_col:
     dataset: "cod-ps-col"
