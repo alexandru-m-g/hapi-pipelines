@@ -16,6 +16,7 @@ from hapi.pipelines.utilities.locations import Locations
 logger = logging.getLogger(__name__)
 
 _ADMIN_LEVELS = ("1", "2")
+_ADMIN_LEVELS_LITERAL = Literal["1", "2"]
 
 
 class Admins:
@@ -55,7 +56,7 @@ class Admins:
 
     def _update_admin_table(
         self,
-        desired_admin_level: Literal[_ADMIN_LEVELS],
+        desired_admin_level: _ADMIN_LEVELS_LITERAL,
         parent_dict: Dict,
     ):
         if desired_admin_level not in _ADMIN_LEVELS:
@@ -144,7 +145,7 @@ class Admins:
             self._session.add(admin_row)
         self._session.commit()
 
-    def get_admin_level(self, pcode: str) -> Literal[_ADMIN_LEVELS]:
+    def get_admin_level(self, pcode: str) -> _ADMIN_LEVELS_LITERAL:
         """Given a pcode, return the admin level."""
         if pcode in self.admin1_data:
             return "1"
@@ -179,7 +180,7 @@ class _AdminFilter(AbstractStreamingFilter, ABC):
     def __init__(
         self,
         source: hxl.Dataset,
-        desired_admin_level: Literal[_ADMIN_LEVELS],
+        desired_admin_level: _ADMIN_LEVELS_LITERAL,
         country_codes: List[str],
     ):
         self._desired_admin_level = desired_admin_level
