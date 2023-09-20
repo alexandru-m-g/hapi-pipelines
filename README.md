@@ -18,7 +18,7 @@ Ensure the `hapi` library is installed using `pip install .`.
 
 Use the
 [HAPI schema repository](https://github.com/OCHA-DAP/hapi-schemas)
-to create a PostgreSQL HAPI database.
+to create an empty PostgreSQL HAPI database.
 Then execute using:
 
 ```shell

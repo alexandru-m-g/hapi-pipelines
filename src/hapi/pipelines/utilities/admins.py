@@ -34,6 +34,7 @@ class Admins:
         self.data = {}
 
     def populate(self):
+        logger.info("Populating admin1 table")
         self._update_admin_table(
             desired_admin_level="1",
             parent_dict=self._locations.data,
@@ -41,6 +42,7 @@ class Admins:
         self._add_admin1_connector_rows()
         results = self._session.execute(select(DBAdmin1.id, DBAdmin1.code))
         self.data = {result[1]: result[0] for result in results}
+        logger.info("Populating admin2 table")
         self._update_admin_table(
             desired_admin_level="2",
             parent_dict=self.data,
