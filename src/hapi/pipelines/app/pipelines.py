@@ -52,6 +52,7 @@ class Pipelines:
             scrapers_to_run=scrapers_to_run,
         )
         self.configurable_scrapers = dict()
+        self.create_configurable_scrapers()
         self.metadata = Metadata(runner=self.runner, session=session)
 
     def create_configurable_scrapers(self):
