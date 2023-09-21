@@ -25,7 +25,6 @@ class Pipelines:
         scrapers_to_run: Optional[ListTuple[str]] = None,
         errors_on_exit: Optional[ErrorsOnExit] = None,
         use_live: bool = True,
-        fallbacks_root: Optional[str] = None,
     ):
         self.configuration = configuration
         self.session = session
@@ -54,11 +53,6 @@ class Pipelines:
         )
         self.configurable_scrapers = dict()
         self.metadata = Metadata(runner=self.runner, session=session)
-
-        # TODO: what is this for?
-        if fallbacks_root is not None:
-            pass
-        self.create_configurable_scrapers()
 
     def create_configurable_scrapers(self):
         def _create_configurable_scrapers(
