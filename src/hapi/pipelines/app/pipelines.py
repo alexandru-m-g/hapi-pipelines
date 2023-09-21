@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from hapi.pipelines.utilities.admins import Admins
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
+from hapi.pipelines.utilities.org import Org
 from hapi.pipelines.utilities.orgtype import OrgType
 from hapi.pipelines.utilities.sector import Sector
 
@@ -36,6 +37,7 @@ class Pipelines:
         self.admintwo = AdminLevel(admin_level=2)
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
 
+        self.org = Org(session=session)
         self.orgtype = OrgType(session=session, datasetinfo=configuration["orgtype"])
         self.sector = Sector(session=session, datasetinfo=configuration["sector"])
 
