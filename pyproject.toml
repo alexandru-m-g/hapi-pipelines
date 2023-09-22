@@ -34,7 +34,7 @@ classifiers = [
 requires-python = ">=3.8"
 
 dependencies = [
-    "hdx-python-scraper@git+ssh://git@github.com/OCHA-DAP/hdx-python-scraper@hapi_level#egg=hdx-python-scraper",
+    "hdx-python-scraper>= 2.2.0",
     "hdx-python-country>= 3.5.5",
     "hdx-python-database[postgresql]>= 1.2.7",
 ]

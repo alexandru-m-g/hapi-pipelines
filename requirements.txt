@@ -69,15 +69,15 @@ greenlet==2.0.2
     # via sqlalchemy
 gspread==5.11.2
     # via hdx-python-scraper
-hdx-python-api==6.1.1
+hdx-python-api==6.1.2
     # via hdx-python-scraper
-hdx-python-country==3.5.5
+hdx-python-country==3.5.6
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-api
 hdx-python-database[postgresql]==1.2.7
     # via hapi-pipelines (pyproject.toml)
-hdx-python-scraper @ git+ssh://git@github.com/OCHA-DAP/hdx-python-scraper@hapi_level
+hdx-python-scraper==2.2.0
     # via hapi-pipelines (pyproject.toml)
 hdx-python-utilities==3.6.2
     # via hdx-python-country
@@ -107,7 +107,7 @@ jsonschema==4.17.3
     # via
     #   frictionless
     #   tableschema-to-template
-libhxl==5.0.2
+libhxl==5.0.3
     # via hdx-python-country
 loguru==0.7.2
     # via hdx-python-utilities
@@ -184,7 +184,6 @@ pyrsistent==0.19.3
 pytest==7.4.2
     # via
     #   hapi-pipelines (pyproject.toml)
-    #   libhxl
     #   pytest-cov
 pytest-cov==4.1.0
     # via hapi-pipelines (pyproject.toml)
