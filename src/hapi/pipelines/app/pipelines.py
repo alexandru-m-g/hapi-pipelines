@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from hapi.pipelines.utilities.admins import Admins
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
+from hapi.pipelines.utilities.operational_presence import OperationalPresence
 from hapi.pipelines.utilities.org import Org
 from hapi.pipelines.utilities.orgtype import OrgType
 from hapi.pipelines.utilities.sector import Sector
@@ -40,6 +41,10 @@ class Pipelines:
         self.org = Org(session=session)
         self.orgtype = OrgType(session=session, datasetinfo=configuration["orgtype"])
         self.sector = Sector(session=session, datasetinfo=configuration["sector"])
+        self.operational_presence = OperationalPresence(
+            session=session,
+            datasetinfo=configuration["operational_presence"]
+        )
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -58,6 +63,7 @@ class Pipelines:
             (
                 self.orgtype,
                 self.sector,
+                self.operational_presence,
             )
         )
 
@@ -92,3 +98,9 @@ class Pipelines:
         # TODO: Add population and 3W here
         self.orgtype.populate()
         self.sector.populate()
+        self.operational_presence.populate(
+            admins=self.admins,
+            org=self.org,
+            orgtype=self.orgtype,
+            sector=self.sector,
+        )

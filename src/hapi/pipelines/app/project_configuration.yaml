@@ -61,6 +61,17 @@ orgtype:
   format: "csv"
   headers: 2
 
+operational_presence:
+  dataset: "iraq-humanitarian-operational-presence-3w"
+  resource: "iraq_3w_jan-to-dec_2022_longtable_20230124.xlsx"
+  format: "xlsx"
+  sheet: "3W longtable Jan-Dec 2022 "
+  headers: 2
+  use_hxl: True
+  source_date:
+    start: "01/01/2022"
+    end: "31/12/2022"
+
 countries:
   - ABW
   - AFG
