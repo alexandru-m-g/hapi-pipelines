@@ -42,52 +42,56 @@ class Population:
         results: Dict,
     ):
         logger.info("Populating population table")
-        for result in results:
-            resource_ref = self._metadata.resource_data[
-                result["resource"]["hdx_id"]
-            ]
-            reference_period_start = result["reference_period"]["startdate"]
-            reference_period_end = result["reference_period"]["enddate"]
-            # Get admin level dict based on first pcode in dataset
-            admin_level = self._admins.get_admin_level(
-                pcode=next(iter(result["values"][0].keys()))
-            )
-            for hxl_tag, values in zip(result["headers"][1], result["values"]):
-                if not _validate_hxl_tag(hxl_tag):
-                    raise ValueError(f"HXL tag {hxl_tag} not in valid format")
-                gender_code, age_range_code = _get_hxl_mapping(hxl_tag=hxl_tag)
-                if (
-                    gender_code is not None
-                    and gender_code not in self._gender.data
-                ):
-                    raise ValueError(f"Gender code {gender_code} not in table")
-                if (
-                    age_range_code is not None
-                    and age_range_code not in self._age_range.data
-                ):
-                    self._age_range.populate_single(
-                        age_range_code=age_range_code
-                    )
-                for admin_code, value in values.items():
-                    if admin_level == "1":
-                        admin2_code = get_admin2_to_admin1_connector_code(
-                            admin1_code=admin_code
-                        )
-                    elif admin_level == "2":
-                        admin2_code = admin_code
-                    population_row = DBPopulation(
-                        resource_ref=resource_ref,
-                        admin2_ref=self._admins.admin2_data[admin2_code],
-                        gender_code=gender_code,
-                        age_range_code=age_range_code,
-                        population=int(value),
-                        reference_period_start=reference_period_start,
-                        reference_period_end=reference_period_end,
-                        # TODO: For v2+, add to scraper
-                        source_data="not yet implemented",
-                    )
+        for dataset in results.values():
+            reference_period_start = dataset["reference_period"]["startdate"]
+            reference_period_end = dataset["reference_period"]["enddate"]
 
-                    self._session.add(population_row)
+            for admin_level, admin_results in dataset["results"].items():
+                resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
+                for hxl_tag, values in zip(
+                    admin_results["headers"][1], admin_results["values"]
+                ):
+                    if not _validate_hxl_tag(hxl_tag):
+                        raise ValueError(
+                            f"HXL tag {hxl_tag} not in valid format"
+                        )
+                    gender_code, age_range_code = _get_hxl_mapping(
+                        hxl_tag=hxl_tag
+                    )
+                    if (
+                        gender_code is not None
+                        and gender_code not in self._gender.data
+                    ):
+                        raise ValueError(
+                            f"Gender code {gender_code} not in table"
+                        )
+                    if (
+                        age_range_code is not None
+                        and age_range_code not in self._age_range.data
+                    ):
+                        self._age_range.populate_single(
+                            age_range_code=age_range_code
+                        )
+                    for admin_code, value in values.items():
+                        if admin_level == "adminone":
+                            admin2_code = get_admin2_to_admin1_connector_code(
+                                admin1_code=admin_code
+                            )
+                        elif admin_level == "admintwo":
+                            admin2_code = admin_code
+                        population_row = DBPopulation(
+                            resource_ref=resource_id,
+                            admin2_ref=self._admins.admin2_data[admin2_code],
+                            gender_code=gender_code,
+                            age_range_code=age_range_code,
+                            population=int(value),
+                            reference_period_start=reference_period_start,
+                            reference_period_end=reference_period_end,
+                            # TODO: For v2+, add to scraper
+                            source_data="not yet implemented",
+                        )
+
+                        self._session.add(population_row)
         self._session.commit()
 
 
