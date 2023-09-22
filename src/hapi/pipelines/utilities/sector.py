@@ -21,18 +21,24 @@ class Sector(BaseScraper):
         self.data = {}
 
     def run(self):
-        logger.info("Populating sector table")
         reader = self.get_reader()
         headers, iterator = reader.read(self.datasetinfo)
         for inrow in iterator:
             code = inrow["#sector +code +acronym"]
             name = inrow["#sector +name +preferred +i_en"]
             date = parse_date(inrow["#date +created"])
+            self.data[name] = [code, date]
+
+    def populate(self):
+        logger.info("Populating sector table")
+
+        for name in self.data:
+            code = self.data[name][0]
+            date = self.data[name][1]
             sector_row = DBSector(
                 code=code,
                 name=name,
                 reference_period_start=date,
             )
             self._session.add(sector_row)
-            self.data[name] = code
         self._session.commit()

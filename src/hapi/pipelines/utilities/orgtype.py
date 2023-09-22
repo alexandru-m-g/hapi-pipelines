@@ -20,16 +20,20 @@ class OrgType(BaseScraper):
         self.data = {}
 
     def run(self):
-        logger.info("Populating org type table")
         reader = self.get_reader()
         headers, iterator = reader.read(self.datasetinfo)
         for inrow in iterator:
             code = inrow["#org +type +code +v_hrinfo"]
             description = inrow["#org +type +preferred"]
+            self.data[description] = code
+
+    def populate(self):
+        logger.info("Populating org type table")
+        for description in self.data:
+            code = self.data[description]
             org_type_row = DBOrgType(
                 code=code,
                 description=description,
             )
             self._session.add(org_type_row)
-            self.data[description] = code
         self._session.commit()

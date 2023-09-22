@@ -90,3 +90,5 @@ class Pipelines:
         self.admins.populate()
         self.metadata.populate()
         # TODO: Add population and 3W here
+        self.orgtype.populate()
+        self.sector.populate()
