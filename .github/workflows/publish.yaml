@@ -38,7 +38,7 @@ jobs:
       - name: Create prod requirements
         run: |
           pip install --upgrade pip-tools
-          pip-compile pyproject.toml --resolver=backtracking --upgrade -q -o prod-requirements.txt
+          pip-compile pyproject.toml --resolver=backtracking --upgrade -q -c requirements.txt -o prod-requirements.txt
 
       - name: Build, tag, and push image to Amazon ECR
         uses: docker/build-push-action@v4
