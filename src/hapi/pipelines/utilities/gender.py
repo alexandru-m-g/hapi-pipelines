@@ -1,9 +1,8 @@
 import logging
 from typing import Dict
 
+from hapi_schema.db_gender import DBGender
 from sqlalchemy.orm import Session
-
-from hapi.pipelines.database.db_gender import DBGender
 
 logger = logging.getLogger(__name__)
 
