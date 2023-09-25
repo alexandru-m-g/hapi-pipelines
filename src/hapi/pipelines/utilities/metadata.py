@@ -1,12 +1,11 @@
 import logging
 
 import hxl
+from hapi_schema.db_dataset import DBDataset
+from hapi_schema.db_resource import DBResource
 from hdx.scraper.runner import Runner
 from hxl import InputOptions
 from sqlalchemy.orm import Session
-
-from hapi.pipelines.database.db_dataset import DBDataset
-from hapi.pipelines.database.db_resource import DBResource
 
 logger = logging.getLogger(__name__)
 

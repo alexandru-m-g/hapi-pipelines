@@ -4,9 +4,9 @@ import re
 from logging import getLogger
 from typing import Dict
 
+from hapi_schema.db_population import DBPopulation
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.db_population import DBPopulation
 from hapi.pipelines.utilities.admins import (
     Admins,
     get_admin2_to_admin1_connector_code,

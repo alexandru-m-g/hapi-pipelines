@@ -164,3 +164,4 @@ cython_debug/
 hapi.db
 # Version file
 src/hapi/pipelines/_version.py
+.DS_Store

@@ -1,8 +1,7 @@
 import logging
 
+from hapi_schema.db_age_range import DBAgeRange
 from sqlalchemy.orm import Session
-
-from hapi.pipelines.database.db_age_range import DBAgeRange
 
 logger = logging.getLogger(__name__)
 

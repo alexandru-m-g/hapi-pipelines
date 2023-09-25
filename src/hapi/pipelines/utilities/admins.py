@@ -3,14 +3,14 @@ from abc import ABC
 from typing import Dict, List, Literal
 
 import hxl
+from hapi_schema.db_admin1 import DBAdmin1
+from hapi_schema.db_admin2 import DBAdmin2
+from hapi_schema.db_location import DBLocation
 from hdx.utilities.dateparse import parse_date
 from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.db_admin1 import DBAdmin1
-from hapi.pipelines.database.db_admin2 import DBAdmin2
-from hapi.pipelines.database.db_location import DBLocation
 from hapi.pipelines.utilities.locations import Locations
 
 logger = logging.getLogger(__name__)
