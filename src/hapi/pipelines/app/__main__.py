@@ -152,7 +152,7 @@ if __name__ == "__main__":
     else:
         scrapers_to_run = None
     project_config_yaml = script_dir_plus_file(
-        "project_configuration .yaml", main
+        "project_configuration.yaml", main
     )
     facade(
         main,
