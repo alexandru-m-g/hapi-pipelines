@@ -1,7 +1,25 @@
 # Collector specific configuration
 commit_limit: 1000
 
-scraper_national: []
+scraper_national:
+  population_afg:
+    dataset: "cod-ps-afg"
+    resource: "afg_popadm_adm0_2021_v2.csv"
+    format: "csv"
+    use_hxl: False
+    admin_single: "AFG"
+    input:
+      - "F_TL"
+      - "M_TL"
+      - "T_TL"
+    output:
+      - "F_TL"
+      - "M_TL"
+      - "T_TL"
+    output_hxl:
+      - "#population+f+total"
+      - "#population+m+total"
+      - "#population+total"
 
 scraper_adminone:
   population_afg:
