@@ -16,19 +16,19 @@ class Org:
     def populate_single(
         self,
         acronym,
-        orgname,
-        orgtype,
+        org_name,
+        org_type,
         reference_period_start,
         reference_period_end,
     ):
-        logger.info(f"Adding org {orgname}")
+        logger.info(f"Adding org {org_name}")
         # TODO: add HDX link for orgs. What if there is no hdx link?
         hdx_link = ""
         org_row = DBOrg(
             hdx_link=hdx_link,
             acronym=acronym,
-            name=orgname,
-            org_type_code=orgtype,
+            name=org_name,
+            org_type_code=org_type,
             reference_period_start=reference_period_start,
             reference_period_end=reference_period_end,
         )

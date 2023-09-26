@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class OrgType(BaseScraper):
     def __init__(self, session: Session, datasetinfo: Dict[str, str]):
         super().__init__(
-            "orgtype",
+            "org_type",
             datasetinfo,
             dict(),
         )

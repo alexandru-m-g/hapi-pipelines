@@ -55,7 +55,7 @@ sector:
   format: "csv"
   headers: 2
 
-orgtype:
+org_type:
   dataset: "organization-types-beta"
   resource: "Organization Types (Beta) - CSV"
   format: "csv"

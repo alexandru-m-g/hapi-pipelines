@@ -13,7 +13,7 @@ from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
 from hapi.pipelines.utilities.operational_presence import OperationalPresence
 from hapi.pipelines.utilities.org import Org
-from hapi.pipelines.utilities.orgtype import OrgType
+from hapi.pipelines.utilities.org_type import OrgType
 from hapi.pipelines.utilities.sector import Sector
 
 
@@ -39,7 +39,7 @@ class Pipelines:
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
 
         self.org = Org(session=session)
-        self.orgtype = OrgType(session=session, datasetinfo=configuration["orgtype"])
+        self.org_type = OrgType(session=session, datasetinfo=configuration["org_type"])
         self.sector = Sector(session=session, datasetinfo=configuration["sector"])
         self.operational_presence = OperationalPresence(
             session=session,
@@ -61,7 +61,7 @@ class Pipelines:
         self.create_configurable_scrapers()
         self.runner.add_customs(
             (
-                self.orgtype,
+                self.org_type,
                 self.sector,
                 self.operational_presence,
             )
@@ -96,11 +96,11 @@ class Pipelines:
         self.admins.populate()
         self.metadata.populate()
         # TODO: Add population and 3W here
-        self.orgtype.populate()
+        self.org_type.populate()
         self.sector.populate()
         self.operational_presence.populate(
             admins=self.admins,
             org=self.org,
-            orgtype=self.orgtype,
+            org_type=self.org_type,
             sector=self.sector,
         )

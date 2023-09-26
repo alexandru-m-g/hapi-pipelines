@@ -14,7 +14,7 @@ from hapi.pipelines.utilities.admins import (
 )
 # from hapi.pipelines.utilities.metadata import Metadata
 from hapi.pipelines.utilities.org import Org
-from hapi.pipelines.utilities.orgtype import OrgType
+from hapi.pipelines.utilities.org_type import OrgType
 from hapi.pipelines.utilities.sector import Sector
 
 logger = getLogger(__name__)
@@ -67,7 +67,7 @@ class OperationalPresence(BaseScraper):
         self,
         admins: Admins,
         org: Org,
-        orgtype: OrgType,
+        org_type: OrgType,
         sector: Sector,
     ):
         logger.info("Populating operational presence table")
@@ -83,22 +83,22 @@ class OperationalPresence(BaseScraper):
                 admin_level = "1"
             org_name = row.get("#org+name")
             org_acronym = row.get("#org+acronym")
-            orgtype_name = row.get("#org+type")
+            org_type_name = row.get("#org+type")
             sector_info = row.get("#sector")
-            orgtype_code = _get_orgtype_code(orgtype_name, orgtype.data)
-            if orgtype_code == "":
-                # TODO: What do we do if the org type is not in the orgtype table?
-                logger.error(f"Org type {orgtype_name} not in table")
+            org_type_code = _get_org_type_code(org_type_name, org_type.data)
+            if org_type_code == "":
+                # TODO: What do we do if the org type is not in the org type table?
+                logger.error(f"Org type {org_type_name} not in table")
             # TODO: find out how unique orgs are. Currently checking that combo of acronym/name/type is unique
             if (
                     org_acronym is not None
                     and org_name is not None
-                    and (org_acronym, org_name, orgtype_code) not in org.data
+                    and (org_acronym, org_name, org_type_code) not in org.data
             ):
                 org.populate_single(
                     acronym=org_acronym,
                     orgname=org_name,
-                    orgtype=orgtype_code,
+                    org_type=org_type_code,
                     reference_period_start=reference_period_start,
                     reference_period_end=reference_period_end,
                 )
@@ -116,7 +116,7 @@ class OperationalPresence(BaseScraper):
                 admin2_code = admin_code
             operational_presence_row = DBOperationalPresence(
                 resource_ref=resource_ref,
-                org_ref=org.data[(org_acronym, org_name, orgtype_code)],
+                org_ref=org.data[(org_acronym, org_name, org_type_code)],
                 sector_code=sector_code,
                 admin2_ref=admins.data[admin2_code],
                 reference_period_start=reference_period_start,
@@ -128,10 +128,10 @@ class OperationalPresence(BaseScraper):
         self._session.commit()
 
 
-def _get_orgtype_code(orgtype: str, orgtype_data: Dict) -> str:
+def _get_org_type_code(org_type: str, org_type_data: Dict) -> str:
     # TODO: implement fuzzy matching of org types
-    orgtype_code = orgtype_data.get(orgtype, "")
-    return orgtype_code
+    org_type_code = org_type_data.get(org_type, "")
+    return org_type_code
 
 
 def _get_sector_info(sector_info: str, sector_data: Dict) -> (str, str):
