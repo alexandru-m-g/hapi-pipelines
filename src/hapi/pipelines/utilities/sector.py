@@ -23,10 +23,10 @@ class Sector(BaseScraper):
     def run(self):
         reader = self.get_reader()
         headers, iterator = reader.read(self.datasetinfo)
-        for inrow in iterator:
-            code = inrow["#sector +code +acronym"]
-            name = inrow["#sector +name +preferred +i_en"]
-            date = parse_date(inrow["#date +created"])
+        for row in iterator:
+            code = row["#sector +code +acronym"]
+            name = row["#sector +name +preferred +i_en"]
+            date = parse_date(row["#date +created"])
             self.data[name] = [code, date]
 
     def populate(self):

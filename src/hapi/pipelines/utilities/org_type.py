@@ -22,9 +22,9 @@ class OrgType(BaseScraper):
     def run(self):
         reader = self.get_reader()
         headers, iterator = reader.read(self.datasetinfo)
-        for inrow in iterator:
-            code = inrow["#org +type +code +v_hrinfo"]
-            description = inrow["#org +type +preferred"]
+        for row in iterator:
+            code = row["#org +type +code +v_hrinfo"]
+            description = row["#org +type +preferred"]
             self.data[description] = code
 
     def populate(self):
