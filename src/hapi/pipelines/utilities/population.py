@@ -80,7 +80,9 @@ class Population:
                         elif admin_level == "admintwo":
                             admin2_code = admin_code
                         population_row = DBPopulation(
-                            resource_ref=resource_id,
+                            resource_ref=self._metadata.resource_data[
+                                resource_id
+                            ],
                             admin2_ref=self._admins.admin2_data[admin2_code],
                             gender_code=gender_code,
                             age_range_code=age_range_code,
