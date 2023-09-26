@@ -28,7 +28,9 @@ class Pipelines:
     ):
         self.configuration = configuration
         self.session = session
-        self.locations = Locations(configuration, session, use_live)
+        self.locations = Locations(
+            configuration=configuration, session=session, use_live=use_live
+        )
         libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
@@ -46,7 +48,7 @@ class Pipelines:
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
-            configuration["HRPs"],
+            configuration["HAPI_countries"],
             today,
             errors_on_exit=errors_on_exit,
             scrapers_to_run=scrapers_to_run,
