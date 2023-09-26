@@ -77,7 +77,7 @@ class Pipelines:
 
         _create_configurable_scrapers("national")
         _create_configurable_scrapers("adminone", adminlevel=self.adminone)
-        # _create_configurable_scrapers("admintwo", adminlevel=self.admintwo)
+        _create_configurable_scrapers("admintwo", adminlevel=self.admintwo)
 
     def run(self):
         self.runner.run()
