@@ -137,8 +137,8 @@ def _get_org_type_code(org_type: str, org_type_data: Dict) -> str:
 def _get_sector_info(sector_info: str, sector_data: Dict) -> (str, str):
     # sector could be either the name or the code so have to check both
     # TODO: implement fuzzy matching of sector names/codes
-    sector_names = {name: sector_data[name][0] for name in sector_data}
-    sector_codes = {sector_data[name][0]: name for name in sector_data}
+    sector_names = {name: sector_data[name] for name in sector_data}
+    sector_codes = {sector_data[name]: name for name in sector_data}
 
     sector_code = sector_names.get(sector_info, "")
     if sector_code == "":

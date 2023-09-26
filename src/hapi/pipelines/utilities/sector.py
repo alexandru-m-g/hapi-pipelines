@@ -19,6 +19,7 @@ class Sector(BaseScraper):
         )
         self._session = session
         self.data = {}
+        self._scraped_data = []
 
     def run(self):
         reader = self.get_reader()
@@ -27,14 +28,16 @@ class Sector(BaseScraper):
             code = row["#sector +code +acronym"]
             name = row["#sector +name +preferred +i_en"]
             date = parse_date(row["#date +created"])
-            self.data[name] = [code, date]
+            self.data[name] = code
+            self._scraped_data.append([code, name, date])
 
     def populate(self):
         logger.info("Populating sector table")
 
-        for name in self.data:
-            code = self.data[name][0]
-            date = self.data[name][1]
+        for row in self._scraped_data:
+            code = row[0]
+            name = row[1]
+            date = row[2]
             sector_row = DBSector(
                 code=code,
                 name=name,
