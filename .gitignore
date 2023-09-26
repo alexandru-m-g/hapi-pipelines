@@ -164,7 +164,8 @@ cython_debug/
 hapi.db
 # Version file
 src/hapi/pipelines/_version.py
+# Project YAML file
+src/hapi/pipelines/app/project_configuration.yaml
 
 #OS Files
 *DS_Store
-src/hapi/pipelines/app/project_configuration.yaml
