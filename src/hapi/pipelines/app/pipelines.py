@@ -43,7 +43,11 @@ class Pipelines:
         self.sector = Sector(session=session, datasetinfo=configuration["sector"])
         self.operational_presence = OperationalPresence(
             session=session,
-            datasetinfo=configuration["operational_presence"]
+            datasetinfo=configuration["operational_presence"],
+            admins=self.admins,
+            org=self.org,
+            org_type=self.org_type,
+            sector=self.sector,
         )
 
         Sources.set_default_source_date_format("%Y-%m-%d")
@@ -98,9 +102,4 @@ class Pipelines:
         # TODO: Add population and 3W here
         self.org_type.populate()
         self.sector.populate()
-        self.operational_presence.populate(
-            admins=self.admins,
-            org=self.org,
-            org_type=self.org_type,
-            sector=self.sector,
-        )
+        self.operational_presence.populate()
