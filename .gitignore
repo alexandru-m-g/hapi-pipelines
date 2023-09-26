@@ -167,3 +167,4 @@ src/hapi/pipelines/_version.py
 
 #OS Files
 *DS_Store
+src/hapi/pipelines/app/project_configuration.yaml

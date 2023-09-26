@@ -5,6 +5,7 @@ import logging
 from os import getenv
 from typing import List, Optional
 
+import yaml
 from hdx.api.configuration import Configuration
 from hdx.database import Database
 from hdx.database.dburi import get_params_from_connection_uri
@@ -61,6 +62,19 @@ def parse_args():
         help="Use saved data",
     )
     return parser.parse_args()
+
+
+def compile_YAMLs(config_files):
+    project_config = {}
+    for config_file in config_files:
+        file_address = script_dir_plus_file(f"../configs/{config_file}", main)
+        with open(file_address) as file:
+            config = yaml.safe_load(file)
+        project_config = project_config | config
+
+    output_address = script_dir_plus_file("project_configuration.yaml", main)
+    with open(output_address, "w") as file:
+        yaml.dump(project_config, file)
 
 
 def main(
@@ -151,6 +165,8 @@ if __name__ == "__main__":
         scrapers_to_run = args.scrapers.split(",")
     else:
         scrapers_to_run = None
+    project_configs = ["core.yaml", "population.yaml"]
+    compile_YAMLs(project_configs)
     project_config_yaml = script_dir_plus_file(
         "project_configuration.yaml", main
     )
