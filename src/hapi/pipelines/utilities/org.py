@@ -31,6 +31,8 @@ class Org:
         )
         self._session.add(org_row)
         self._session.commit()
-        results = self._session.execute(select(DBOrg.id, DBOrg.acronym, DBOrg.name, DBOrg.org_type_code))
+        results = self._session.execute(
+            select(DBOrg.id, DBOrg.acronym, DBOrg.name, DBOrg.org_type_code)
+        )
         for result in results:
             self.data[(result[1], result[2], result[3])] = result[0]

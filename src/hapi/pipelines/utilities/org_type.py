@@ -1,9 +1,9 @@
 import logging
 from typing import Dict
 
+from hdx.scraper.base_scraper import BaseScraper
 from sqlalchemy.orm import Session
 
-from hdx.scraper.base_scraper import BaseScraper
 from hapi.pipelines.database.db_orgtype import DBOrgType
 
 logger = logging.getLogger(__name__)

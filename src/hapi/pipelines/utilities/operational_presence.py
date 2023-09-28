@@ -1,18 +1,18 @@
 """Functions specific to the operational presence theme."""
-import hxl
-
 from logging import getLogger
 from typing import Dict
 
+import hxl
+from hdx.scraper.base_scraper import BaseScraper
 from sqlalchemy.orm import Session
 
-from hdx.scraper.base_scraper import BaseScraper
-from hapi.pipelines.database.db_operational_presence import DBOperationalPresence
+from hapi.pipelines.database.db_operational_presence import (
+    DBOperationalPresence,
+)
 from hapi.pipelines.utilities.admins import (
     Admins,
     get_admin2_to_admin1_connector_code,
 )
-# from hapi.pipelines.utilities.metadata import Metadata
 from hapi.pipelines.utilities.org import Org
 from hapi.pipelines.utilities.org_type import OrgType
 from hapi.pipelines.utilities.sector import Sector
@@ -21,7 +21,6 @@ logger = getLogger(__name__)
 
 
 class OperationalPresence(BaseScraper):
-
     def __init__(
         self,
         session: Session,
@@ -47,8 +46,11 @@ class OperationalPresence(BaseScraper):
         reader = self.get_reader()
         reader.read_hdx_metadata(self.datasetinfo)
         data = hxl.data(self.datasetinfo["url"])
-        if "#org" not in data.tags or "#sector" not in data.tags or (
-                "#adm1" not in data.tags and "#adm2" not in data.tags):
+        if (
+            "#org" not in data.tags
+            or "#sector" not in data.tags
+            or ("#adm1" not in data.tags and "#adm2" not in data.tags)
+        ):
             logger.warning("Missing #org, #sector, or #adm1/#adm2")
         admin_info = _prescan_adms(data.columns)
         org_info = _prescan_orgs(data.columns)
@@ -71,7 +73,7 @@ class OperationalPresence(BaseScraper):
                 "#org+name": org_name,
                 "#org+acronym": org_acronym,
                 "#org+type": org_type,
-                "#sector": sector
+                "#sector": sector,
             }
             self.data.append(newrow)
 
@@ -97,9 +99,10 @@ class OperationalPresence(BaseScraper):
                 logger.error(f"Org type {org_type_name} not in table")
             # TODO: find out how unique orgs are. Currently checking that combo of acronym/name/type is unique
             if (
-                    org_acronym is not None
-                    and org_name is not None
-                    and (org_acronym, org_name, org_type_code) not in self._org.data
+                org_acronym is not None
+                and org_name is not None
+                and (org_acronym, org_name, org_type_code)
+                not in self._org.data
             ):
                 self._org.populate_single(
                     acronym=org_acronym,
@@ -154,7 +157,7 @@ class OperationalPresence(BaseScraper):
 
 
 def _prescan_adms(cols):
-    """ Prescan columns to figure out where we're going to pull our admin information
+    """Prescan columns to figure out where we're going to pull our admin information
 
     The result is a dict with the keys 'adm2_pcode', 'adm2_name', 'adm1_pcode', and 'adm1_name' pointing to the
     zero-based column numbers containing the info (if present). At least one will always be present. If there is no
@@ -175,7 +178,7 @@ def _prescan_adms(cols):
 
 
 def _prescan_orgs(cols):
-    """ Prescan columns to figure out where we're going to pull our organisation information
+    """Prescan columns to figure out where we're going to pull our organisation information
 
     The result is a dict with the keys 'name', 'acronym', 'type', and 'sector' pointing to the zero-based
     column numbers containing the name and acronym (if present). At least one of 'name' or 'acronym' will
@@ -184,7 +187,11 @@ def _prescan_orgs(cols):
 
     result = {}
     for i, col in enumerate(cols):
-        if col.tag == "#org" and ("acronym" not in col.attributes) and ("type" not in col.attributes):
+        if (
+            col.tag == "#org"
+            and ("acronym" not in col.attributes)
+            and ("type" not in col.attributes)
+        ):
             result["name"] = i
         if col.tag == "#org" and "acronym" in col.attributes:
             result["acronym"] = i
@@ -196,7 +203,7 @@ def _prescan_orgs(cols):
 
 
 def _get_row_value(row, info, key):
-    """ Look up a value by position using key in info
+    """Look up a value by position using key in info
     This function uses the indices produced by prescan_orgs or prescan_adms, above.
     """
     if key in info:

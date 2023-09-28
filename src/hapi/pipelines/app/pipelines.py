@@ -39,8 +39,12 @@ class Pipelines:
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
 
         self.org = Org(session=session)
-        self.org_type = OrgType(session=session, datasetinfo=configuration["org_type"])
-        self.sector = Sector(session=session, datasetinfo=configuration["sector"])
+        self.org_type = OrgType(
+            session=session, datasetinfo=configuration["org_type"]
+        )
+        self.sector = Sector(
+            session=session, datasetinfo=configuration["sector"]
+        )
         self.operational_presence = OperationalPresence(
             session=session,
             datasetinfo=configuration["operational_presence"],
