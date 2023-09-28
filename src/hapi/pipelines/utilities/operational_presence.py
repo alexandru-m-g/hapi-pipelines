@@ -40,18 +40,18 @@ class OperationalPresence(BaseScraper):
         self._org = org
         self._org_type = org_type
         self._sector = sector
-        self.data = []
+        self._scraped_data = []
 
     def run(self):
         reader = self.get_reader()
         reader.read_hdx_metadata(self.datasetinfo)
         data = hxl.data(self.datasetinfo["url"])
-        if (
-            "#org" not in data.tags
-            or "#sector" not in data.tags
-            or ("#adm1" not in data.tags and "#adm2" not in data.tags)
-        ):
-            logger.warning("Missing #org, #sector, or #adm1/#adm2")
+        if "#org" not in data.tags:
+            logger.warning("Missing #org")
+        if "#sector" not in data.tags:
+            logger.warning("Missing #sector")
+        if "#adm1" not in data.tags and "#adm2" not in data.tags:
+            logger.warning("Missing #adm1/#adm2")
         admin_info = _prescan_adms(data.columns)
         org_info = _prescan_orgs(data.columns)
         for row in data:
@@ -75,7 +75,7 @@ class OperationalPresence(BaseScraper):
                 "#org+type": org_type,
                 "#sector": sector,
             }
-            self.data.append(newrow)
+            self._scraped_data.append(newrow)
 
     def populate(self):
         logger.info("Populating operational presence table")
@@ -83,7 +83,7 @@ class OperationalPresence(BaseScraper):
         resource_ref = hapi_metadata["hdx_id"]
         reference_period_start = hapi_metadata["reference_period"]["startdate"]
         reference_period_end = hapi_metadata["reference_period"]["enddate"]
-        for row in self.data:
+        for row in self._scraped_data:
             admin_code = row.get("#adm2+code")
             admin_level = "2"
             if not admin_code:
