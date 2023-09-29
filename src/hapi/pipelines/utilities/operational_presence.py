@@ -21,6 +21,7 @@ logger = getLogger(__name__)
 class OperationalPresence(BaseScraper):
     def __init__(
         self,
+        country_code: str,
         session: Session,
         datasetinfo: Dict,
         admins: Admins,
@@ -29,7 +30,7 @@ class OperationalPresence(BaseScraper):
         sector: Sector,
     ):
         super().__init__(
-            "operational_presence",
+            f"operational_presence_{country_code}",
             datasetinfo,
             dict(),
         )

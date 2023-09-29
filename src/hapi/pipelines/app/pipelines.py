@@ -51,14 +51,21 @@ class Pipelines:
         self.sector = Sector(
             session=session, datasetinfo=configuration["sector"]
         )
-        self.operational_presence = OperationalPresence(
-            session=session,
-            datasetinfo=configuration["operational_presence"],
-            admins=self.admins,
-            org=self.org,
-            org_type=self.org_type,
-            sector=self.sector,
-        )
+        # A list
+        self.operational_presence = [
+            OperationalPresence(
+                country_code=country_code.lower(),
+                session=session,
+                datasetinfo=configuration[
+                    f"operational_presence_{country_code.lower()}"
+                ],
+                admins=self.admins,
+                org=self.org,
+                org_type=self.org_type,
+                sector=self.sector,
+            )
+            for country_code in self.configuration["HAPI_countries"]
+        ]
         self.gender = Gender(
             session=session,
             gender_descriptions=configuration["gender_descriptions"],
@@ -75,11 +82,7 @@ class Pipelines:
         self.configurable_scrapers = dict()
         self.create_configurable_scrapers()
         self.runner.add_customs(
-            (
-                self.org_type,
-                self.sector,
-                self.operational_presence,
-            )
+            (self.org_type, self.sector, *self.operational_presence)
         )
         self.metadata = Metadata(runner=self.runner, session=session)
 
@@ -115,7 +118,8 @@ class Pipelines:
         self.metadata.populate()
         self.org_type.populate()
         self.sector.populate()
-        self.operational_presence.populate()
+        for scraper in self.operational_presence:
+            scraper.populate()
         self.gender.populate()
         results = self.runner.get_hapi_results()
         population = Population(
