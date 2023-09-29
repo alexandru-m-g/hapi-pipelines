@@ -54,6 +54,8 @@ class OperationalPresence(BaseScraper):
                     self.datasetinfo[country]["output"],
                 ):
                     newrow[output_header] = row[input_header]
+                if newrow in self._scraped_data[country]:
+                    continue
                 self._scraped_data[country].append(newrow)
 
     def add_sources(self):
