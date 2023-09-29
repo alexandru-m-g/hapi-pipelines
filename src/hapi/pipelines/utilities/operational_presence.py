@@ -2,12 +2,10 @@
 from logging import getLogger
 from typing import Dict
 
+from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.scraper.base_scraper import BaseScraper
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.db_operational_presence import (
-    DBOperationalPresence,
-)
 from hapi.pipelines.utilities.admins import (
     Admins,
     get_admin1_to_location_connector_code,
@@ -74,11 +72,13 @@ class OperationalPresence(BaseScraper):
                 # TODO: fuzzy match names to pcodes
                 admin_code = row.get("adm2_code")
                 admin_level = "admintwo"
+                admin_data = self._admins.admin2_data
                 if not admin_code:
                     admin_code = row.get("#adm1+code")
                     admin_level = "adminone"
+                    admin_data = self._admins.admin1_data
                 admin_code = admin_code.strip().upper()
-                if not self._admins.data[admin_code]:
+                if not admin_data[admin_code]:
                     # TODO: what do we do if the pcode isn't in admins?
                     logger.error(f"Admin unit {admin_code} not in admin table")
                 org_name = row.get("org_name")
@@ -97,7 +97,7 @@ class OperationalPresence(BaseScraper):
                 ):
                     self._org.populate_single(
                         acronym=org_acronym,
-                        orgname=org_name,
+                        org_name=org_name,
                         org_type=org_type_code,
                         reference_period_start=reference_period_start,
                         reference_period_end=reference_period_end,

@@ -1,9 +1,8 @@
 import logging
 
+from hapi_schema.db_org import DBOrg
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from hapi.pipelines.database.db_org import DBOrg
 
 logger = logging.getLogger(__name__)
 

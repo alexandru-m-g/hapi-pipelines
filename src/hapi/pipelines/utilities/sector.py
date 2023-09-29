@@ -1,11 +1,10 @@
 import logging
 from typing import Dict
 
+from hapi_schema.db_sector import DBSector
 from hdx.scraper.base_scraper import BaseScraper
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
-
-from hapi.pipelines.database.db_sector import DBSector
 
 logger = logging.getLogger(__name__)
 
