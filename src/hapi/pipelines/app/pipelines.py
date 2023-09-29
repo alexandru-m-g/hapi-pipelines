@@ -102,6 +102,7 @@ class Pipelines:
     def output(self):
         self.locations.populate()
         self.admins.populate()
+        # TODO: Add hapi metadata from 3W (doesn't currently work as it's multiple datasets)
         self.metadata.populate()
         # TODO: Add population and 3W here
         self.org_type.populate()

@@ -62,15 +62,86 @@ org_type:
   headers: 2
 
 operational_presence:
-  dataset: "iraq-humanitarian-operational-presence-3w"
-  resource: "iraq_3w_jan-to-dec_2022_longtable_20230124.xlsx"
-  format: "xlsx"
-  sheet: "3W longtable Jan-Dec 2022 "
-  headers: 2
-  use_hxl: True
-  source_date:
-    start: "01/01/2022"
-    end: "31/12/2022"
+  afg:
+    dataset: "afghanistan-who-does-what-where-january-to-march-2023"
+    resource: "afghanistan-3w-operational-presence-january-march-2023.csv"
+    format: "csv"
+    headers: 2
+    source_date:
+      start: "01/01/2023"
+      end: "31/03/2022"
+    input:
+      - "#adm2+code"
+      - "#org +name"
+      - "#org +acronym"
+      - "#org +type +name"
+      - "#sector +cluster +name"
+    output:
+      - "adm2_code"
+      - "org_name"
+      - "org_acronym"
+      - "org_type_name"
+      - "sector_name"
+    output_hxl:
+      - "#adm2+code"
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type+name"
+      - "#sector+name"
+  mli:
+    dataset: "mali-operational-presence"
+    resource: "MALI_3W_June_2023"
+    format: "xlsx"
+    sheet: "ML_5W"
+    headers: 1
+    source_date:
+      start: "01/01/2023"
+      end: "31/03/2022"
+    input:
+      - "admin2Pcod"
+      - "Nom Organisation"
+      - "Organisation Accronyme"
+      - "Type Organisation"
+      - "Cluster"
+    output:
+      - "adm2_code"
+      - "org_name"
+      - "org_acronym"
+      - "org_type_name"
+      - "sector_name"
+    output_hxl:
+      - "#adm2+code"
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type+name"
+      - "#sector+name"
+  nga:
+    dataset: "nigeria-3w"
+    resource: "who-is-doing-what-and-where_nga_3w_apr_jun_2023"
+    format: "xlsx"
+    sheet: "NGA_3Ws_Apr_Jun_2023"
+    headers: 2
+    source_date:
+      start: "01/04/2022"
+      end: "30/06/2022"
+    input:
+      - "#adm2 +code"
+      - "#org+name"
+      - "#org +acronym"
+      - "#org +type"
+      - "#sector"
+    output:
+      - "adm2_code"
+      - "org_name"
+      - "org_acronym"
+      - "org_type_name"
+      - "sector_code"
+    output_hxl:
+      - "#adm2+code"
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type+name"
+      - "#sector+code"
 
 countries:
   - ABW
