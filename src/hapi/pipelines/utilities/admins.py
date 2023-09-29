@@ -3,19 +3,20 @@ from abc import ABC
 from typing import Dict, List, Literal
 
 import hxl
+from hapi_schema.db_admin1 import DBAdmin1
+from hapi_schema.db_admin2 import DBAdmin2
+from hapi_schema.db_location import DBLocation
 from hdx.utilities.dateparse import parse_date
 from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.db_admin1 import DBAdmin1
-from hapi.pipelines.database.db_admin2 import DBAdmin2
-from hapi.pipelines.database.db_location import DBLocation
 from hapi.pipelines.utilities.locations import Locations
 
 logger = logging.getLogger(__name__)
 
 _ADMIN_LEVELS = ("1", "2")
+_ADMIN_LEVELS_LITERAL = Literal["1", "2"]
 
 
 class Admins:
@@ -31,28 +32,31 @@ class Admins:
         self._session = session
         self._locations = locations
         self._libhxl_dataset = libhxl_dataset
-        self.data = {}
+        self.admin1_data = {}
+        self.admin2_data = {}
 
     def populate(self):
+        logger.info("Populating admin1 table")
         self._update_admin_table(
             desired_admin_level="1",
             parent_dict=self._locations.data,
         )
         self._add_admin1_connector_rows()
         results = self._session.execute(select(DBAdmin1.id, DBAdmin1.code))
-        self.data = {result[1]: result[0] for result in results}
+        self.admin1_data = {result[1]: result[0] for result in results}
+        logger.info("Populating admin2 table")
         self._update_admin_table(
             desired_admin_level="2",
-            parent_dict=self.data,
+            parent_dict=self.admin1_data,
         )
         self._add_admin2_connector_rows()
         results = self._session.execute(select(DBAdmin2.id, DBAdmin2.code))
         for result in results:
-            self.data[result[1]] = result[0]
+            self.admin2_data[result[1]] = result[0]
 
     def _update_admin_table(
         self,
-        desired_admin_level: Literal[_ADMIN_LEVELS],
+        desired_admin_level: _ADMIN_LEVELS_LITERAL,
         parent_dict: Dict,
     ):
         if desired_admin_level not in _ADMIN_LEVELS:
@@ -74,7 +78,7 @@ class Admins:
                     desired_admin_level == "2"
                     and code in self._orphan_admin2s.keys()
                 ):
-                    parent_ref = self.data[
+                    parent_ref = self.admin1_data[
                         get_admin1_to_location_connector_code(
                             location_code=self._orphan_admin2s[code]
                         )
@@ -122,7 +126,7 @@ class Admins:
         self._session.commit()
 
     def _add_admin2_connector_rows(self):
-        for admin1_code, admin1_ref in self.data.items():
+        for admin1_code, admin1_ref in self.admin1_data.items():
             reference_period_start = (
                 self._session.query(DBAdmin1)
                 .filter(DBAdmin1.id == admin1_ref)
@@ -140,6 +144,14 @@ class Admins:
             )
             self._session.add(admin_row)
         self._session.commit()
+
+    def get_admin_level(self, pcode: str) -> _ADMIN_LEVELS_LITERAL:
+        """Given a pcode, return the admin level."""
+        if pcode in self.admin1_data:
+            return "1"
+        elif pcode in self.admin2_data:
+            return "2"
+        raise ValueError(f"Pcode {pcode} not in admin1 or admin2 tables.")
 
 
 def get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
@@ -168,7 +180,7 @@ class _AdminFilter(AbstractStreamingFilter, ABC):
     def __init__(
         self,
         source: hxl.Dataset,
-        desired_admin_level: Literal[_ADMIN_LEVELS],
+        desired_admin_level: _ADMIN_LEVELS_LITERAL,
         country_codes: List[str],
     ):
         self._desired_admin_level = desired_admin_level
