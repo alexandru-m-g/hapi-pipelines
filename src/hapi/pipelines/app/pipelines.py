@@ -9,11 +9,14 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.utilities.admins import Admins
+from hapi.pipelines.utilities.age_range import AgeRange
+from hapi.pipelines.utilities.gender import Gender
 from hapi.pipelines.utilities.locations import Locations
 from hapi.pipelines.utilities.metadata import Metadata
 from hapi.pipelines.utilities.operational_presence import OperationalPresence
 from hapi.pipelines.utilities.org import Org
 from hapi.pipelines.utilities.org_type import OrgType
+from hapi.pipelines.utilities.population import Population
 from hapi.pipelines.utilities.sector import Sector
 
 
@@ -26,16 +29,19 @@ class Pipelines:
         scrapers_to_run: Optional[ListTuple[str]] = None,
         errors_on_exit: Optional[ErrorsOnExit] = None,
         use_live: bool = True,
-        fallbacks_root: Optional[str] = None,
     ):
         self.configuration = configuration
         self.session = session
-        self.locations = Locations(configuration, session, use_live)
+        self.locations = Locations(
+            configuration=configuration, session=session, use_live=use_live
+        )
         libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
         )
+        self.adminone = AdminLevel(admin_level=1)
         self.admintwo = AdminLevel(admin_level=2)
+        self.adminone.setup_from_libhxl_dataset(libhxl_dataset)
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
 
         self.org = Org(session=session)
@@ -53,19 +59,20 @@ class Pipelines:
             org_type=self.org_type,
             sector=self.sector,
         )
+        self.gender = Gender(
+            session=session,
+            gender_descriptions=configuration["gender_descriptions"],
+        )
+        self.age_range = AgeRange(session=session)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
-            configuration["HRPs"],
+            configuration["HAPI_countries"],
             today,
             errors_on_exit=errors_on_exit,
             scrapers_to_run=scrapers_to_run,
         )
         self.configurable_scrapers = dict()
-        self.metadata = Metadata(runner=self.runner, session=session)
-
-        if fallbacks_root is not None:
-            pass
         self.create_configurable_scrapers()
         self.runner.add_customs(
             (
@@ -74,6 +81,7 @@ class Pipelines:
                 self.operational_presence,
             )
         )
+        self.metadata = Metadata(runner=self.runner, session=session)
 
     def create_configurable_scrapers(self):
         def _create_configurable_scrapers(
@@ -94,6 +102,7 @@ class Pipelines:
             )
 
         _create_configurable_scrapers("national")
+        _create_configurable_scrapers("adminone", adminlevel=self.adminone)
         _create_configurable_scrapers("admintwo", adminlevel=self.admintwo)
 
     def run(self):
@@ -104,7 +113,16 @@ class Pipelines:
         self.admins.populate()
         # TODO: Add hapi metadata from 3W (doesn't currently work as it's multiple datasets)
         self.metadata.populate()
-        # TODO: Add population and 3W here
         self.org_type.populate()
         self.sector.populate()
         self.operational_presence.populate()
+        self.gender.populate()
+        results = self.runner.get_hapi_results()
+        population = Population(
+            session=self.session,
+            metadata=self.metadata,
+            admins=self.admins,
+            gender=self.gender,
+            age_range=self.age_range,
+        )
+        population.populate(results=results)

@@ -34,9 +34,11 @@ classifiers = [
 requires-python = ">=3.8"
 
 dependencies = [
-    "hdx-python-scraper@git+ssh://git@github.com/OCHA-DAP/hdx-python-scraper@hapi_metadata#egg=hdx-python-scraper",
-    "hdx-python-country@git+ssh://git@github.com/OCHA-DAP/hdx-python-country@admin_dataset#egg=hdx-python-country",
-    "hdx-python-database[postgresql]>= 1.2.6",
+    "hdx-python-scraper>= 2.2.0",
+    "hdx-python-country>= 3.5.5",
+    "hdx-python-database[postgresql]>= 1.2.7",
+    "sqlalchemy",
+    "hapi-schema"
 ]
 dynamic = ["version"]
 

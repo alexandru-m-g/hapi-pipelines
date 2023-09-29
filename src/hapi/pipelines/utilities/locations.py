@@ -1,10 +1,9 @@
 from typing import Dict
 
+from hapi_schema.db_location import DBLocation
 from hdx.location.country import Country
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
-
-from hapi.pipelines.database.db_location import DBLocation
 
 
 class Locations:
@@ -16,14 +15,14 @@ class Locations:
             country_name_overrides=configuration["country_name_overrides"],
             country_name_mappings=configuration["country_name_mappings"],
         )
-        self.hrps = configuration["HRPs"]
+        self._hapi_countries = configuration["HAPI_countries"]
         self.session = session
         self.data = {}
 
     def populate(self):
         for country in Country.countriesdata()["countries"].values():
             code = country["#country+code+v_iso3"]
-            if code not in self.hrps:
+            if code not in self._hapi_countries:
                 continue
             location_row = DBLocation(
                 code=code,
