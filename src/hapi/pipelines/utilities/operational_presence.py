@@ -53,6 +53,11 @@ class OperationalPresence(BaseScraper):
                 self.datasetinfo["output"],
             ):
                 newrow[output_header] = row[input_header]
+            # TODO: This is necessary because if the data is at the admin3
+            #  level, there will be several duplicates. We should handle
+            #  this better, e.g. define a level for each 3W file if possible.
+            if newrow in self._scraped_data:
+                continue
             self._scraped_data.append(newrow)
 
     def add_sources(self):
