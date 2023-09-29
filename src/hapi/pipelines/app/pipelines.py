@@ -51,7 +51,7 @@ class Pipelines:
         self.sector = Sector(
             session=session, datasetinfo=configuration["sector"]
         )
-        # A list
+        # TODO: make this a single scraper once metadata issue is solved
         self.operational_presence = [
             OperationalPresence(
                 country_code=country_code.lower(),
@@ -118,6 +118,7 @@ class Pipelines:
         self.metadata.populate()
         self.org_type.populate()
         self.sector.populate()
+        # TODO: make this a single scraper once metadata issue is solved
         for scraper in self.operational_presence:
             scraper.populate()
         self.gender.populate()

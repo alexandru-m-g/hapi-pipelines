@@ -41,6 +41,7 @@ class OperationalPresence(BaseScraper):
         self._sector = sector
         self._scraped_data = {}
 
+    # TODO: make this handle all countries once metadata issue is solved
     def run(self):
         reader = self.get_reader()
         self._scraped_data = []
@@ -57,6 +58,7 @@ class OperationalPresence(BaseScraper):
     def add_sources(self):
         return
 
+    # TODO: make this handle all countries once metadata issue is solved
     def populate(self):
         logger.info("Populating operational presence table")
         resource_ref = self.datasetinfo["hapi_resource_metadata"]["hdx_id"]
