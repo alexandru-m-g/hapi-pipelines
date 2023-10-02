@@ -165,7 +165,11 @@ if __name__ == "__main__":
         scrapers_to_run = args.scrapers.split(",")
     else:
         scrapers_to_run = None
-    project_configs = ["core.yaml", "population.yaml"]
+    project_configs = [
+        "core.yaml",
+        "population.yaml",
+        "operational_presence.yaml",
+    ]
     compile_YAMLs(project_configs)
     project_config_yaml = script_dir_plus_file(
         "project_configuration.yaml", main

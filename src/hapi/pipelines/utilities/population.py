@@ -4,13 +4,10 @@ import re
 from logging import getLogger
 from typing import Dict
 
+from hapi_schema.db_population import DBPopulation
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.db_population import DBPopulation
-from hapi.pipelines.utilities.admins import (
-    Admins,
-    get_admin2_to_admin1_connector_code,
-)
+from hapi.pipelines.utilities import admins
 from hapi.pipelines.utilities.age_range import AgeRange
 from hapi.pipelines.utilities.gender import Gender
 from hapi.pipelines.utilities.metadata import Metadata
@@ -27,7 +24,7 @@ class Population:
         self,
         session: Session,
         metadata: Metadata,
-        admins: Admins,
+        admins: admins.Admins,
         gender: Gender,
         age_range: AgeRange,
     ):
@@ -73,14 +70,29 @@ class Population:
                             age_range_code=age_range_code
                         )
                     for admin_code, value in values.items():
+                        if admin_level == "national":
+                            admin1_code = (
+                                admins.get_admin1_to_location_connector_code(
+                                    admin_code
+                                )
+                            )
+                            admin2_code = (
+                                admins.get_admin2_to_admin1_connector_code(
+                                    admin1_code
+                                )
+                            )
                         if admin_level == "adminone":
-                            admin2_code = get_admin2_to_admin1_connector_code(
-                                admin1_code=admin_code
+                            admin2_code = (
+                                admins.get_admin2_to_admin1_connector_code(
+                                    admin1_code=admin_code
+                                )
                             )
                         elif admin_level == "admintwo":
                             admin2_code = admin_code
                         population_row = DBPopulation(
-                            resource_ref=resource_id,
+                            resource_ref=self._metadata.resource_data[
+                                resource_id
+                            ],
                             admin2_ref=self._admins.admin2_data[admin2_code],
                             gender_code=gender_code,
                             age_range_code=age_range_code,
