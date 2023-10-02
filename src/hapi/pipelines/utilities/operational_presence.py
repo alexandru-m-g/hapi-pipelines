@@ -11,6 +11,7 @@ from hapi.pipelines.utilities.admins import (
     get_admin1_to_location_connector_code,
     get_admin2_to_admin1_connector_code,
 )
+from hapi.pipelines.utilities.metadata import Metadata
 from hapi.pipelines.utilities.org import Org
 from hapi.pipelines.utilities.org_type import OrgType
 from hapi.pipelines.utilities.sector import Sector
@@ -64,9 +65,11 @@ class OperationalPresence(BaseScraper):
         return
 
     # TODO: make this handle all countries once metadata issue is solved
-    def populate(self):
+    def populate(self, metadata: Metadata):
         logger.info("Populating operational presence table")
-        resource_ref = self.datasetinfo["hapi_resource_metadata"]["hdx_id"]
+        resource_ref = metadata.resource_data[
+            self.datasetinfo["hapi_resource_metadata"]["hdx_id"]
+        ]
         reference_period_start = self.datasetinfo["hapi_dataset_metadata"][
             "reference_period"
         ]["startdate"]
@@ -122,6 +125,7 @@ class OperationalPresence(BaseScraper):
                 # logger.error(
                 #    f"Sector {sector_name, sector_code} not in table"
                 # )
+                sector_code = 1
             if admin_level == "national":
                 admin1_code = get_admin1_to_location_connector_code(admin_code)
                 admin2_code = get_admin2_to_admin1_connector_code(admin1_code)
