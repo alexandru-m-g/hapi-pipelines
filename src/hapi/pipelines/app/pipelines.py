@@ -120,7 +120,7 @@ class Pipelines:
         self.sector.populate()
         # TODO: make this a single scraper once metadata issue is solved
         for scraper in self.operational_presence:
-            scraper.populate()
+            scraper.populate(metadata=self.metadata)
         self.gender.populate()
         results = self.runner.get_hapi_results()
         population = Population(
