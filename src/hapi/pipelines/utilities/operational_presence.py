@@ -125,7 +125,6 @@ class OperationalPresence(BaseScraper):
                 # logger.error(
                 #    f"Sector {sector_name, sector_code} not in table"
                 # )
-                sector_code = 1
             if admin_level == "national":
                 admin1_code = get_admin1_to_location_connector_code(admin_code)
                 admin2_code = get_admin2_to_admin1_connector_code(admin1_code)
