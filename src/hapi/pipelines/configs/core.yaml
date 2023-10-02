@@ -26,3 +26,15 @@ gender_descriptions:
   f: "female"
   m: "male"
   x: "non-binary"
+
+sector:
+  dataset: "global-coordination-groups-beta"
+  resource: "Global Coordination Groups (Beta) CSV"
+  format: "csv"
+  headers: 2
+
+org_type:
+  dataset: "organization-types-beta"
+  resource: "Organization Types (Beta) - CSV"
+  format: "csv"
+  headers: 2
