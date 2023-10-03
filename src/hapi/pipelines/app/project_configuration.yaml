@@ -943,7 +943,7 @@ org_type:
   format: "csv"
   headers: 2
 
-# TODO: combine all OP scrapers once metadata issue solved
+# TODO: combine all OP scrapers once metadata issue solved (HAPI-184)
 operational_presence_afg:
   dataset: "afghanistan-who-does-what-where-january-to-march-2023"
   resource: "afghanistan-3w-operational-presence-january-march-2023.csv"

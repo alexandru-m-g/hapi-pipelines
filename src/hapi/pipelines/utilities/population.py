@@ -99,7 +99,7 @@ class Population:
                             population=int(value),
                             reference_period_start=reference_period_start,
                             reference_period_end=reference_period_end,
-                            # TODO: For v2+, add to scraper
+                            # TODO: For v2+, add to scraper (HAPI-199)
                             source_data="not yet implemented",
                         )
 
@@ -108,7 +108,7 @@ class Population:
 
 
 def _validate_hxl_tag(hxl_tag: str) -> bool:
-    # TODO: add these definitions in a more central location
+    # TODO: add these definitions in a more central location (HAPI-196)
     """Validate HXL tags
 
     Assume they have the form:
@@ -119,7 +119,7 @@ def _validate_hxl_tag(hxl_tag: str) -> bool:
         #population+f+age_5_12
         #population+f+age_80_plus
     """
-    # TODO: add tests for this
+    # TODO: add tests for this (HAPI-154)
     return bool(_HXL_PATTERN.match(hxl_tag))
 
 
