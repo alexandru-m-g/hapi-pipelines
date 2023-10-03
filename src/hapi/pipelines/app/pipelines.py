@@ -63,6 +63,8 @@ class Pipelines:
                 org=self.org,
                 org_type=self.org_type,
                 sector=self.sector,
+                sector_map=configuration["sector_map"],
+                org_type_map=configuration["org_type_map"],
             )
             for country_code in self.configuration["HAPI_countries"]
         ]

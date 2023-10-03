@@ -1,6 +1,7 @@
 """Functions specific to the operational presence theme."""
 from logging import getLogger
 from typing import Dict
+from unicodedata import normalize
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.scraper.base_scraper import BaseScraper
@@ -29,6 +30,8 @@ class OperationalPresence(BaseScraper):
         org: Org,
         org_type: OrgType,
         sector: Sector,
+        sector_map: Dict,
+        org_type_map: Dict,
     ):
         super().__init__(
             f"operational_presence_{country_code}",
@@ -41,6 +44,8 @@ class OperationalPresence(BaseScraper):
         self._org_type = org_type
         self._sector = sector
         self._scraped_data = {}
+        self._sector_map = sector_map
+        self._org_type_map = org_type_map
 
     # TODO: make this handle all countries once metadata issue is solved
     def run(self):
@@ -114,10 +119,9 @@ class OperationalPresence(BaseScraper):
                 )
             sector_name = row.get("sector_name")
             sector_code = row.get("sector_code")
-            if not sector_name:
-                sector_name = self._get_sector_info(sector_code, "code")
-            if not sector_code:
-                sector_code = self._get_sector_info(sector_name, "name")
+            sector_name, sector_code = self._get_sector_info(
+                sector_name, sector_code
+            )
             if sector_code == "" or sector_name == "":
                 # TODO: What do we do if the sector is not in the sector table?
                 # TODO: remove for now
@@ -148,20 +152,51 @@ class OperationalPresence(BaseScraper):
         self._session.commit()
 
     def _get_org_type_code(self, org_type: str) -> str:
-        # TODO: implement fuzzy matching of org types
-        org_type_data = self._org_type.data
-        org_type_code = org_type_data.get(org_type, "")
+        org_type = normalize_string(org_type)
+        org_type_code = self._org_type.data.get(org_type)
+        if not org_type_code:
+            org_type_code = self._org_type_map.get(org_type.lower())
+        if not org_type_code:
+            # TODO: implement fuzzy matching of org types
+            org_type_code = ""
         return org_type_code
 
-    def _get_sector_info(self, sector_info: str, info_type: str) -> (str, str):
-        # TODO: implement fuzzy matching of sector names/codes
+    def _get_sector_info(
+        self, sector_name_start: str, sector_code_start: str
+    ) -> (str, str):
         sector_data = self._sector.data
         sector_names = {name: sector_data[name] for name in sector_data}
         sector_codes = {sector_data[name]: name for name in sector_data}
 
-        if info_type == "name":
-            sector_code = sector_names.get(sector_info, "")
-            return sector_code
-        if info_type == "code":
-            sector_name = sector_codes.get(sector_info, "")
-            return sector_name
+        if not sector_name_start and not sector_code_start:
+            return None, None
+
+        if sector_code_start:
+            sector_code = normalize_string(sector_code_start)
+            sector_code = sector_code.upper()
+            sector_name = sector_codes.get(sector_code)
+            if not sector_name:
+                sector_name = self._sector_map.get(sector_code.lower())
+            if not sector_name:
+                # TODO: implement fuzzy matching of sector codes
+                sector_name = ""
+            return sector_name, sector_code
+
+        if sector_name_start:
+            sector_name = normalize_string(sector_name_start)
+            sector_code = sector_names.get(sector_name)
+            if not sector_code:
+                sector_code = self._sector_map.get(sector_name.lower())
+            if not sector_code:
+                # TODO: implement fuzzy matching of sector names
+                sector_code = ""
+            return sector_name, sector_code
+
+
+def normalize_string(in_string):
+    out_string = (
+        normalize("NFKD", str(in_string))
+        .encode("ascii", "ignore")
+        .decode("ascii")
+    )
+    return out_string
