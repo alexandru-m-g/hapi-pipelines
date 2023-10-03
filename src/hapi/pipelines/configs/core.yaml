@@ -1,0 +1,40 @@
+# Collector specific configuration
+commit_limit: 1000
+
+scraper_national: []
+
+scraper_adminone: []
+
+scraper_admintwo: []
+
+HAPI_countries:
+  - AFG
+  - MLI
+  - NGA
+
+country_name_overrides:
+  BOL: "Bolivia"
+  VEN: "Venezuela"
+
+country_name_mappings:
+  "Congo DR": "COD"
+
+orphan_admin2s:
+  SS0001: "SSD"
+
+gender_descriptions:
+  f: "female"
+  m: "male"
+  x: "non-binary"
+
+sector:
+  dataset: "global-coordination-groups-beta"
+  resource: "Global Coordination Groups (Beta) CSV"
+  format: "csv"
+  headers: 2
+
+org_type:
+  dataset: "organization-types-beta"
+  resource: "Organization Types (Beta) - CSV"
+  format: "csv"
+  headers: 2
