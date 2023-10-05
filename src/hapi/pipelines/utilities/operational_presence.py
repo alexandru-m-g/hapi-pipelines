@@ -155,6 +155,7 @@ class OperationalPresence(BaseScraper):
             org_type_code = self._org_type_map.get(org_type.lower())
         if not org_type_code:
             # TODO: implement fuzzy matching of org types
+            #  (HAPI-194)
             org_type_code = ""
         return org_type_code
 
@@ -165,6 +166,7 @@ class OperationalPresence(BaseScraper):
             sector_code = self._sector_map.get(sector.lower())
         if not sector_code:
             # TODO: implement fuzzy matching of sector codes
+            #  (HAPI-193)
             sector_code = ""
         return sector_code
 
