@@ -52,6 +52,7 @@ class Pipelines:
             session=session, datasetinfo=configuration["sector"]
         )
         # TODO: make this a single scraper once metadata issue is solved
+        #  (HAPI-184)
         self.operational_presence = [
             OperationalPresence(
                 country_code=country_code.lower(),
@@ -114,11 +115,13 @@ class Pipelines:
     def output(self):
         self.locations.populate()
         self.admins.populate()
-        # TODO: Add hapi metadata from 3W (doesn't currently work as it's multiple datasets)
+        # TODO: Add hapi metadata from 3W (doesn't currently work as it's
+        #  multiple datasets) (HAPI-184)
         self.metadata.populate()
         self.org_type.populate()
         self.sector.populate()
         # TODO: make this a single scraper once metadata issue is solved
+        #  (HAPI-184)
         for scraper in self.operational_presence:
             scraper.populate(metadata=self.metadata)
         self.gender.populate()

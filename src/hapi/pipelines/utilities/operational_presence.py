@@ -43,6 +43,7 @@ class OperationalPresence(BaseScraper):
         self._scraped_data = {}
 
     # TODO: make this handle all countries once metadata issue is solved
+    #  (HAPI-184)
     def run(self):
         reader = self.get_reader()
         self._scraped_data = []
@@ -57,6 +58,7 @@ class OperationalPresence(BaseScraper):
             # TODO: This is necessary because if the data is at the admin3
             #  level, there will be several duplicates. We should handle
             #  this better, e.g. define a level for each 3W file if possible.
+            #  (HAPI-198)
             if newrow in self._scraped_data:
                 continue
             self._scraped_data.append(newrow)
@@ -65,6 +67,7 @@ class OperationalPresence(BaseScraper):
         return
 
     # TODO: make this handle all countries once metadata issue is solved
+    #  (HAPI-184)
     def populate(self, metadata: Metadata):
         logger.info("Populating operational presence table")
         resource_ref = metadata.resource_data[
@@ -77,7 +80,6 @@ class OperationalPresence(BaseScraper):
             "reference_period"
         ]["enddate"]
         for row in self._scraped_data:
-            # TODO: fuzzy match names to pcodes
             admin_code = row.get("adm2_code")
             admin_level = "admintwo"
             admin_data = self._admins.admin2_data
@@ -87,18 +89,18 @@ class OperationalPresence(BaseScraper):
                 admin_data = self._admins.admin1_data
             admin_code = admin_code.strip().upper()
             if not admin_data[admin_code]:
-                # TODO: what do we do if the pcode isn't in admins?
                 logger.error(f"Admin unit {admin_code} not in admin table")
             org_name = row.get("org_name")
             org_acronym = row.get("org_acronym")
             org_type_name = row.get("org_type_name")
             org_type_code = self._get_org_type_code(org_type_name)
             if org_type_code == "":
-                # TODO: What do we do if the org type is not in the org type table?
-                # TODO: skip for now because too many
-                pass
-                # logger.error(f"Org type {org_type_name} not in table")
-            # TODO: find out how unique orgs are. Currently checking that combo of acronym/name/type is unique
+                # TODO: Add fuzzy matching (HAPI-194)
+                org_type_code = None
+                logger.error(f"Org type {org_type_name} not in table")
+            # TODO: find out how unique orgs are. Currently checking that
+            #  combo of acronym/name/type is unique. (More clarity will come
+            #  from HAPI-166).
             if (
                 org_acronym is not None
                 and org_name is not None
@@ -119,12 +121,8 @@ class OperationalPresence(BaseScraper):
             if not sector_code:
                 sector_code = self._get_sector_info(sector_name, "name")
             if sector_code == "" or sector_name == "":
-                # TODO: What do we do if the sector is not in the sector table?
-                # TODO: remove for now
-                pass
-                # logger.error(
-                #    f"Sector {sector_name, sector_code} not in table"
-                # )
+                # TODO: Fuzzy match sectors (HAPI-193)
+                logger.error(f"Sector {sector_name, sector_code} not in table")
             if admin_level == "national":
                 admin1_code = get_admin1_to_location_connector_code(admin_code)
                 admin2_code = get_admin2_to_admin1_connector_code(admin1_code)
@@ -141,20 +139,20 @@ class OperationalPresence(BaseScraper):
                 admin2_ref=self._admins.admin2_data[admin2_code],
                 reference_period_start=reference_period_start,
                 reference_period_end=reference_period_end,
-                # TODO: For v2+, add to scraper
+                # TODO: Add to scraper (HAPI-199)
                 source_data="not yet implemented",
             )
             self._session.add(operational_presence_row)
         self._session.commit()
 
     def _get_org_type_code(self, org_type: str) -> str:
-        # TODO: implement fuzzy matching of org types
+        # TODO: implement fuzzy matching of org types (HAPI-194)
         org_type_data = self._org_type.data
         org_type_code = org_type_data.get(org_type, "")
         return org_type_code
 
     def _get_sector_info(self, sector_info: str, info_type: str) -> (str, str):
-        # TODO: implement fuzzy matching of sector names/codes
+        # TODO: implement fuzzy matching of sector names/codes (HAPI-193)
         sector_data = self._sector.data
         sector_names = {name: sector_data[name] for name in sector_data}
         sector_codes = {sector_data[name]: name for name in sector_data}
