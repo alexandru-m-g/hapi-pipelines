@@ -117,12 +117,9 @@ class OperationalPresence(BaseScraper):
                     reference_period_start=reference_period_start,
                     reference_period_end=reference_period_end,
                 )
-            sector_name = row.get("sector_name")
-            sector_code = row.get("sector_code")
-            sector_name, sector_code = self._get_sector_info(
-                sector_name, sector_code
-            )
-            if sector_code == "" or sector_name == "":
+            sector = row.get("sector")
+            sector_code = self._get_sector_code(sector)
+            if sector_code == "":
                 # TODO: What do we do if the sector is not in the sector table?
                 # TODO: remove for now
                 pass
@@ -161,36 +158,15 @@ class OperationalPresence(BaseScraper):
             org_type_code = ""
         return org_type_code
 
-    def _get_sector_info(
-        self, sector_name_start: str, sector_code_start: str
-    ) -> (str, str):
-        sector_data = self._sector.data
-        sector_names = {name: sector_data[name] for name in sector_data}
-        sector_codes = {sector_data[name]: name for name in sector_data}
-
-        if not sector_name_start and not sector_code_start:
-            return None, None
-
-        if sector_code_start:
-            sector_code = normalize_string(sector_code_start)
-            sector_code = sector_code.upper()
-            sector_name = sector_codes.get(sector_code)
-            if not sector_name:
-                sector_name = self._sector_map.get(sector_code.lower())
-            if not sector_name:
-                # TODO: implement fuzzy matching of sector codes
-                sector_name = ""
-            return sector_name, sector_code
-
-        if sector_name_start:
-            sector_name = normalize_string(sector_name_start)
-            sector_code = sector_names.get(sector_name)
-            if not sector_code:
-                sector_code = self._sector_map.get(sector_name.lower())
-            if not sector_code:
-                # TODO: implement fuzzy matching of sector names
-                sector_code = ""
-            return sector_name, sector_code
+    def _get_sector_code(self, sector: str) -> str:
+        sector = normalize_string(sector)
+        sector_code = self._sector.data.get(sector)
+        if not sector_code:
+            sector_code = self._sector_map.get(sector.lower())
+        if not sector_code:
+            # TODO: implement fuzzy matching of sector codes
+            sector_code = ""
+        return sector_code
 
 
 def normalize_string(in_string):
