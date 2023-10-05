@@ -2,40 +2,36 @@ import logging
 from typing import Dict
 
 from hapi_schema.db_orgtype import DBOrgType
-from hdx.scraper.base_scraper import BaseScraper
+from hdx.scraper.utilities.reader import Read
 from sqlalchemy.orm import Session
+
+from .base_uploader import BaseUploader
 
 logger = logging.getLogger(__name__)
 
 
-class OrgType(BaseScraper):
+class OrgType(BaseUploader):
     def __init__(self, session: Session, datasetinfo: Dict[str, str]):
-        super().__init__(
-            "org_type",
-            datasetinfo,
-            dict(),
-        )
-        self._session = session
+        super().__init__(session)
+        self._datasetinfo = datasetinfo
         self.data = {}
-        self._scraped_data = []
 
-    def run(self):
-        reader = self.get_reader()
-        headers, iterator = reader.read(self.datasetinfo)
+    def populate(self):
+        logger.info("Populating org type table")
+        reader = Read.get_reader()
+        headers, iterator = reader.read(self._datasetinfo)
         for row in iterator:
             code = row["#org +type +code +v_hrinfo"]
             description = row["#org +type +preferred"]
             self.data[description] = code
-            self._scraped_data.append([code, description])
-
-    def populate(self):
-        logger.info("Populating org type table")
-        for row in self._scraped_data:
-            code = row[0]
-            description = row[1]
             org_type_row = DBOrgType(
                 code=code,
                 description=description,
             )
             self._session.add(org_type_row)
         self._session.commit()
+
+    def get_org_type_code(self, org_type: str) -> str:
+        # TODO: implement fuzzy matching of org types
+        org_type_code = self.data.get(org_type, "")
+        return org_type_code

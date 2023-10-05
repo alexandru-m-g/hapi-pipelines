@@ -8,16 +8,16 @@ from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.utilities.admins import Admins
-from hapi.pipelines.utilities.age_range import AgeRange
-from hapi.pipelines.utilities.gender import Gender
-from hapi.pipelines.utilities.locations import Locations
-from hapi.pipelines.utilities.metadata import Metadata
-from hapi.pipelines.utilities.operational_presence import OperationalPresence
-from hapi.pipelines.utilities.org import Org
-from hapi.pipelines.utilities.org_type import OrgType
-from hapi.pipelines.utilities.population import Population
-from hapi.pipelines.utilities.sector import Sector
+from hapi.pipelines.database.admins import Admins
+from hapi.pipelines.database.age_range import AgeRange
+from hapi.pipelines.database.gender import Gender
+from hapi.pipelines.database.locations import Locations
+from hapi.pipelines.database.metadata import Metadata
+from hapi.pipelines.database.operational_presence import OperationalPresence
+from hapi.pipelines.database.org import Org
+from hapi.pipelines.database.org_type import OrgType
+from hapi.pipelines.database.population import Population
+from hapi.pipelines.database.sector import Sector
 
 
 class Pipelines:
@@ -129,5 +129,6 @@ class Pipelines:
             admins=self.admins,
             gender=self.gender,
             age_range=self.age_range,
+            results=results,
         )
-        population.populate(results=results)
+        population.populate()
