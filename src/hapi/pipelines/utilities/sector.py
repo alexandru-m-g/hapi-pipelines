@@ -28,6 +28,7 @@ class Sector(BaseScraper):
             name = row["#sector +name +preferred +i_en"]
             date = parse_date(row["#date +created"])
             self.data[name] = code
+            self.data[code] = code
             self._scraped_data.append([code, name, date])
 
     def populate(self):
