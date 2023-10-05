@@ -1,7 +1,7 @@
 # Collector specific configuration
 commit_limit: 1000
 
-scraper_national:
+population_national:
   population_afg:
     dataset: "cod-ps-afg"
     resource: "afg_popadm_adm0_2021_v2.csv"
@@ -363,7 +363,7 @@ scraper_national:
       - "#population+m+age_80_plus"
       - "#population+age_80_plus+total"
 
-scraper_adminone:
+population_adminone:
   population_afg:
     dataset: "cod-ps-afg"
     resource: "afg_admpop_adm1_2021_v2.csv"
@@ -734,7 +734,7 @@ scraper_adminone:
       - "#population+m+age_80_plus"
       - "#population+age_80_plus+total"
 
-scraper_admintwo:
+population_admintwo:
   population_mli:
     dataset: "cod-ps-mli"
     resource: "mli_pop_adm2_v2.csv"
