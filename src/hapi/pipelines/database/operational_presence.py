@@ -61,8 +61,7 @@ class OperationalPresence(BaseUploader):
                         org_type_code = self._org_type.get_org_type_code(
                             org_type_name
                         )
-                        if org_type_code == "":
-                            org_type_code = None
+                        if not org_type_code:
                             logger.error(
                                 f"Org type {org_type_name} not in table"
                             )
@@ -82,12 +81,12 @@ class OperationalPresence(BaseUploader):
                                 reference_period_start=reference_period_start,
                                 reference_period_end=reference_period_end,
                             )
-                        sector = ""
-                        sector_code = ""
+                        sector = None
+                        sector_code = None
                         if sector_index:
                             sector = values[sector_index][admin_code][i]
                             sector_code = self._sector.get_sector_code(sector)
-                        if sector_code == "" and sector != "":
+                        if sector and not sector_code:
                             logger.error(f"Sector {sector} not in table")
 
                         if admin_level == "national":

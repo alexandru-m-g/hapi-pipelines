@@ -43,5 +43,5 @@ class OrgType(BaseUploader):
         if not org_type_code:
             org_type_code = self._org_type_map.get(org_type.lower())
         if not org_type_code:
-            org_type_code = ""
+            org_type_code = None
         return org_type_code

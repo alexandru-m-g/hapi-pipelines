@@ -47,5 +47,5 @@ class Sector(BaseUploader):
         if not sector_code:
             sector_code = self._sector_map.get(sector.lower())
         if not sector_code:
-            sector_code = ""
+            sector_code = None
         return sector_code
