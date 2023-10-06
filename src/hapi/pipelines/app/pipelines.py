@@ -103,12 +103,11 @@ class Pipelines:
     def output(self):
         self.locations.populate()
         self.admins.populate()
-        # TODO: Add hapi metadata from 3W (doesn't currently work as it's multiple datasets)
         self.metadata.populate()
         self.org_type.populate()
         self.sector.populate()
         self.gender.populate()
-        # TODO: make this a single scraper once metadata issue is solved
+
         results = self.runner.get_hapi_results(
             self.configurable_scrapers["population"]
         )
