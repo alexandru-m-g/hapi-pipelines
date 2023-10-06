@@ -8,16 +8,16 @@ from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.utilities.admins import Admins
-from hapi.pipelines.utilities.age_range import AgeRange
-from hapi.pipelines.utilities.gender import Gender
-from hapi.pipelines.utilities.locations import Locations
-from hapi.pipelines.utilities.metadata import Metadata
-from hapi.pipelines.utilities.operational_presence import OperationalPresence
-from hapi.pipelines.utilities.org import Org
-from hapi.pipelines.utilities.org_type import OrgType
-from hapi.pipelines.utilities.population import Population
-from hapi.pipelines.utilities.sector import Sector
+from hapi.pipelines.database.admins import Admins
+from hapi.pipelines.database.age_range import AgeRange
+from hapi.pipelines.database.gender import Gender
+from hapi.pipelines.database.locations import Locations
+from hapi.pipelines.database.metadata import Metadata
+from hapi.pipelines.database.operational_presence import OperationalPresence
+from hapi.pipelines.database.org import Org
+from hapi.pipelines.database.org_type import OrgType
+from hapi.pipelines.database.population import Population
+from hapi.pipelines.database.sector import Sector
 
 
 class Pipelines:
@@ -46,28 +46,15 @@ class Pipelines:
 
         self.org = Org(session=session)
         self.org_type = OrgType(
-            session=session, datasetinfo=configuration["org_type"]
+            session=session,
+            datasetinfo=configuration["org_type"],
+            org_type_map=configuration["org_type_map"],
         )
         self.sector = Sector(
-            session=session, datasetinfo=configuration["sector"]
+            session=session,
+            datasetinfo=configuration["sector"],
+            sector_map=configuration["sector_map"],
         )
-        # TODO: make this a single scraper once metadata issue is solved
-        self.operational_presence = [
-            OperationalPresence(
-                country_code=country_code.lower(),
-                session=session,
-                datasetinfo=configuration[
-                    f"operational_presence_{country_code.lower()}"
-                ],
-                admins=self.admins,
-                org=self.org,
-                org_type=self.org_type,
-                sector=self.sector,
-                sector_map=configuration["sector_map"],
-                org_type_map=configuration["org_type_map"],
-            )
-            for country_code in self.configuration["HAPI_countries"]
-        ]
         self.gender = Gender(
             session=session,
             gender_descriptions=configuration["gender_descriptions"],
@@ -83,14 +70,11 @@ class Pipelines:
         )
         self.configurable_scrapers = dict()
         self.create_configurable_scrapers()
-        self.runner.add_customs(
-            (self.org_type, self.sector, *self.operational_presence)
-        )
         self.metadata = Metadata(runner=self.runner, session=session)
 
     def create_configurable_scrapers(self):
         def _create_configurable_scrapers(
-            level, suffix_attribute=None, adminlevel=None
+            prefix, level, suffix_attribute=None, adminlevel=None
         ):
             suffix = f"_{level}"
             source_configuration = Sources.create_source_configuration(
@@ -98,17 +82,24 @@ class Pipelines:
                 admin_sources=True,
                 adminlevel=adminlevel,
             )
-            self.configurable_scrapers[level] = self.runner.add_configurables(
-                self.configuration[f"scraper{suffix}"],
+            self.configurable_scrapers[prefix] = self.runner.add_configurables(
+                self.configuration[f"{prefix}{suffix}"],
                 level,
                 adminlevel=adminlevel,
                 source_configuration=source_configuration,
                 suffix=suffix,
             )
 
-        _create_configurable_scrapers("national")
-        _create_configurable_scrapers("adminone", adminlevel=self.adminone)
-        _create_configurable_scrapers("admintwo", adminlevel=self.admintwo)
+        _create_configurable_scrapers("population", "national")
+        _create_configurable_scrapers(
+            "population", "adminone", adminlevel=self.adminone
+        )
+        _create_configurable_scrapers(
+            "population", "admintwo", adminlevel=self.admintwo
+        )
+        _create_configurable_scrapers(
+            "operational_presence", "admintwo", adminlevel=self.admintwo
+        )
 
     def run(self):
         self.runner.run()
@@ -116,20 +107,35 @@ class Pipelines:
     def output(self):
         self.locations.populate()
         self.admins.populate()
-        # TODO: Add hapi metadata from 3W (doesn't currently work as it's multiple datasets)
         self.metadata.populate()
         self.org_type.populate()
         self.sector.populate()
-        # TODO: make this a single scraper once metadata issue is solved
-        for scraper in self.operational_presence:
-            scraper.populate(metadata=self.metadata)
         self.gender.populate()
-        results = self.runner.get_hapi_results()
+
+        results = self.runner.get_hapi_results(
+            self.configurable_scrapers["population"]
+        )
+
         population = Population(
             session=self.session,
             metadata=self.metadata,
             admins=self.admins,
             gender=self.gender,
             age_range=self.age_range,
+            results=results,
         )
-        population.populate(results=results)
+        population.populate()
+
+        results = self.runner.get_hapi_results(
+            self.configurable_scrapers["operational_presence"]
+        )
+        operational_presence = OperationalPresence(
+            session=self.session,
+            metadata=self.metadata,
+            admins=self.admins,
+            org=self.org,
+            org_type=self.org_type,
+            sector=self.sector,
+            results=results,
+        )
+        operational_presence.populate()

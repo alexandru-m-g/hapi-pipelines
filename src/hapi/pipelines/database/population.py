@@ -7,10 +7,11 @@ from typing import Dict
 from hapi_schema.db_population import DBPopulation
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.utilities import admins
-from hapi.pipelines.utilities.age_range import AgeRange
-from hapi.pipelines.utilities.gender import Gender
-from hapi.pipelines.utilities.metadata import Metadata
+from . import admins
+from .age_range import AgeRange
+from .base_uploader import BaseUploader
+from .gender import Gender
+from .metadata import Metadata
 
 logger = getLogger(__name__)
 
@@ -19,7 +20,7 @@ _HXL_PATTERN = re.compile(
 )
 
 
-class Population:
+class Population(BaseUploader):
     def __init__(
         self,
         session: Session,
@@ -27,19 +28,18 @@ class Population:
         admins: admins.Admins,
         gender: Gender,
         age_range: AgeRange,
+        results: Dict,
     ):
-        self._session = session
+        super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._gender = gender
         self._age_range = age_range
+        self._results = results
 
-    def populate(
-        self,
-        results: Dict,
-    ):
+    def populate(self):
         logger.info("Populating population table")
-        for dataset in results.values():
+        for dataset in self._results.values():
             reference_period_start = dataset["reference_period"]["startdate"]
             reference_period_end = dataset["reference_period"]["enddate"]
 
@@ -99,7 +99,7 @@ class Population:
                             population=int(value),
                             reference_period_start=reference_period_start,
                             reference_period_end=reference_period_end,
-                            # TODO: For v2+, add to scraper
+                            # TODO: For v2+, add to scraper (HAPI-199)
                             source_data="not yet implemented",
                         )
 
@@ -108,7 +108,7 @@ class Population:
 
 
 def _validate_hxl_tag(hxl_tag: str) -> bool:
-    # TODO: add these definitions in a more central location
+    # TODO: add these definitions in a more central location (HAPI-196)
     """Validate HXL tags
 
     Assume they have the form:
@@ -119,7 +119,7 @@ def _validate_hxl_tag(hxl_tag: str) -> bool:
         #population+f+age_5_12
         #population+f+age_80_plus
     """
-    # TODO: add tests for this
+    # TODO: add tests for this (HAPI-154)
     return bool(_HXL_PATTERN.match(hxl_tag))
 
 

@@ -5,18 +5,20 @@ from hdx.location.country import Country
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
+from .base_uploader import BaseUploader
 
-class Locations:
+
+class Locations(BaseUploader):
     def __init__(
         self, configuration: Dict, session: Session, use_live: bool = True
     ):
+        super().__init__(session)
         Country.countriesdata(
             use_live=use_live,
             country_name_overrides=configuration["country_name_overrides"],
             country_name_mappings=configuration["country_name_mappings"],
         )
         self._hapi_countries = configuration["HAPI_countries"]
-        self.session = session
         self.data = {}
 
     def populate(self):
@@ -29,6 +31,6 @@ class Locations:
                 name=country["#country+name+preferred"],
                 reference_period_start=parse_date(country["#date+start"]),
             )
-            self.session.add(location_row)
-            self.session.commit()
+            self._session.add(location_row)
+            self._session.commit()
             self.data[code] = location_row.id
