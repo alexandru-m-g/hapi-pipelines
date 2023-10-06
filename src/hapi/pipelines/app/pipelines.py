@@ -13,6 +13,7 @@ from hapi.pipelines.database.age_range import AgeRange
 from hapi.pipelines.database.gender import Gender
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
+from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
@@ -50,21 +51,6 @@ class Pipelines:
         self.sector = Sector(
             session=session, datasetinfo=configuration["sector"]
         )
-        # TODO: make this a single scraper once metadata issue is solved
-        # self.operational_presence = [
-        #     OperationalPresence(
-        #         country_code=country_code.lower(),
-        #         session=session,
-        #         datasetinfo=configuration[
-        #             f"operational_presence_{country_code.lower()}"
-        #         ],
-        #         admins=self.admins,
-        #         org=self.org,
-        #         org_type=self.org_type,
-        #         sector=self.sector,
-        #     )
-        #     for country_code in self.configuration["HAPI_countries"]
-        # ]
         self.gender = Gender(
             session=session,
             gender_descriptions=configuration["gender_descriptions"],
@@ -92,7 +78,7 @@ class Pipelines:
                 admin_sources=True,
                 adminlevel=adminlevel,
             )
-            self.configurable_scrapers[level] = self.runner.add_configurables(
+            self.configurable_scrapers[prefix] = self.runner.add_configurables(
                 self.configuration[f"{prefix}{suffix}"],
                 level,
                 adminlevel=adminlevel,
@@ -123,7 +109,9 @@ class Pipelines:
         self.sector.populate()
         self.gender.populate()
         # TODO: make this a single scraper once metadata issue is solved
-        results = self.runner.get_hapi_results()
+        results = self.runner.get_hapi_results(
+            self.configurable_scrapers["population"]
+        )
 
         population = Population(
             session=self.session,
@@ -135,6 +123,16 @@ class Pipelines:
         )
         population.populate()
 
-        # FIX ME
-        for scraper in self.operational_presence:
-            scraper.populate(metadata=self.metadata)
+        results = self.runner.get_hapi_results(
+            self.configurable_scrapers["operational_presence"]
+        )
+        operational_presence = OperationalPresence(
+            session=self.session,
+            metadata=self.metadata,
+            admins=self.admins,
+            org=self.org,
+            org_type=self.org_type,
+            sector=self.sector,
+            results=results,
+        )
+        operational_presence.populate()

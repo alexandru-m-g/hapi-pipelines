@@ -27,6 +27,8 @@ class Org(BaseUploader):
     ):
         logger.info(f"Adding org {org_name}")
         org_row = DBOrg(
+            # TODO: Where does hdx_link come from?
+            hdx_link="Not Implemented",
             acronym=acronym,
             name=org_name,
             org_type_code=org_type,

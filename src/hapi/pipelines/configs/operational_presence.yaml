@@ -15,6 +15,11 @@ operational_presence_admintwo:
       - "#org +acronym"
       - "#org +type +name"
       - "#sector +cluster +name"
+    list:
+      - "#org +name"
+      - "#org +acronym"
+      - "#org +type +name"
+      - "#sector +cluster +name"
     output:
       - "org_name"
       - "org_acronym"
@@ -42,6 +47,11 @@ operational_presence_admintwo:
       - "Organisation Accronyme"
       - "Type Organisation"
       - "Cluster"
+    list:
+      - "Nom Organisation"
+      - "Organisation Accronyme"
+      - "Type Organisation"
+      - "Cluster"
     output:
       - "org_name"
       - "org_acronym"
@@ -65,6 +75,11 @@ operational_presence_admintwo:
       - "#adm2 +code"
     admin_exact: True
     input:
+      - "#org+name"
+      - "#org +acronym"
+      - "#org +type"
+      - "#sector"
+    list:
       - "#org+name"
       - "#org +acronym"
       - "#org +type"
