@@ -1,4 +1,3 @@
-# TODO: combine all OP scrapers once metadata issue solved
 operational_presence_admintwo:
   operational_presence_afg:
     dataset: "afghanistan-who-does-what-where-january-to-march-2023"
