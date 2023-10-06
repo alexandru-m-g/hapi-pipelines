@@ -1,83 +1,95 @@
-# TODO: combine all OP scrapers once metadata issue solved
-operational_presence_afg:
-  dataset: "afghanistan-who-does-what-where-january-to-march-2023"
-  resource: "afghanistan-3w-operational-presence-january-march-2023.csv"
-  format: "csv"
-  headers: 2
-  source_date:
-    start: "01/01/2023"
-    end: "31/03/2022"
-  input:
-    - "#adm2+code"
-    - "#org +name"
-    - "#org +acronym"
-    - "#org +type +name"
-    - "#sector +cluster +name"
-  output:
-    - "adm2_code"
-    - "org_name"
-    - "org_acronym"
-    - "org_type_name"
-    - "sector_name"
-  output_hxl:
-    - "#adm2+code"
-    - "#org+name"
-    - "#org+acronym"
-    - "#org+type+name"
-    - "#sector+name"
+operational_presence_admintwo:
+  operational_presence_afg:
+    dataset: "afghanistan-who-does-what-where-january-to-march-2023"
+    resource: "afghanistan-3w-operational-presence-january-march-2023.csv"
+    format: "csv"
+    headers: 1
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm2+code"
+    admin_exact: True
+    input:
+      - "#org +name"
+      - "#org +acronym"
+      - "#org +type +name"
+      - "#sector +cluster +name"
+    list:
+      - "#org +name"
+      - "#org +acronym"
+      - "#org +type +name"
+      - "#sector +cluster +name"
+    output:
+      - "org_name"
+      - "org_acronym"
+      - "org_type_name"
+      - "sector_name"
+    output_hxl:
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type+name"
+      - "#sector+name"
 
-operational_presence_mli:
-  dataset: "mali-operational-presence"
-  resource: "MALI_3W_June_2023"
-  format: "xlsx"
-  sheet: "ML_5W"
-  headers: 1
-  source_date:
-    start: "01/01/2023"
-    end: "31/03/2022"
-  input:
-    - "admin2Pcod"
-    - "Nom Organisation"
-    - "Organisation Accronyme"
-    - "Type Organisation"
-    - "Cluster"
-  output:
-    - "adm2_code"
-    - "org_name"
-    - "org_acronym"
-    - "org_type_name"
-    - "sector_name"
-  output_hxl:
-    - "#adm2+code"
-    - "#org+name"
-    - "#org+acronym"
-    - "#org+type+name"
-    - "#sector+name"
+  operational_presence_mli:
+    dataset: "mali-operational-presence"
+    resource: "MALI_3W_June_2023"
+    format: "xlsx"
+    sheet: "ML_5W"
+    headers: 1
+    use_hxl: False
+    admin:
+      - ~
+      - "admin2Pcod"
+    admin_exact: True
+    input:
+      - "Nom Organisation"
+      - "Organisation Accronyme"
+      - "Type Organisation"
+      - "Cluster"
+    list:
+      - "Nom Organisation"
+      - "Organisation Accronyme"
+      - "Type Organisation"
+      - "Cluster"
+    output:
+      - "org_name"
+      - "org_acronym"
+      - "org_type_name"
+      - "sector_name"
+    output_hxl:
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type+name"
+      - "#sector+name"
 
-operational_presence_nga:
-  dataset: "nigeria-3w"
-  resource: "who-is-doing-what-and-where_nga_3w_apr_jun_2023"
-  format: "xlsx"
-  sheet: "NGA_3Ws_Apr_Jun_2023"
-  headers: 2
-  source_date:
-    start: "01/04/2022"
-    end: "30/06/2022"
-  input:
-    - "#adm2 +code"
-    - "#org+name"
-    - "#org +acronym"
-    - "#org +type"
-    - "#sector"
-  output:
-    - "adm2_code"
-    - "org_name"
-    - "org_acronym"
-    - "org_type_name"
-    - "sector_code"
-  output_hxl:
-    - "#adm2+code"
-    - "#org+name"
-    - "#org+acronym"
-    - "#org+type+name"
-    - "#sector+code"
+  operational_presence_nga:
+    dataset: "nigeria-3w"
+    resource: "who-is-doing-what-and-where_nga_3w_apr_jun_2023"
+    format: "xlsx"
+    sheet: "NGA_3Ws_Apr_Jun_2023"
+    headers: 1
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm2 +code"
+    admin_exact: True
+    input:
+      - "#org+name"
+      - "#org +acronym"
+      - "#org +type"
+      - "#sector"
+    list:
+      - "#org+name"
+      - "#org +acronym"
+      - "#org +type"
+      - "#sector"
+    output:
+      - "org_name"
+      - "org_acronym"
+      - "org_type_name"
+      - "sector_code"
+    output_hxl:
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type+name"
+      - "#sector+code"
