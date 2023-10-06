@@ -1,6 +1,4 @@
 # Collector specific configuration
-commit_limit: 1000
-
 population_national:
   population_afg:
     dataset: "cod-ps-afg"

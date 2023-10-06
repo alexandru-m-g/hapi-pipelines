@@ -35,7 +35,7 @@ class Sector(BaseUploader):
         self._session.commit()
 
     def get_sector_info(self, sector_info: str, info_type: str) -> (str, str):
-        # TODO: implement fuzzy matching of sector names/codes
+        # TODO: implement fuzzy matching of sector names/codes (HAPI-193)
         sector_names = {name: self.data[name] for name in self.data}
         sector_codes = {self.data[name]: name for name in self.data}
 

@@ -32,6 +32,6 @@ class OrgType(BaseUploader):
         self._session.commit()
 
     def get_org_type_code(self, org_type: str) -> str:
-        # TODO: implement fuzzy matching of org types
+        # TODO: implement fuzzy matching of org types (HAPI-194)
         org_type_code = self.data.get(org_type, "")
         return org_type_code

@@ -34,7 +34,6 @@ class OperationalPresence(BaseUploader):
         self._sector = sector
         self._results = results
 
-    # TODO: make this handle all countries once metadata issue is solved
     def populate(self):
         logger.info("Populating operational presence table")
         for dataset in self._results.values():
@@ -67,11 +66,14 @@ class OperationalPresence(BaseUploader):
                             org_type_name
                         )
                         if org_type_code == "":
-                            # TODO: What do we do if the org type is not in the org type table?
-                            # TODO: skip for now because too many
-                            pass
-                            # logger.error(f"Org type {org_type_name} not in table")
-                        # TODO: find out how unique orgs are. Currently checking that combo of acronym/name/type is unique
+                            # TODO: Add fuzzy matching (HAPI-194)
+                            org_type_code = None
+                            logger.error(
+                                f"Org type {org_type_name} not in table"
+                            )
+                        # TODO: find out how unique orgs are. Currently checking that
+                        #  combo of acronym/name/type is unique. (More clarity will come
+                        #  from HAPI-166).
                         if (
                             org_acronym is not None
                             and org_name is not None
@@ -101,9 +103,10 @@ class OperationalPresence(BaseUploader):
                                 sector_code, "code"
                             )
                         if sector_code == "" or sector_name == "":
-                            # TODO: What do we do if the sector is not in the sector table?
-                            # TODO: remove for now
-                            pass
+                            # TODO: Fuzzy match sectors (HAPI-193)
+                            logger.error(
+                                f"Sector {sector_name, sector_code} not in table"
+                            )
 
                         if admin_level == "national":
                             admin1_code = (
@@ -135,7 +138,7 @@ class OperationalPresence(BaseUploader):
                             admin2_ref=self._admins.admin2_data[admin2_code],
                             reference_period_start=reference_period_start,
                             reference_period_end=reference_period_end,
-                            # TODO: For v2+, add to scraper
+                            # TODO: Add to scraper (HAPI-199)
                             source_data="not yet implemented",
                         )
                         self._session.add(operational_presence_row)
