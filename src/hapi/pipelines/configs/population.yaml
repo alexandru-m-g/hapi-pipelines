@@ -1,6 +1,24 @@
 # Collector specific configuration
 commit_limit: 1000
 
+default:
+  keys:
+    - "scraper_national"
+    - "scraper_adminone"
+    - "scraper_admintwo"
+  input:
+    - "F_TL"
+    - "M_TL"
+    - "T_TL"
+  output:
+    - "F_TL"
+    - "M_TL"
+    - "T_TL"
+  output_hxl:
+    - "#population+f+total"
+    - "#population+m+total"
+    - "#population+total"
+
 scraper_national:
   population_afg:
     dataset: "cod-ps-afg"
@@ -9,9 +27,6 @@ scraper_national:
     use_hxl: False
     admin_single: "AFG"
     input:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -64,9 +79,6 @@ scraper_national:
       - "M_80plus"
       - "T_80plus"
     output:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -119,9 +131,6 @@ scraper_national:
       - "M_80plus"
       - "T_80plus"
     output_hxl:
-      - "#population+f+total"
-      - "#population+m+total"
-      - "#population+total"
       - "#population+f+age_0_4"
       - "#population+m+age_0_4"
       - "#population+age_0_4+total"
@@ -179,18 +188,10 @@ scraper_national:
     format: "csv"
     use_hxl: False
     admin_single: "MLI"
-    input:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
-    output:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
-    output_hxl:
-      - "#population+f+total"
-      - "#population+m+total"
-      - "#population+total"
+    input: []
+    output: []
+    output_hxl: []
+
   population_nga:
     dataset: "cod-ps-nga"
     resource: "nga_admpop_adm0_2020.csv"
@@ -198,9 +199,6 @@ scraper_national:
     use_hxl: False
     admin_single: "NGA"
     input:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -253,9 +251,6 @@ scraper_national:
       - "M_80Plus"
       - "T_80Plus"
     output:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -308,9 +303,6 @@ scraper_national:
       - "M_80Plus"
       - "T_80Plus"
     output_hxl:
-      - "#population+f+total"
-      - "#population+m+total"
-      - "#population+total"
       - "#population+f+age_0_4"
       - "#population+m+age_0_4"
       - "#population+age_0_4+total"
@@ -374,9 +366,6 @@ scraper_adminone:
       - "Admin1_Code"
     admin_exact: True
     input:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -429,9 +418,6 @@ scraper_adminone:
       - "M_80plus"
       - "T_80plus"
     output:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -484,9 +470,6 @@ scraper_adminone:
       - "M_80plus"
       - "T_80plus"
     output_hxl:
-      - "#population+f+total"
-      - "#population+m+total"
-      - "#population+total"
       - "#population+f+age_0_4"
       - "#population+m+age_0_4"
       - "#population+age_0_4+total"
@@ -547,18 +530,9 @@ scraper_adminone:
       - ~
       - "admin1Pcode"
     admin_exact: True
-    input:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
-    output:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
-    output_hxl:
-      - "#population+f+total"
-      - "#population+m+total"
-      - "#population+total"
+    input: []
+    output: []
+    output_hxl: []
   population_nga:
     dataset: "cod-ps-nga"
     resource: "nga_admpop_adm1_2020.csv"
@@ -569,9 +543,6 @@ scraper_adminone:
       - "ADM1_PCODE"
     admin_exact: True
     input:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -624,9 +595,6 @@ scraper_adminone:
       - "M_80Plus"
       - "T_80Plus"
     output:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -679,9 +647,6 @@ scraper_adminone:
       - "M_80Plus"
       - "T_80Plus"
     output_hxl:
-      - "#population+f+total"
-      - "#population+m+total"
-      - "#population+total"
       - "#population+f+age_0_4"
       - "#population+m+age_0_4"
       - "#population+age_0_4+total"
@@ -744,18 +709,9 @@ scraper_admintwo:
       - ~
       - "admin2Pcode"
     admin_exact: True
-    input:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
-    output:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
-    output_hxl:
-      - "#population+f+total"
-      - "#population+m+total"
-      - "#population+total"
+    input: []
+    output: []
+    output_hxl: []
   population_nga:
     dataset: "cod-ps-nga"
     resource: "nga_admpop_adm2_2020.csv"
@@ -766,9 +722,6 @@ scraper_admintwo:
       - "ADM2_PCODE"
     admin_exact: True
     input:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -821,9 +774,6 @@ scraper_admintwo:
       - "M_80Plus"
       - "T_80Plus"
     output:
-      - "F_TL"
-      - "M_TL"
-      - "T_TL"
       - "F_00_04"
       - "M_00_04"
       - "T_00_04"
@@ -876,9 +826,6 @@ scraper_admintwo:
       - "M_80Plus"
       - "T_80Plus"
     output_hxl:
-      - "#population+f+total"
-      - "#population+m+total"
-      - "#population+total"
       - "#population+f+age_0_4"
       - "#population+m+age_0_4"
       - "#population+age_0_4+total"
