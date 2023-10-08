@@ -64,12 +64,38 @@ def parse_args():
     return parser.parse_args()
 
 
+def combine_default(country, default):
+    country["input"] = country["input"] + default["input"]
+    country["output"] = country["output"] + default["output"]
+    country["output_hxl"] = country["output_hxl"] + default["output_hxl"]
+    return country
+
+
+def inject_default(config):
+    if "default" in config:
+        default = config["default"]
+        keys = default["keys"]
+        if len(keys) > 0:
+            for key in keys:
+                for country_key in config[key]:
+                    country = config[key][country_key]
+                    combine_default(country, default)
+        else:
+            for country_key in config:
+                if country_key != "default":
+                    country = config[country_key]
+                    combine_default(country, default)
+        del config["default"]
+    return config
+
+
 def compile_YAMLs(config_files):
     project_config = {}
     for config_file in config_files:
         file_address = script_dir_plus_file(f"../configs/{config_file}", main)
         with open(file_address) as file:
             config = yaml.safe_load(file)
+        config = inject_default(config)
         project_config = project_config | config
 
     output_address = script_dir_plus_file("project_configuration.yaml", main)
