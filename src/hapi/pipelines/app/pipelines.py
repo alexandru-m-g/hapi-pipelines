@@ -78,17 +78,15 @@ class Pipelines:
                 admin_sources=True,
                 adminlevel=adminlevel,
             )
-            self.configurable_scrapers[
-                prefix
-            ] = self.configurable_scrapers.get(
-                prefix, []
-            ) + self.runner.add_configurables(
+            scrapers = self.runner.add_configurables(
                 self.configuration[f"{prefix}{suffix}"],
                 level,
                 adminlevel=adminlevel,
                 source_configuration=source_configuration,
                 suffix=suffix,
             )
+            cur_scrapers = self.configurable_scrapers.get(prefix, [])
+            self.configurable_scrapers[prefix] = cur_scrapers + scrapers
 
         _create_configurable_scrapers("population", "national")
         _create_configurable_scrapers(
