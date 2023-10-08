@@ -78,7 +78,11 @@ class Pipelines:
                 admin_sources=True,
                 adminlevel=adminlevel,
             )
-            self.configurable_scrapers[prefix] = self.runner.add_configurables(
+            self.configurable_scrapers[
+                prefix
+            ] = self.configurable_scrapers.get(
+                prefix, []
+            ) + self.runner.add_configurables(
                 self.configuration[f"{prefix}{suffix}"],
                 level,
                 adminlevel=adminlevel,
