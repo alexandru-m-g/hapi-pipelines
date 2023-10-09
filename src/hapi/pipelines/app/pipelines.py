@@ -85,8 +85,8 @@ class Pipelines:
                 source_configuration=source_configuration,
                 suffix=suffix,
             )
-            cur_scrapers = self.configurable_scrapers.get(prefix, [])
-            self.configurable_scrapers[prefix] = cur_scrapers + scrapers
+            current_scrapers = self.configurable_scrapers.get(prefix, [])
+            self.configurable_scrapers[prefix] = current_scrapers + scrapers
 
         _create_configurable_scrapers("population", "national")
         _create_configurable_scrapers(

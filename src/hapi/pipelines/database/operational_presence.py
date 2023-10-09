@@ -37,6 +37,7 @@ class OperationalPresence(BaseUploader):
     def populate(self):
         logger.info("Populating operational presence table")
         rows = []
+        number_duplicates = 0
         for dataset in self._results.values():
             reference_period_start = dataset["reference_period"]["startdate"]
             reference_period_end = dataset["reference_period"]["enddate"]
@@ -137,6 +138,7 @@ class OperationalPresence(BaseUploader):
                         admin2_ref = self._admins.admin2_data[admin2_code]
                         row = (resource_ref, org_ref, sector_code, admin2_ref)
                         if row in rows:
+                            number_duplicates += 1
                             continue
                         rows.append(row)
                         operational_presence_row = DBOperationalPresence(
@@ -151,3 +153,6 @@ class OperationalPresence(BaseUploader):
                         )
                         self._session.add(operational_presence_row)
         self._session.commit()
+        logger.info(
+            f"There were {number_duplicates} duplicate operational presence rows!"
+        )
