@@ -36,6 +36,8 @@ class OperationalPresence(BaseUploader):
 
     def populate(self):
         logger.info("Populating operational presence table")
+        rows = []
+        number_duplicates = 0
         for dataset in self._results.values():
             reference_period_start = dataset["reference_period"]["startdate"]
             reference_period_end = dataset["reference_period"]["enddate"]
@@ -127,15 +129,23 @@ class OperationalPresence(BaseUploader):
                             )
                         elif admin_level == "admintwo":
                             admin2_code = admin_code
+                        resource_ref = self._metadata.resource_data[
+                            resource_id
+                        ]
+                        org_ref = self._org.data[
+                            (org_acronym, org_name, org_type_code)
+                        ]
+                        admin2_ref = self._admins.admin2_data[admin2_code]
+                        row = (resource_ref, org_ref, sector_code, admin2_ref)
+                        if row in rows:
+                            number_duplicates += 1
+                            continue
+                        rows.append(row)
                         operational_presence_row = DBOperationalPresence(
-                            resource_ref=self._metadata.resource_data[
-                                resource_id
-                            ],
-                            org_ref=self._org.data[
-                                (org_acronym, org_name, org_type_code)
-                            ],
+                            resource_ref=resource_ref,
+                            org_ref=org_ref,
                             sector_code=sector_code,
-                            admin2_ref=self._admins.admin2_data[admin2_code],
+                            admin2_ref=admin2_ref,
                             reference_period_start=reference_period_start,
                             reference_period_end=reference_period_end,
                             # TODO: Add to scraper (HAPI-199)
@@ -143,3 +153,6 @@ class OperationalPresence(BaseUploader):
                         )
                         self._session.add(operational_presence_row)
         self._session.commit()
+        logger.info(
+            f"There were {number_duplicates} duplicate operational presence rows!"
+        )
