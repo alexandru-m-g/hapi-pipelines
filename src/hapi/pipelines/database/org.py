@@ -27,8 +27,6 @@ class Org(BaseUploader):
     ):
         logger.info(f"Adding org {org_name}")
         org_row = DBOrg(
-            # TODO: Populate hdx_link (HAPI-211)
-            hdx_link="not yet implemented",
             acronym=acronym,
             name=org_name,
             org_type_code=org_type,
