@@ -4,13 +4,18 @@ from hapi_schema.db_org import DBOrg
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from hapi.pipelines.database.base_uploader import BaseUploader
+
 logger = logging.getLogger(__name__)
 
 
-class Org:
+class Org(BaseUploader):
     def __init__(self, session: Session):
-        self._session = session
+        super().__init__(session)
         self.data = {}
+
+    def populate(self):
+        raise NotImplementedError()
 
     def populate_single(
         self,

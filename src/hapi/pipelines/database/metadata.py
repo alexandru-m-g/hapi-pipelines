@@ -7,13 +7,15 @@ from hdx.scraper.runner import Runner
 from hxl import InputOptions
 from sqlalchemy.orm import Session
 
+from .base_uploader import BaseUploader
+
 logger = logging.getLogger(__name__)
 
 
-class Metadata:
+class Metadata(BaseUploader):
     def __init__(self, runner: Runner, session: Session):
+        super().__init__(session)
         self.runner = runner
-        self.session = session
         self.dataset_data = {}
         self.resource_data = {}
 
@@ -35,8 +37,8 @@ class Metadata:
                 provider_code=dataset["provider_code"],
                 provider_name=dataset["provider_name"],
             )
-            self.session.add(dataset_row)
-            self.session.commit()
+            self._session.add(dataset_row)
+            self._session.commit()
             self.dataset_data[dataset_id] = dataset_row.id
 
             resources = dataset["resources"]
@@ -60,8 +62,8 @@ class Metadata:
                     is_hxl=is_hxlated,
                     download_url=download_url,
                 )
-                self.session.add(resource_row)
-                self.session.commit()
+                self._session.add(resource_row)
+                self._session.commit()
 
                 # Add resource to lookup table
                 self.resource_data[resource_id] = resource_row.id

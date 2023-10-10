@@ -11,7 +11,8 @@ from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.utilities.locations import Locations
+from .base_uploader import BaseUploader
+from .locations import Locations
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ _ADMIN_LEVELS = ("1", "2")
 _ADMIN_LEVELS_LITERAL = Literal["1", "2"]
 
 
-class Admins:
+class Admins(BaseUploader):
     def __init__(
         self,
         configuration: Dict,
@@ -27,9 +28,9 @@ class Admins:
         locations: Locations,
         libhxl_dataset: hxl.Dataset,
     ):
+        super().__init__(session)
         self._limit = configuration["commit_limit"]
         self._orphan_admin2s = configuration["orphan_admin2s"]
-        self._session = session
         self._locations = locations
         self._libhxl_dataset = libhxl_dataset
         self.admin1_data = {}

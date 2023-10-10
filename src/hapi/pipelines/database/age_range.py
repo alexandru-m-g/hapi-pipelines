@@ -3,13 +3,18 @@ import logging
 from hapi_schema.db_age_range import DBAgeRange
 from sqlalchemy.orm import Session
 
+from .base_uploader import BaseUploader
+
 logger = logging.getLogger(__name__)
 
 
-class AgeRange:
+class AgeRange(BaseUploader):
     def __init__(self, session: Session):
-        self._session = session
+        super().__init__(session)
         self.data = []
+
+    def populate(self):
+        raise NotImplementedError()
 
     def populate_single(self, age_range_code: str):
         logger.info(f"Adding age range code {age_range_code}")

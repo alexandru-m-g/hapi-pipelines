@@ -4,12 +4,14 @@ from typing import Dict
 from hapi_schema.db_gender import DBGender
 from sqlalchemy.orm import Session
 
+from .base_uploader import BaseUploader
+
 logger = logging.getLogger(__name__)
 
 
-class Gender:
+class Gender(BaseUploader):
     def __init__(self, session: Session, gender_descriptions: Dict[str, str]):
-        self._session = session
+        super().__init__(session)
         self._gender_descriptions = gender_descriptions
         self.data = []
 
