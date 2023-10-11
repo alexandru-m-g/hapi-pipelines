@@ -46,7 +46,7 @@ jobs:
         run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
 
       - name: Dump PostgreSQL DB
-        run: pg_dump -U postgres -Fc hapi -f database/hapi_db.pg_restore
+        run: pg_dump -U postgres -Fc hapi -h localhost -p 5432 -f database/hapi_db.pg_restore
 
       - name: Commit updated DB export
         if: always()
