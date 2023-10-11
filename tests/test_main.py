@@ -24,7 +24,7 @@ from hdx.utilities.path import temp_dir
 from hdx.utilities.useragent import UserAgent
 from sqlalchemy import func, select
 
-from hapi.pipelines.app import compile_YAMLs
+from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.pipelines import Pipelines
 
 logger = logging.getLogger(__name__)
@@ -39,11 +39,11 @@ class TestHAPIPipelines:
             "population.yaml",
             "operational_presence.yaml",
         ]
-        project_config_yaml = compile_YAMLs(project_configs)
+        project_config_dict = load_yamls(project_configs)
         Configuration._create(
             hdx_read_only=True,
             hdx_site="prod",
-            project_config_yaml=project_config_yaml,
+            project_config_dict=project_config_dict,
         )
         return Configuration.read()
 

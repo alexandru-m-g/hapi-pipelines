@@ -17,7 +17,7 @@ from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import temp_dir
 
 from hapi.pipelines._version import __version__
-from hapi.pipelines.app import compile_YAMLs
+from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.pipelines import Pipelines
 
 setup_logging()
@@ -157,14 +157,14 @@ if __name__ == "__main__":
         "population.yaml",
         "operational_presence.yaml",
     ]
-    project_config_yaml = compile_YAMLs(project_configs)
+    project_config_dict = load_yamls(project_configs)
     facade(
         main,
         hdx_key=hdx_key,
         user_agent=user_agent,
         preprefix=preprefix,
         hdx_site=hdx_site,
-        project_config_yaml=project_config_yaml,
+        project_config_dict=project_config_dict,
         db_uri=db_uri,
         db_params=args.db_params,
         scrapers_to_run=scrapers_to_run,
