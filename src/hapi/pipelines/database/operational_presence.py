@@ -46,25 +46,27 @@ class OperationalPresence(BaseUploader):
 
                 org_name_index = hxl_tags.index("#org+name")
                 org_acronym_index = hxl_tags.index("#org+acronym")
-                org_type_name_index = hxl_tags.index("#org+type+name")
                 try:
-                    sector_index = hxl_tags.index("#sector")
+                    org_type_name_index = hxl_tags.index("#org+type+name")
                 except ValueError:
-                    sector_index = None
+                    org_type_name_index = None
+                sector_index = hxl_tags.index("#sector")
 
                 for admin_code, org_names in values[org_name_index].items():
                     for i, org_name in enumerate(org_names):
                         org_acronym = values[org_acronym_index][admin_code][i]
-                        org_type_name = values[org_type_name_index][
-                            admin_code
-                        ][i]
-                        org_type_code = self._org_type.get_org_type_code(
-                            org_type_name
-                        )
-                        if not org_type_code:
-                            logger.error(
-                                f"Org type {org_type_name} not in table"
+                        org_type_code = None
+                        if org_type_name_index:
+                            org_type_name = values[org_type_name_index][
+                                admin_code
+                            ][i]
+                            org_type_code = self._org_type.get_org_type_code(
+                                org_type_name
                             )
+                            if not org_type_code:
+                                logger.error(
+                                    f"Org type {org_type_name} not in table"
+                                )
                         # TODO: find out how unique orgs are. Currently checking that
                         #  combo of acronym/name/type is unique. (More clarity will come
                         #  from HAPI-166).
@@ -81,12 +83,9 @@ class OperationalPresence(BaseUploader):
                                 reference_period_start=reference_period_start,
                                 reference_period_end=reference_period_end,
                             )
-                        sector = None
-                        sector_code = None
-                        if sector_index:
-                            sector = values[sector_index][admin_code][i]
-                            sector_code = self._sector.get_sector_code(sector)
-                        if sector and not sector_code:
+                        sector = values[sector_index][admin_code][i]
+                        sector_code = self._sector.get_sector_code(sector)
+                        if not sector_code:
                             logger.error(f"Sector {sector} not in table")
 
                         if admin_level == "national":
