@@ -1,5 +1,6 @@
 import logging
 from typing import Dict
+from unicodedata import normalize
 
 from hapi_schema.db_sector import DBSector
 from hdx.scraper.utilities.reader import Read
@@ -12,10 +13,16 @@ logger = logging.getLogger(__name__)
 
 
 class Sector(BaseUploader):
-    def __init__(self, session: Session, datasetinfo: Dict[str, str]):
+    def __init__(
+        self,
+        session: Session,
+        datasetinfo: Dict[str, str],
+        sector_map: Dict[str, str],
+    ):
         super().__init__(session)
         self._datasetinfo = datasetinfo
         self.data = {}
+        self._sector_map = sector_map
 
     def populate(self):
         logger.info("Populating sector table")
@@ -26,6 +33,7 @@ class Sector(BaseUploader):
             name = row["#sector +name +preferred +i_en"]
             date = parse_date(row["#date +created"])
             self.data[name] = code
+            self.data[code] = code
             sector_row = DBSector(
                 code=code,
                 name=name,
@@ -34,14 +42,13 @@ class Sector(BaseUploader):
             self._session.add(sector_row)
         self._session.commit()
 
-    def get_sector_info(self, sector_info: str, info_type: str) -> (str, str):
+    def get_sector_code(self, sector: str) -> str:
         # TODO: implement fuzzy matching of sector names/codes (HAPI-193)
-        sector_names = {name: self.data[name] for name in self.data}
-        sector_codes = {self.data[name]: name for name in self.data}
-
-        if info_type == "name":
-            sector_code = sector_names.get(sector_info, "")
+        sector_code = self.data.get(sector)
+        if sector_code:
             return sector_code
-        if info_type == "code":
-            sector_name = sector_codes.get(sector_info, "")
-            return sector_name
+        sector = (
+            normalize("NFKD", sector).encode("ascii", "ignore").decode("ascii")
+        )
+        sector_code = self._sector_map.get(sector.lower())
+        return sector_code

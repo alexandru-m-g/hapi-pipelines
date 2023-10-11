@@ -23,12 +23,12 @@ operational_presence_admintwo:
       - "org_name"
       - "org_acronym"
       - "org_type_name"
-      - "sector_name"
+      - "sector"
     output_hxl:
       - "#org+name"
       - "#org+acronym"
       - "#org+type+name"
-      - "#sector+name"
+      - "#sector"
 
   operational_presence_mli:
     dataset: "mali-operational-presence"
@@ -55,12 +55,12 @@ operational_presence_admintwo:
       - "org_name"
       - "org_acronym"
       - "org_type_name"
-      - "sector_name"
+      - "sector"
     output_hxl:
       - "#org+name"
       - "#org+acronym"
       - "#org+type+name"
-      - "#sector+name"
+      - "#sector"
 
   operational_presence_nga:
     dataset: "nigeria-3w"
@@ -87,9 +87,9 @@ operational_presence_admintwo:
       - "org_name"
       - "org_acronym"
       - "org_type_name"
-      - "sector_code"
+      - "sector"
     output_hxl:
       - "#org+name"
       - "#org+acronym"
       - "#org+type+name"
-      - "#sector+code"
+      - "#sector"

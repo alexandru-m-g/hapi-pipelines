@@ -46,10 +46,14 @@ class Pipelines:
 
         self.org = Org(session=session)
         self.org_type = OrgType(
-            session=session, datasetinfo=configuration["org_type"]
+            session=session,
+            datasetinfo=configuration["org_type"],
+            org_type_map=configuration["org_type_map"],
         )
         self.sector = Sector(
-            session=session, datasetinfo=configuration["sector"]
+            session=session,
+            datasetinfo=configuration["sector"],
+            sector_map=configuration["sector_map"],
         )
         self.gender = Gender(
             session=session,
