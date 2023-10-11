@@ -38,3 +38,33 @@ org_type:
   resource: "Organization Types (Beta) - CSV"
   format: "csv"
   headers: 2
+
+sector_map:
+  abris: "SHL"
+  cccm: "CCM"
+  coordination: "CCM"
+  education: "EDU"
+  eha: "WSH"
+  erl: "FSC"
+  nutrition: "NUT"
+  "operatioanl presence: water, sanitation & hygiene": "WSH"
+  "operational presence: education in emergencies": "EDU"
+  "operational presence: emergency shelter & non-food items": "SHL"
+  "operational presence: food security & agriculture": "FSC"
+  "operational presence: health": "HEA"
+  "operational presence: nutrition": "NUT"
+  "operational presence: protection": "PRO"
+  protection: "PRO"
+  sa: "FSC"
+  sante: "HEA"
+  wash: "WSH"
+
+org_type_map:
+  agence un: "447"
+  govt: "435"
+  ingo: "437"
+  mouv. cr: "445"
+  nngo: "441"
+  ong int: "437"
+  ong nat: "441"
+  un agency: "447"
