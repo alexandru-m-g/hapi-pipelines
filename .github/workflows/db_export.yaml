@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HDX_KEY: ${{ secrets.HDX_KEY }}
 
     services:
       postgres:
