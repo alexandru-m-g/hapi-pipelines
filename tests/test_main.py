@@ -11,7 +11,7 @@ from hapi_schema.db_gender import DBGender
 from hapi_schema.db_location import DBLocation
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hapi_schema.db_org import DBOrg
-from hapi_schema.db_orgtype import DBOrgType
+from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_population import DBPopulation
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_sector import DBSector
