@@ -59,7 +59,7 @@ filelock==3.12.4
     # via virtualenv
 frictionless==5.16.0
     # via hdx-python-utilities
-google-auth==2.23.2
+google-auth==2.23.3
     # via
     #   google-auth-oauthlib
     #   gspread

@@ -5,7 +5,6 @@ import logging
 from os import getenv
 from typing import List, Optional
 
-import yaml
 from hdx.api.configuration import Configuration
 from hdx.database import Database
 from hdx.database.dburi import get_params_from_connection_uri
@@ -15,9 +14,10 @@ from hdx.utilities.dateparse import now_utc
 from hdx.utilities.dictandlist import args_to_dict
 from hdx.utilities.easy_logging import setup_logging
 from hdx.utilities.errors_onexit import ErrorsOnExit
-from hdx.utilities.path import script_dir_plus_file, temp_dir
+from hdx.utilities.path import temp_dir
 
 from hapi.pipelines._version import __version__
+from hapi.pipelines.app import compile_YAMLs
 from hapi.pipelines.app.pipelines import Pipelines
 
 setup_logging()
@@ -62,19 +62,6 @@ def parse_args():
         help="Use saved data",
     )
     return parser.parse_args()
-
-
-def compile_YAMLs(config_files):
-    project_config = {}
-    for config_file in config_files:
-        file_address = script_dir_plus_file(f"../configs/{config_file}", main)
-        with open(file_address) as file:
-            config = yaml.safe_load(file)
-        project_config = project_config | config
-
-    output_address = script_dir_plus_file("project_configuration.yaml", main)
-    with open(output_address, "w") as file:
-        yaml.dump(project_config, file)
 
 
 def main(
@@ -170,10 +157,7 @@ if __name__ == "__main__":
         "population.yaml",
         "operational_presence.yaml",
     ]
-    compile_YAMLs(project_configs)
-    project_config_yaml = script_dir_plus_file(
-        "project_configuration.yaml", main
-    )
+    project_config_yaml = compile_YAMLs(project_configs)
     facade(
         main,
         hdx_key=hdx_key,
