@@ -2,7 +2,7 @@ import logging
 from typing import Dict
 from unicodedata import normalize
 
-from hapi_schema.db_orgtype import DBOrgType
+from hapi_schema.db_org_type import DBOrgType
 from hdx.scraper.utilities.reader import Read
 from sqlalchemy.orm import Session
 
