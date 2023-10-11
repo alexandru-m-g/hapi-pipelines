@@ -9,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      HDX_KEY: ${{ secrets.HDX_KEY }}
 
     services:
       postgres:
@@ -44,9 +42,15 @@ jobs:
 
       - name: Run Pipeline
         run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
+        env:
+          - HDX_KEY: ${{ secrets.HDX_KEY }}
 
       - name: Dump PostgreSQL DB
-        run: pg_dump -U postgres -Fc hapi -h localhost -p 5432 -f database/hapi_db.pg_restore
+        run: pg_dump -U postgres -Fc hapi -f database/hapi_db.pg_restore
+        env:
+          - PGPORT: 5432
+          - PGHOST: localhost
+          - PGPASS: postgres
 
       - name: Commit updated DB export
         uses: stefanzweifel/git-auto-commit-action@v5
