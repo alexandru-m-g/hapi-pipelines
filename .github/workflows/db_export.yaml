@@ -24,6 +24,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --name postgres-container
 
     steps:
       - name: Checkout code
@@ -46,12 +47,9 @@ jobs:
           HDX_KEY: ${{ secrets.HDX_KEY }}
 
       - name: Dump PostgreSQL DB
-        run: pg_dump -Fc hapi -f database/hapi_db.pg_restore
-        env:
-          PGUSER: postgres
-          PGPASSWORD: postgres
-          PGHOST: localhost
-          PGPORT: 5432
+        run: |
+          docker exec -t postgres-container pg_dump -U postgres -Fc hapi -f hapi_db.pg_restore
+          docker cp postgres-container:/hapi_db.pg_restore database/hapi_db.pg_restore
 
       - name: Commit updated DB export
         uses: stefanzweifel/git-auto-commit-action@v5
