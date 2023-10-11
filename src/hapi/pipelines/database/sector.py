@@ -1,5 +1,6 @@
 import logging
 from typing import Dict
+from unicodedata import normalize
 
 from hapi_schema.db_sector import DBSector
 from hdx.scraper.utilities.reader import Read
@@ -44,8 +45,10 @@ class Sector(BaseUploader):
     def get_sector_code(self, sector: str) -> str:
         # TODO: implement fuzzy matching of sector names/codes (HAPI-193)
         sector_code = self.data.get(sector)
-        if not sector_code:
-            sector_code = self._sector_map.get(sector.lower())
-        if not sector_code:
-            sector_code = None
+        if sector_code:
+            return sector_code
+        sector = (
+            normalize("NFKD", sector).encode("ascii", "ignore").decode("ascii")
+        )
+        sector_code = self._sector_map.get(sector.lower())
         return sector_code

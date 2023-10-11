@@ -1,5 +1,6 @@
 import logging
 from typing import Dict
+from unicodedata import normalize
 
 from hapi_schema.db_orgtype import DBOrgType
 from hdx.scraper.utilities.reader import Read
@@ -40,8 +41,12 @@ class OrgType(BaseUploader):
     def get_org_type_code(self, org_type: str) -> str:
         # TODO: implement fuzzy matching of org types (HAPI-194)
         org_type_code = self.data.get(org_type)
-        if not org_type_code:
-            org_type_code = self._org_type_map.get(org_type.lower())
-        if not org_type_code:
-            org_type_code = None
+        if org_type_code:
+            return org_type_code
+        org_type = (
+            normalize("NFKD", org_type)
+            .encode("ascii", "ignore")
+            .decode("ascii")
+        )
+        org_type_code = self._org_type_map.get(org_type.lower())
         return org_type_code
