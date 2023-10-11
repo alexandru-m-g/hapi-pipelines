@@ -63,12 +63,8 @@ class TestHAPIPipelines:
                     remove(dbpath)
                 except OSError:
                     pass
-                params = {
-                    "dialect": "sqlite",
-                    "database": dbpath,
-                }
                 logger.info(f"Creating database {dbpath}")
-                with Database(**params) as session:
+                with Database(database=dbpath, dialect="sqlite") as session:
                     today = parse_date("2023-10-11")
                     Read.create_readers(
                         temp_folder,
