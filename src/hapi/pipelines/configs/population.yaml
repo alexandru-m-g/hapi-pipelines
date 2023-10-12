@@ -1,5 +1,13 @@
-# Collector specific configuration
-commit_limit: 1000
+#Population config file
+
+### HXL Tag example form
+# Assume they have the form:
+# #population+total
+# #population+f+total
+# #population+ages_5_12+total
+# #population+age_80_plus+total
+# #population+f+age_5_12
+# #population+f+age_80_plus
 
 default:
   prefix: "population"
