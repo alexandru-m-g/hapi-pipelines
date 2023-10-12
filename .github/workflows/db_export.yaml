@@ -24,6 +24,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --name postgres-container
 
     steps:
       - name: Checkout code
@@ -42,12 +43,15 @@ jobs:
 
       - name: Run Pipeline
         run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
+        env:
+          HDX_KEY: ${{ secrets.HDX_KEY }}
 
       - name: Dump PostgreSQL DB
-        run: pg_dump -U postgres -Fc hapi -f database/hapi_db.pg_restore
+        run: |
+          docker exec -t postgres-container pg_dump -U postgres -Fc hapi -f hapi_db.pg_restore
+          docker cp postgres-container:/hapi_db.pg_restore database/hapi_db.pg_restore
 
       - name: Commit updated DB export
-        if: always()
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: database/hapi_db.pg_restore
