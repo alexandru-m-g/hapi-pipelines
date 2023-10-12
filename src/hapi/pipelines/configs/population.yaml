@@ -9,8 +9,7 @@
 # #population+f+age_5_12
 # #population+f+age_80_plus
 
-default:
-  prefix: "population"
+population_default:
   scrapers_with_defaults:
     - "population_afg"
     - "population_nga"
