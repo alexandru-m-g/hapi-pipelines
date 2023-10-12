@@ -118,7 +118,7 @@ def _validate_hxl_tag(hxl_tag: str) -> bool:
         #population+f+age_5_12
         #population+f+age_80_plus
     """
-    # TODO: add tests for this (HAPI-154)
+    # TODO: add tests for this (HAPI-159)
     return bool(_HXL_PATTERN.match(hxl_tag))
 
 
