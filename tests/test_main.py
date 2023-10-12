@@ -112,4 +112,4 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBOperationalPresence.id))
                     )
-                    assert count == 12201
+                    assert count == 12215

@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Pinned postgres docker image version in DB export GitHub action
+- Change sector mapping for erl to ERY
 
 ## [0.4.1] - 2023-10-11
 
