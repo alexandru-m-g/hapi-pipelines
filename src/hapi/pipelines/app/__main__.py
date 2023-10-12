@@ -210,14 +210,14 @@ if __name__ == "__main__":
         "operational_presence.yaml",
     ]
     project_config_dict = load_yamls(project_configs)
-    project_config_dict_with_defaults = add_defaults(project_config_dict)
+    project_config_dict = add_defaults(project_config_dict)
     facade(
         main,
         hdx_key=hdx_key,
         user_agent=user_agent,
         preprefix=preprefix,
         hdx_site=hdx_site,
-        project_config_dict=project_config_dict_with_defaults,
+        project_config_dict=project_config_dict,
         db_uri=db_uri,
         db_params=args.db_params,
         scrapers_to_run=scrapers_to_run,
