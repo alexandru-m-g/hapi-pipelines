@@ -74,14 +74,10 @@ def combine_default(country, default):
 def add_defaults(config):
     if "default" in config:
         default = config["default"]
-        default["scrapers_with_defaults"]
         for key in config:
             prefix = key.split("_")[0]
-            print(prefix)
-            print(config["default"]["prefix"])
             if prefix == config["default"]["prefix"]:
                 for scraper in config[key]:
-                    print(scraper)
                     if scraper in config["default"]["scrapers_with_defaults"]:
                         scraper_config = config[key][scraper]
                         scraper_config = combine_default(
