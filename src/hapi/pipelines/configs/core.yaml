@@ -1,12 +1,6 @@
 # Collector specific configuration
 commit_limit: 1000
 
-scraper_national: []
-
-scraper_adminone: []
-
-scraper_admintwo: []
-
 HAPI_countries:
   - AFG
   - MLI
