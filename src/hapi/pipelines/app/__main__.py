@@ -217,7 +217,7 @@ if __name__ == "__main__":
         user_agent=user_agent,
         preprefix=preprefix,
         hdx_site=hdx_site,
-        project_config_dict=project_config_dict,
+        project_config_dict=project_config_dict_with_defaults,
         db_uri=db_uri,
         db_params=args.db_params,
         scrapers_to_run=scrapers_to_run,
