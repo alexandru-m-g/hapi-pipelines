@@ -65,9 +65,6 @@ population_default:
     - "F_75_79"
     - "M_75_79"
     - "T_75_79"
-    - "F_80plus"
-    - "M_80plus"
-    - "T_80plus"
   output:
     - "F_TL"
     - "M_TL"
@@ -120,9 +117,6 @@ population_default:
     - "F_75_79"
     - "M_75_79"
     - "T_75_79"
-    - "F_80plus"
-    - "M_80plus"
-    - "T_80plus"
   output_hxl:
     - "#population+f+total"
     - "#population+m+total"
@@ -175,9 +169,6 @@ population_default:
     - "#population+f+age_75_79"
     - "#population+m+age_75_79"
     - "#population+age_75_79+total"
-    - "#population+f+age_80_plus"
-    - "#population+m+age_80_plus"
-    - "#population+age_80_plus+total"
 
 population_national:
   population_afg:
@@ -186,9 +177,18 @@ population_national:
     format: "csv"
     use_hxl: False
     admin_single: "AFG"
-    input: []
-    output: []
-    output_hxl: []
+    input:
+      - "F_80plus"
+      - "M_80plus"
+      - "T_80plus"
+    output:
+      - "F_80plus"
+      - "M_80plus"
+      - "T_80plus"
+    output_hxl:
+      - "#population+f+age_80_plus"
+      - "#population+m+age_80_plus"
+      - "#population+age_80_plus+total"
 
   population_mli:
     dataset: "cod-ps-mli"
@@ -215,9 +215,18 @@ population_national:
     format: "csv"
     use_hxl: False
     admin_single: "NGA"
-    input: []
-    output: []
-    output_hxl: []
+    input:
+      - "F_80Plus"
+      - "M_80Plus"
+      - "T_80Plus"
+    output:
+      - "F_80Plus"
+      - "M_80Plus"
+      - "T_80Plus"
+    output_hxl:
+      - "#population+f+age_80_plus"
+      - "#population+m+age_80_plus"
+      - "#population+age_80_plus+total"
 
 population_adminone:
   population_afg:
@@ -229,9 +238,18 @@ population_adminone:
       - ~
       - "Admin1_Code"
     admin_exact: True
-    input: []
-    output: []
-    output_hxl: []
+    input:
+      - "F_80plus"
+      - "M_80plus"
+      - "T_80plus"
+    output:
+      - "F_80plus"
+      - "M_80plus"
+      - "T_80plus"
+    output_hxl:
+      - "#population+f+age_80_plus"
+      - "#population+m+age_80_plus"
+      - "#population+age_80_plus+total"
 
   population_mli:
     dataset: "cod-ps-mli"
@@ -264,9 +282,18 @@ population_adminone:
       - ~
       - "ADM1_PCODE"
     admin_exact: True
-    input: []
-    output: []
-    output_hxl: []
+    input:
+      - "F_80Plus"
+      - "M_80Plus"
+      - "T_80Plus"
+    output:
+      - "F_80Plus"
+      - "M_80Plus"
+      - "T_80Plus"
+    output_hxl:
+      - "#population+f+age_80_plus"
+      - "#population+m+age_80_plus"
+      - "#population+age_80_plus+total"
 
 population_admintwo:
   population_mli:
@@ -300,6 +327,15 @@ population_admintwo:
       - ~
       - "ADM2_PCODE"
     admin_exact: True
-    input: []
-    output: []
-    output_hxl: []
+    input:
+      - "F_80Plus"
+      - "M_80Plus"
+      - "T_80Plus"
+    output:
+      - "F_80Plus"
+      - "M_80Plus"
+      - "T_80Plus"
+    output_hxl:
+      - "#population+f+age_80_plus"
+      - "#population+m+age_80_plus"
+      - "#population+age_80_plus+total"
