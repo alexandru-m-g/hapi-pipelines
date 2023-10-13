@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 
+## [0.4.2] - 2023-10-13
+
+### Added
+
+- Add operational presence code matching to funtion in utilities
+
 ## [0.4.2] - 2023-10-12
 
 ### Fixed
