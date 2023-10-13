@@ -5,9 +5,7 @@ from hdx.location.phonetics import Phonetics
 
 
 def get_code_from_name(
-        name: str,
-        code_lookup: Dict[str, str],
-        code_mapping: Dict[str, str]
+    name: str, code_lookup: Dict[str, str], code_mapping: Dict[str, str]
 ) -> str:
     code = code_lookup.get(name)
     if code:
