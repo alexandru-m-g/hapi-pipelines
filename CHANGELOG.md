@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Pinned postgres docker image version in DB export GitHub action
 - Change sector mapping for erl to ERY
 
+## [0.4.2] = 2023-10-13
+
+### Fixed
+
+- DB Export GitHub action runs on tag push
+
 ## [0.4.1] - 2023-10-11
 
 ### Fixed
