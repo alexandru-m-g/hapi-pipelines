@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.4.3] - 2023-10-13
+
+### Fixed
+
+- DB Export GitHub action runs on tag push
 
 ## [0.4.2] - 2023-10-12
 

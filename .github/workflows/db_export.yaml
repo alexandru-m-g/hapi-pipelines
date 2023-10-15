@@ -2,9 +2,9 @@ name: Database Export
 
 on:
   workflow_dispatch: # Add a run button on GitHub
-  release:
-    types:
-      - published
+  push:
+    tags:
+      - "*"
 
 jobs:
   build:
