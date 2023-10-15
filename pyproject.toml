@@ -36,10 +36,8 @@ requires-python = ">=3.8"
 dependencies = [
     "hdx-python-scraper>= 2.2.1",
     "hdx-python-country>= 3.5.5",
-    #"hdx-python-database[postgresql]>= 1.2.8",
-    "hdx-python-database @ git+ssh://git@github.com/OCHA-DAP/hdx-python-database@build_views#egg=hdx-python-database",
-    #"hapi-schema>= 0.1.1",
-    "hapi-schema @ git+ssh://git@github.com/OCHA-DAP/hapi-sqlalchemy-schema@HAPI-224/remove-hdx-python-database-dep#egg=hapi-schema",
+    "hdx-python-database[postgresql]>= 1.2.9",
+    "hapi-schema>= 0.2.0",
     "libhxl",
     "sqlalchemy"
 ]
