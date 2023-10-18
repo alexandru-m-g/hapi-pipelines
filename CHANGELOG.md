@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.5.0] - 2023-10-18
+
+- Rename resource "filename" to "name" in metadata
+
 ## [0.5.0] - 2023-10-16
 
 - Build views in pipeline instead of in hapi-schema
