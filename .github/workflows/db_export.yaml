@@ -29,8 +29,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -54,7 +52,9 @@ jobs:
           docker cp postgres-container:/hapi_db.pg_restore database/hapi_db.pg_restore
 
       - name: Commit updated DB export
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          file_pattern: database/hapi_db.pg_restore
+          branch: db-export
+          folder: database
+          target-folder: database
           commit_message: automatic - DB export updated
