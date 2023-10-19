@@ -48,6 +48,7 @@ jobs:
 
       - name: Dump PostgreSQL DB
         run: |
+          mkdir database
           docker exec -t postgres-container pg_dump -U postgres -Fc hapi -f hapi_db.pg_restore
           docker cp postgres-container:/hapi_db.pg_restore database/hapi_db.pg_restore
 
