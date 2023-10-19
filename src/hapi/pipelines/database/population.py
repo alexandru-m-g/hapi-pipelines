@@ -108,7 +108,6 @@ class Population(BaseUploader):
 
 
 def _validate_hxl_tag(hxl_tag: str) -> bool:
-    # TODO: add these definitions in a more central location (HAPI-196)
     """Validate HXL tags
 
     Assume they have the form:

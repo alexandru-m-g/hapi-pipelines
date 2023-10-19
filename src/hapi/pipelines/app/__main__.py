@@ -22,6 +22,7 @@ from hapi.pipelines.app import (
     load_yamls,
 )
 from hapi.pipelines.app.pipelines import Pipelines
+from hapi.pipelines.utilities.process_config_defaults import add_defaults
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -161,6 +162,8 @@ if __name__ == "__main__":
         "operational_presence.yaml",
     ]
     project_config_dict = load_yamls(project_configs)
+    project_config_dict = add_defaults(project_config_dict)
+    print(project_config_dict)
     facade(
         main,
         hdx_key=hdx_key,
