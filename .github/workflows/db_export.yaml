@@ -58,4 +58,4 @@ jobs:
           branch: db-export
           folder: database
           target-folder: database
-          commit_message: automatic - DB export updated
+          commit-message: automatic - DB export updated
