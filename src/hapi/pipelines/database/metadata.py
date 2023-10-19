@@ -56,7 +56,7 @@ class Metadata(BaseUploader):
                 resource_row = DBResource(
                     hdx_id=resource_id,
                     dataset_ref=dataset_row.id,
-                    name=resource["name"],
+                    name=resource["filename"],
                     format=resource["format"],
                     update_date=resource["update_date"],
                     is_hxl=is_hxlated,
