@@ -34,10 +34,12 @@ classifiers = [
 requires-python = ">=3.8"
 
 dependencies = [
-    "hdx-python-scraper>= 2.2.1",
+    #"hdx-python-scraper>= 2.2.2",
+    "hdx-python-scraper @ git+ssh://git@github.com/OCHA-DAP/hdx-python-scraper@HAPI-234/dataset-provider-info#egg=hdx-python-scraper",
     "hdx-python-country>= 3.5.5",
     "hdx-python-database[postgresql]>= 1.2.9",
-    "hapi-schema>= 0.2.0",
+    #"hapi-schema>= 0.3.2",
+    "hapi-schema @ git+ssh://git@github.com/OCHA-DAP/hapi-sqlalchemy-schema@HAPI-234/dataset-provider-info#egg=hapi-schema",
     "libhxl",
     "sqlalchemy"
 ]
