@@ -25,6 +25,7 @@ from hdx.utilities.useragent import UserAgent
 from sqlalchemy import func, select
 
 from hapi.pipelines.app import load_yamls
+from hapi.pipelines.app.__main__ import add_defaults
 from hapi.pipelines.app.pipelines import Pipelines
 
 logger = logging.getLogger(__name__)
@@ -40,6 +41,7 @@ class TestHAPIPipelines:
             "operational_presence.yaml",
         ]
         project_config_dict = load_yamls(project_configs)
+        project_config_dict = add_defaults(project_config_dict)
         Configuration._create(
             hdx_read_only=True,
             hdx_site="prod",
