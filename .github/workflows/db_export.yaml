@@ -2,9 +2,9 @@ name: Database Export
 
 on:
   workflow_dispatch: # Add a run button on GitHub
-  release:
-    types:
-      - published
+  push:
+    tags:
+      - "*"
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        image: postgres:14-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres

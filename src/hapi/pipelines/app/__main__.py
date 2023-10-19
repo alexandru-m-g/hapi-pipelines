@@ -17,7 +17,10 @@ from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import temp_dir
 
 from hapi.pipelines._version import __version__
-from hapi.pipelines.app import load_yamls
+from hapi.pipelines.app import (
+    build_db_views,  # noqa: F401
+    load_yamls,
+)
 from hapi.pipelines.app.pipelines import Pipelines
 from hapi.pipelines.utilities.process_config_defaults import add_defaults
 

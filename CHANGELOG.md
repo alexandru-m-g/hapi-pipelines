@@ -4,12 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-
-## [0.4.2] - 2023-10-19
+## [0.5.1] - 2023-10-19
 
 ### Added
 
-- Default fields to configurations
+- Default fields for configurations files
+
+## [0.5.0] - 2023-10-16
+
+- Build views in pipeline instead of in hapi-schema
+
+## [0.4.3] - 2023-10-13
+
+### Fixed
+
+- DB Export GitHub action runs on tag push
+
+## [0.4.2] - 2023-10-12
+
+### Fixed
+
+- Pinned postgres docker image version in DB export GitHub action
+- Change sector mapping for erl to ERY
 
 ## [0.4.1] - 2023-10-11
 
