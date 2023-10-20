@@ -38,8 +38,8 @@ dependencies = [
     "hdx-python-scraper @ git+ssh://git@github.com/OCHA-DAP/hdx-python-scraper@HAPI-234/dataset-provider-info#egg=hdx-python-scraper",
     "hdx-python-country>= 3.5.5",
     "hdx-python-database[postgresql]>= 1.2.9",
-    #"hapi-schema>= 0.3.2",
-    "hapi-schema @ git+ssh://git@github.com/OCHA-DAP/hapi-sqlalchemy-schema@HAPI-234/dataset-provider-info#egg=hapi-schema",
+    #"hapi-schema>= 0.4.0",
+    "hapi-schema @ git+ssh://git@github.com/OCHA-DAP/hapi-sqlalchemy-schema@HAPI-132/food-security-schema#egg=hapi-schema",
     "libhxl",
     "sqlalchemy"
 ]
