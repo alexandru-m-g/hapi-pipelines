@@ -8,6 +8,8 @@ from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_age_range import DBAgeRange
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_gender import DBGender
+from hapi_schema.db_ipc_phase import DBIpcPhase
+from hapi_schema.db_ipc_type import DBIpcType
 from hapi_schema.db_location import DBLocation
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hapi_schema.db_org import DBOrg
@@ -37,8 +39,9 @@ class TestHAPIPipelines:
         UserAgent.set_global("test")
         project_configs = [
             "core.yaml",
-            "population.yaml",
+            "food_security.yaml",
             "operational_presence.yaml",
+            "population.yaml",
         ]
         project_config_dict = load_yamls(project_configs)
         project_config_dict = add_defaults(project_config_dict)
@@ -115,3 +118,7 @@ class TestHAPIPipelines:
                         select(func.count(DBOperationalPresence.id))
                     )
                     assert count == 12215
+                    count = session.scalar(select(func.count(DBIpcPhase.code)))
+                    assert count == 6
+                    count = session.scalar(select(func.count(DBIpcType.code)))
+                    assert count == 3
