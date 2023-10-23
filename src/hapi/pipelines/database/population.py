@@ -70,25 +70,9 @@ class Population(BaseUploader):
                             age_range_code=age_range_code
                         )
                     for admin_code, value in values.items():
-                        if admin_level == "national":
-                            admin1_code = (
-                                admins.get_admin1_to_location_connector_code(
-                                    admin_code
-                                )
-                            )
-                            admin2_code = (
-                                admins.get_admin2_to_admin1_connector_code(
-                                    admin1_code
-                                )
-                            )
-                        if admin_level == "adminone":
-                            admin2_code = (
-                                admins.get_admin2_to_admin1_connector_code(
-                                    admin1_code=admin_code
-                                )
-                            )
-                        elif admin_level == "admintwo":
-                            admin2_code = admin_code
+                        admin2_code = admins.get_admin2_code_based_on_level(
+                            admin_code=admin_code, admin_level=admin_level
+                        )
                         population_row = DBPopulation(
                             resource_ref=self._metadata.resource_data[
                                 resource_id

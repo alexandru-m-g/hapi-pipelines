@@ -1,0 +1,140 @@
+"""Functions specific to the food security theme."""
+
+from datetime import datetime
+from logging import getLogger
+from typing import Dict
+
+from hapi_schema.db_food_security import DBFoodSecurity
+from hdx.utilities.dateparse import parse_date_range
+from sqlalchemy.orm import Session
+
+from . import admins
+from .base_uploader import BaseUploader
+from .ipc_phase import IpcPhase
+from .ipc_type import IpcType
+from .metadata import Metadata
+
+logger = getLogger(__name__)
+
+
+class FoodSecurity(BaseUploader):
+    def __init__(
+        self,
+        session: Session,
+        metadata: Metadata,
+        admins: admins.Admins,
+        ipc_phase: IpcPhase,
+        ipc_type: IpcType,
+        results: Dict,
+    ):
+        super().__init__(session)
+        self._metadata = metadata
+        self._admins = admins
+        self._ipc_phase = (ipc_phase,)
+        self._ipc_type = (ipc_type,)
+        self._results = results
+
+    def populate(self):
+        logger.info("Populating food security table")
+        for dataset in self._results.values():
+            for admin_level, admin_results in dataset["results"].items():
+                resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
+                # TODO: is there a better way to do this?
+                # Get all the column positions
+                column_names = admin_results["headers"][0]
+                ipc_type_column = column_names.index("ipc_type")
+                reference_period_months_column = column_names.index(
+                    "reference_period_months"
+                )
+                reference_period_year_column = column_names.index(
+                    "reference_period_year"
+                )
+                population_total_column = column_names.index(
+                    "population_total"
+                )
+                population_in_phase_columns = {
+                    "1": column_names.index("population_phase1"),
+                    "2": column_names.index("population_phase2"),
+                    "3": column_names.index("population_phase3"),
+                    "4": column_names.index("population_phase4"),
+                    "5": column_names.index("population_phase5"),
+                    "3+": column_names.index("population_phase3+"),
+                }
+                # Loop through each pcode
+                values = admin_results["values"]
+                print(values)
+                for admin_code in values[0].keys():
+                    admin2_code = admins.get_admin2_code_based_on_level(
+                        admin_code=admin_code, admin_level=admin_level
+                    )
+                    # TODO: Figure out how to make the scraper only take the countries of interest
+                    try:
+                        admin2_ref = self._admins.admin2_data[admin2_code]
+                    except KeyError:
+                        continue
+                    ipc_type_code = _get_ipc_type_code_from_data(
+                        ipc_type_from_data=values[ipc_type_column][admin_code]
+                    )
+                    population_total = int(
+                        values[population_total_column][admin_code]
+                    )
+                    (
+                        reference_period_start,
+                        reference_period_end,
+                    ) = _get_reference_period(
+                        month_range=values[reference_period_months_column][
+                            admin_code
+                        ],
+                        year=values[reference_period_year_column][admin_code],
+                    )
+                    # TODO: why doesn't this work!?!
+                    #  for ipc_phase_code in self._ipc_phase.data:
+                    for ipc_phase_code in population_in_phase_columns.keys():
+                        population_in_phase = int(
+                            values[
+                                population_in_phase_columns[ipc_phase_code]
+                            ][admin_code]
+                        )
+                        food_security_row = DBFoodSecurity(
+                            resource_ref=self._metadata.resource_data[
+                                resource_id
+                            ],
+                            # admin2_ref=self._admins.admin2_data[admin2_code],
+                            admin2_ref=admin2_ref,
+                            ipc_phase_code=ipc_phase_code,
+                            ipc_type_code=ipc_type_code,
+                            reference_period_start=reference_period_start,
+                            reference_period_end=reference_period_end,
+                            population_total=population_total,
+                            population_in_phase=population_in_phase,
+                            population_fraction_in_phase=population_in_phase
+                            / population_total,
+                            # TODO: For v2+, add to scraper (HAPI-199)
+                            source_data="not yet implemented",
+                        )
+
+                        self._session.add(food_security_row)
+        self._session.commit()
+
+
+def _get_ipc_type_code_from_data(ipc_type_from_data: str) -> str:
+    mapping = {
+        "current": "current",
+        "projected": "first_projection",
+    }
+    try:
+        return mapping[ipc_type_from_data]
+    except KeyError as e:
+        raise KeyError(
+            f"IPC type {ipc_type_from_data} not found in mapping"
+        ) from e
+
+
+def _get_reference_period(month_range: str, year: str) -> (datetime, datetime):
+    reference_period_start = parse_date_range(
+        f"{year} {month_range.split('-')[0]}"
+    )[0]
+    reference_period_end = parse_date_range(
+        f"{year} {month_range.split('-')[1]}"
+    )[1]
+    return reference_period_start, reference_period_end
