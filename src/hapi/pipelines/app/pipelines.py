@@ -11,6 +11,8 @@ from sqlalchemy.orm import Session
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.age_range import AgeRange
 from hapi.pipelines.database.gender import Gender
+from hapi.pipelines.database.ipc_phase import IpcPhase
+from hapi.pipelines.database.ipc_type import IpcType
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
 from hapi.pipelines.database.operational_presence import OperationalPresence
@@ -60,6 +62,16 @@ class Pipelines:
             gender_descriptions=configuration["gender_descriptions"],
         )
         self.age_range = AgeRange(session=session)
+
+        self.ipc_phase = IpcPhase(
+            session=session,
+            ipc_phase_names=configuration["ipc_phase_names"],
+            ipc_phase_descriptions=configuration["ipc_phase_descriptions"],
+        )
+        self.ipc_type = IpcType(
+            session=session,
+            ipc_type_descriptions=configuration["ipc_type_descriptions"],
+        )
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -113,6 +125,8 @@ class Pipelines:
         self.org_type.populate()
         self.sector.populate()
         self.gender.populate()
+        self.ipc_phase.populate()
+        self.ipc_type.populate()
 
         results = self.runner.get_hapi_results(
             self.configurable_scrapers["population"]

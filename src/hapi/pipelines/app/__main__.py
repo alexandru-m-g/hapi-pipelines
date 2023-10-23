@@ -158,12 +158,12 @@ if __name__ == "__main__":
         scrapers_to_run = None
     project_configs = [
         "core.yaml",
-        "population.yaml",
+        "food_security.yaml",
         "operational_presence.yaml",
+        "population.yaml",
     ]
     project_config_dict = load_yamls(project_configs)
     project_config_dict = add_defaults(project_config_dict)
-    print(project_config_dict)
     facade(
         main,
         hdx_key=hdx_key,
