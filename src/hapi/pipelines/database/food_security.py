@@ -62,7 +62,6 @@ class FoodSecurity(BaseUploader):
                 }
                 # Loop through each pcode
                 values = admin_results["values"]
-                print(values)
                 for admin_code in values[0].keys():
                     admin2_code = admins.get_admin2_code_based_on_level(
                         admin_code=admin_code, admin_level=admin_level
@@ -72,48 +71,56 @@ class FoodSecurity(BaseUploader):
                         admin2_ref = self._admins.admin2_data[admin2_code]
                     except KeyError:
                         continue
-                    ipc_type_code = _get_ipc_type_code_from_data(
-                        ipc_type_from_data=values[ipc_type_column][admin_code]
-                    )
-                    population_total = int(
-                        values[population_total_column][admin_code]
-                    )
-                    (
-                        reference_period_start,
-                        reference_period_end,
-                    ) = _get_reference_period(
-                        month_range=values[reference_period_months_column][
-                            admin_code
-                        ],
-                        year=values[reference_period_year_column][admin_code],
-                    )
-                    # TODO: why doesn't this work!?!
-                    #  for ipc_phase_code in self._ipc_phase.data:
-                    for ipc_phase_code in population_in_phase_columns.keys():
-                        population_in_phase = int(
-                            values[
+                    # TODO: better way to do this?
+                    for irow in range(len(values[0][admin_code])):
+                        ipc_type_code = _get_ipc_type_code_from_data(
+                            ipc_type_from_data=values[ipc_type_column][
+                                admin_code
+                            ][irow]
+                        )
+                        population_total = int(
+                            values[population_total_column][admin_code][irow]
+                        )
+                        (
+                            reference_period_start,
+                            reference_period_end,
+                        ) = _get_reference_period(
+                            month_range=values[reference_period_months_column][
+                                admin_code
+                            ][irow],
+                            year=values[reference_period_year_column][
+                                admin_code
+                            ][irow],
+                        )
+                        # TODO: why doesn't this work!?!
+                        #  for ipc_phase_code in self._ipc_phase.data:
+                        for (
+                            ipc_phase_code
+                        ) in population_in_phase_columns.keys():
+                            population_in_phase = values[
                                 population_in_phase_columns[ipc_phase_code]
-                            ][admin_code]
-                        )
-                        food_security_row = DBFoodSecurity(
-                            resource_ref=self._metadata.resource_data[
-                                resource_id
-                            ],
-                            # admin2_ref=self._admins.admin2_data[admin2_code],
-                            admin2_ref=admin2_ref,
-                            ipc_phase_code=ipc_phase_code,
-                            ipc_type_code=ipc_type_code,
-                            reference_period_start=reference_period_start,
-                            reference_period_end=reference_period_end,
-                            population_total=population_total,
-                            population_in_phase=population_in_phase,
-                            population_fraction_in_phase=population_in_phase
-                            / population_total,
-                            # TODO: For v2+, add to scraper (HAPI-199)
-                            source_data="not yet implemented",
-                        )
-
-                        self._session.add(food_security_row)
+                            ][admin_code][irow]
+                            if population_in_phase is None:
+                                population_in_phase = 0
+                            population_in_phase = int(population_in_phase)
+                            food_security_row = DBFoodSecurity(
+                                resource_ref=self._metadata.resource_data[
+                                    resource_id
+                                ],
+                                # admin2_ref=self._admins.admin2_data[admin2_code],
+                                admin2_ref=admin2_ref,
+                                ipc_phase_code=ipc_phase_code,
+                                ipc_type_code=ipc_type_code,
+                                reference_period_start=reference_period_start,
+                                reference_period_end=reference_period_end,
+                                population_total=population_total,
+                                population_in_phase=population_in_phase,
+                                population_fraction_in_phase=population_in_phase
+                                / population_total,
+                                # TODO: For v2+, add to scraper (HAPI-199)
+                                source_data="not yet implemented",
+                            )
+                            self._session.add(food_security_row)
         self._session.commit()
 
 

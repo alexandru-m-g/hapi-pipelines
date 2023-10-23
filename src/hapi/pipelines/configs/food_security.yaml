@@ -69,6 +69,17 @@ food_security_admintwo:
       - "phase4"
       - "phase5"
       - "phase35"
+    list:
+      - "chtype"
+      - "reference_label"
+      - "reference_year"
+      - "population"
+      - "phase1"
+      - "phase2"
+      - "phase3"
+      - "phase4"
+      - "phase5"
+      - "phase35"
     output:
       - "ipc_type"
       - "reference_period_months"
