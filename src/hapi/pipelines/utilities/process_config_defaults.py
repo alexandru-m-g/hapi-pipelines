@@ -1,7 +1,9 @@
 def combine_default(country, default):
-    country["input"] = country["input"] + default["input"]
-    country["output"] = country["output"] + default["output"]
-    country["output_hxl"] = country["output_hxl"] + default["output_hxl"]
+    for list_name in ["input", "list", "output", "output_hxl"]:
+        if list_name not in country.keys():
+            country[list_name] = []
+        if list_name in default:
+            country[list_name] = country[list_name] + default[list_name]
     return country
 
 

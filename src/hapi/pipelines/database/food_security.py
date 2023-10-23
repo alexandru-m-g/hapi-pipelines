@@ -81,6 +81,9 @@ class FoodSecurity(BaseUploader):
                         population_total = int(
                             values[population_total_column][admin_code][irow]
                         )
+                        if population_total == 0:
+                            logger.error(f"0 total pop for {admin_code}")
+                            continue
                         (
                             reference_period_start,
                             reference_period_end,

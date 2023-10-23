@@ -127,7 +127,11 @@ class Pipelines:
         # _create_configurable_scrapers(
         #    "operational_presence", "admintwo", adminlevel=self.admintwo
         # )
+        # TODO: how to add admin0 and admin1?
         # _create_configurable_scrapers("food_security", "national")
+        # _create_configurable_scrapers(
+        #    "food_security", "adminone", adminlevel=self.adminone
+        # )
         _create_configurable_scrapers(
             "food_security", "admintwo", adminlevel=self.admintwo
         )
