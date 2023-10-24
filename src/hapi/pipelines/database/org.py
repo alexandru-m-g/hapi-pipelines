@@ -1,6 +1,8 @@
 import logging
+from typing import Dict
 
 from hapi_schema.db_org import DBOrg
+from hdx.scraper.utilities.reader import Read
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -10,12 +12,25 @@ logger = logging.getLogger(__name__)
 
 
 class Org(BaseUploader):
-    def __init__(self, session: Session):
+    def __init__(
+        self,
+        session: Session,
+        datasetinfo: Dict[str, str],
+    ):
         super().__init__(session)
+        self._datasetinfo = datasetinfo
         self.data = {}
+        self._org_map = {}
 
     def populate(self):
-        raise NotImplementedError()
+        logger.info("Populating org mapping")
+        reader = Read.get_reader()
+        headers, iterator = reader.get_tabular_rows(
+            self._datasetinfo["url"], headers=2, dict_form=True, format="csv"
+        )
+        for row in iterator:
+            org_name = row.pop("#x_pattern")
+            self._org_map[org_name] = row
 
     def populate_single(
         self,
