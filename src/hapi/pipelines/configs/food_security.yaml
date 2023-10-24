@@ -123,3 +123,7 @@ food_security_admintwo:
       - ~
       - "adm2_pcod2"
     admin_exact: True
+    # TODO: How to filter countries with HAPI_countries
+    prefilter: "adm0_pcod3 in ['MLI', 'NGA']"
+    filter_cols:
+      - "adm0_pcod3"

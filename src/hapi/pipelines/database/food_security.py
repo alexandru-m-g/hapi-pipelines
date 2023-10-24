@@ -66,12 +66,8 @@ class FoodSecurity(BaseUploader):
                     admin2_code = admins.get_admin2_code_based_on_level(
                         admin_code=admin_code, admin_level=admin_level
                     )
-                    # TODO: Figure out how to make the scraper only take the countries of interest
-                    try:
-                        admin2_ref = self._admins.admin2_data[admin2_code]
-                    except KeyError:
-                        continue
-                    # TODO: better way to do this?
+                    admin2_ref = self._admins.admin2_data[admin2_code]
+                    # TODO: better way to do this? (i.e. not with a counter)
                     for irow in range(len(values[0][admin_code])):
                         ipc_type_code = _get_ipc_type_code_from_data(
                             ipc_type_from_data=values[ipc_type_column][
