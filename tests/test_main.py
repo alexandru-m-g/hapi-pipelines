@@ -7,6 +7,7 @@ from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_age_range import DBAgeRange
 from hapi_schema.db_dataset import DBDataset
+from hapi_schema.db_food_security import DBFoodSecurity
 from hapi_schema.db_gender import DBGender
 from hapi_schema.db_ipc_phase import DBIpcPhase
 from hapi_schema.db_ipc_type import DBIpcType
@@ -122,3 +123,7 @@ class TestHAPIPipelines:
                     assert count == 6
                     count = session.scalar(select(func.count(DBIpcType.code)))
                     assert count == 3
+                    count = session.scalar(
+                        select(func.count(DBFoodSecurity.id))
+                    )
+                    assert count == 11724

@@ -98,23 +98,6 @@ food_security_default:
     - "#affected+ch+food+p5+num"
     - "#affected+ch+food+p3plus+num"
 
-food_security_national:
-  food_security_ch:
-    dataset: "cadre-harmonise"
-    format: "xlsx"
-    admin:
-      - "adm0_pcod3"
-    admin_exact: True
-
-food_security_adminone:
-  food_security_ch:
-    dataset: "cadre-harmonise"
-    format: "xlsx"
-    admin:
-      - ~
-      - "adm1_pcod2"
-    admin_exact: True
-
 food_security_admintwo:
   food_security_ch:
     dataset: "cadre-harmonise"
@@ -123,7 +106,7 @@ food_security_admintwo:
       - ~
       - "adm2_pcod2"
     admin_exact: True
-    # TODO: How to filter countries with HAPI_countries
-    prefilter: "adm0_pcod3 in ['MLI', 'NGA']"
+    # TODO: Figure out why this has to be in here
+    prefilter: "adm0_pcod3 in ['MLI']"
     filter_cols:
       - "adm0_pcod3"

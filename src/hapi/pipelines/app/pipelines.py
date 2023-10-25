@@ -16,8 +16,10 @@ from hapi.pipelines.database.ipc_phase import IpcPhase
 from hapi.pipelines.database.ipc_type import IpcType
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
+from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
+from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.sector import Sector
 
 
@@ -103,35 +105,16 @@ class Pipelines:
             current_scrapers = self.configurable_scrapers.get(prefix, [])
             self.configurable_scrapers[prefix] = current_scrapers + scrapers
 
-        def _create_configurable_scrapers_no_pcode(
-            prefix, suffix_attribute=None
-        ):
-            source_configuration = Sources.create_source_configuration(
-                suffix_attribute=suffix_attribute, admin_sources=False
-            )
-            scrapers = self.runner.add_configurables(
-                self.configuration[f"{prefix}"],
-                source_configuration=source_configuration,
-                level="subnational",
-            )
-            current_scrapers = self.configurable_scrapers.get(prefix, [])
-            self.configurable_scrapers[prefix] = current_scrapers + scrapers
-
-        # _create_configurable_scrapers("population", "national")
-        # _create_configurable_scrapers(
-        #    "population", "adminone", adminlevel=self.adminone
-        # )
-        # _create_configurable_scrapers(
-        #    "population", "admintwo", adminlevel=self.admintwo
-        # )
-        # _create_configurable_scrapers(
-        #    "operational_presence", "admintwo", adminlevel=self.admintwo
-        # )
-        # TODO: how to add admin0 and admin1?
-        # _create_configurable_scrapers("food_security", "national")
-        # _create_configurable_scrapers(
-        #    "food_security", "adminone", adminlevel=self.adminone
-        # )
+        _create_configurable_scrapers("population", "national")
+        _create_configurable_scrapers(
+            "population", "adminone", adminlevel=self.adminone
+        )
+        _create_configurable_scrapers(
+            "population", "admintwo", adminlevel=self.admintwo
+        )
+        _create_configurable_scrapers(
+            "operational_presence", "admintwo", adminlevel=self.admintwo
+        )
         _create_configurable_scrapers(
             "food_security", "admintwo", adminlevel=self.admintwo
         )
@@ -143,13 +126,12 @@ class Pipelines:
         self.locations.populate()
         self.admins.populate()
         self.metadata.populate()
-        # self.org_type.populate()
-        # self.sector.populate()
-        # self.gender.populate()
+        self.org_type.populate()
+        self.sector.populate()
+        self.gender.populate()
         self.ipc_phase.populate()
         self.ipc_type.populate()
 
-        """
         results = self.runner.get_hapi_results(
             self.configurable_scrapers["population"]
         )
@@ -177,7 +159,6 @@ class Pipelines:
             results=results,
         )
         operational_presence.populate()
-        """
 
         results = self.runner.get_hapi_results(
             self.configurable_scrapers["food_security"]

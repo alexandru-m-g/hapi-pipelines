@@ -30,8 +30,8 @@ class FoodSecurity(BaseUploader):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
-        self._ipc_phase = (ipc_phase,)
-        self._ipc_type = (ipc_type,)
+        self._ipc_phase = ipc_phase
+        self._ipc_type = ipc_type
         self._results = results
 
     def populate(self):
@@ -39,7 +39,7 @@ class FoodSecurity(BaseUploader):
         for dataset in self._results.values():
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
-                # TODO: is there a better way to do this?
+                resource_ref = self._metadata.resource_data[resource_id]
                 # Get all the column positions
                 column_names = admin_results["headers"][0]
                 ipc_type_column = column_names.index("ipc_type")
@@ -67,7 +67,7 @@ class FoodSecurity(BaseUploader):
                         admin_code=admin_code, admin_level=admin_level
                     )
                     admin2_ref = self._admins.admin2_data[admin2_code]
-                    # TODO: better way to do this? (i.e. not with a counter)
+                    # Loop through all entries in each pcode
                     for irow in range(len(values[0][admin_code])):
                         ipc_type_code = _get_ipc_type_code_from_data(
                             ipc_type_from_data=values[ipc_type_column][
@@ -91,11 +91,7 @@ class FoodSecurity(BaseUploader):
                                 admin_code
                             ][irow],
                         )
-                        # TODO: why doesn't this work!?!
-                        #  for ipc_phase_code in self._ipc_phase.data:
-                        for (
-                            ipc_phase_code
-                        ) in population_in_phase_columns.keys():
+                        for ipc_phase_code in self._ipc_phase.data:
                             population_in_phase = values[
                                 population_in_phase_columns[ipc_phase_code]
                             ][admin_code][irow]
@@ -103,10 +99,7 @@ class FoodSecurity(BaseUploader):
                                 population_in_phase = 0
                             population_in_phase = int(population_in_phase)
                             food_security_row = DBFoodSecurity(
-                                resource_ref=self._metadata.resource_data[
-                                    resource_id
-                                ],
-                                # admin2_ref=self._admins.admin2_data[admin2_code],
+                                resource_ref=resource_ref,
                                 admin2_ref=admin2_ref,
                                 ipc_phase_code=ipc_phase_code,
                                 ipc_type_code=ipc_type_code,
