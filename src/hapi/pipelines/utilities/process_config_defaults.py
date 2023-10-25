@@ -1,4 +1,7 @@
-def add_defaults(config):
+from typing import Dict, List
+
+
+def add_defaults(config: Dict) -> Dict:
     default_list = _find_defaults(config)
     for default_key in default_list:
         default = config[default_key]
@@ -12,7 +15,7 @@ def add_defaults(config):
     return config
 
 
-def _find_defaults(config):
+def _find_defaults(config: Dict) -> List:
     default_list = []
     for key in config:
         key_components = key.rsplit("_", 1)
@@ -21,7 +24,7 @@ def _find_defaults(config):
     return default_list
 
 
-def _find_matching_top_level_keys(config, default_key):
+def _find_matching_top_level_keys(config: Dict, default_key: str) -> List[str]:
     matching_top_level_keys = []
     default_prefix = default_key.rsplit("_", 1)[0]
     for top_level_key in config:
@@ -34,7 +37,9 @@ def _find_matching_top_level_keys(config, default_key):
     return matching_top_level_keys
 
 
-def _scraper_add_defaults(config, default, top_level_key):
+def _scraper_add_defaults(
+    config: Dict, default: Dict, top_level_key: str
+) -> Dict:
     for scraper in default["scrapers_with_defaults"]:
         if scraper in config[top_level_key]:
             scraper_config = config[top_level_key][scraper]
@@ -43,8 +48,10 @@ def _scraper_add_defaults(config, default, top_level_key):
     return config
 
 
-def _combine_default(country, default):
-    country["input"] = country["input"] + default["input"]
-    country["output"] = country["output"] + default["output"]
-    country["output_hxl"] = country["output_hxl"] + default["output_hxl"]
+def _combine_default(country: Dict, default: Dict) -> Dict:
+    for list_name in ["input", "list", "output", "output_hxl"]:
+        if list_name not in country.keys():
+            country[list_name] = []
+        if list_name in default:
+            country[list_name] = country[list_name] + default[list_name]
     return country
