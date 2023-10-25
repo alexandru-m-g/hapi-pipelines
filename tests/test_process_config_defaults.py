@@ -26,7 +26,6 @@ def test_process_config_defaults():
             },
             "theme_name_no_default": {
                 "input": ["c5"],
-                "list": ["c5"],
                 "output": ["c5"],
                 "output_hxl": ["#c5"],
             },
