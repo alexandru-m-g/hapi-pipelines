@@ -53,11 +53,10 @@ class Metadata(BaseUploader):
                     if sheet["is_hxlated"]:
                         is_hxlated = True
                         break
-                # TODO: Change resource "filename" to "name" in hdx-python-scraper (HAPI-246)
                 resource_row = DBResource(
                     hdx_id=resource_id,
                     dataset_ref=dataset_row.id,
-                    name=resource["filename"],
+                    name=resource["name"],
                     format=resource["format"],
                     update_date=resource["update_date"],
                     is_hxl=is_hxlated,
