@@ -97,7 +97,7 @@ def _validate_hxl_tag(hxl_tag: str) -> bool:
     Assume they have the form:
         #population+total
         #population+f+total
-        #population+ages_5_12+total
+        #population+age_5_12+total
         #population+age_80_plus+total
         #population+f+age_5_12
         #population+f+age_80_plus
