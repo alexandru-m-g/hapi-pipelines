@@ -3,8 +3,10 @@ commit_limit: 1000
 
 HAPI_countries:
   - AFG
+  - BFA
   - MLI
   - NGA
+  - TCD
 
 country_name_overrides:
   BOL: "Bolivia"
