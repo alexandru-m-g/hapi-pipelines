@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- resource filename changed to name
+- Resource filename changed to name
 
 ## [0.5.4] - 2023-10-19
 
