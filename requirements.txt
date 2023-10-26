@@ -59,7 +59,7 @@ google-auth==2.23.3
     #   gspread
 google-auth-oauthlib==1.1.0
     # via gspread
-greenlet==3.0.0
+greenlet==3.0.1
     # via sqlalchemy
 gspread==5.12.0
     # via hdx-python-scraper
@@ -73,7 +73,7 @@ hdx-python-country==3.5.7
     #   hdx-python-api
 hdx-python-database[postgresql]==1.2.9
     # via hapi-pipelines (pyproject.toml)
-hdx-python-scraper==2.2.2
+hdx-python-scraper==2.2.3
     # via hapi-pipelines (pyproject.toml)
 hdx-python-utilities==3.6.2
     # via hdx-python-country
@@ -173,7 +173,7 @@ pyopenssl==23.2.0
     #   ndg-httpsclient
 pyphonetics==0.5.3
     # via hdx-python-country
-pyrsistent==0.19.3
+pyrsistent==0.20.0
     # via jsonschema
 pytest==7.4.3
     # via
