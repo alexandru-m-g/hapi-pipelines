@@ -34,8 +34,8 @@ class Metadata(BaseUploader):
                 hdx_id=dataset_id,
                 hdx_stub=dataset["hdx_stub"],
                 title=dataset["title"],
-                provider_code=dataset["provider_code"],
-                provider_name=dataset["provider_name"],
+                hdx_provider_stub=dataset["hdx_provider_stub"],
+                hdx_provider_name=dataset["hdx_provider_name"],
             )
             self._session.add(dataset_row)
             self._session.commit()
