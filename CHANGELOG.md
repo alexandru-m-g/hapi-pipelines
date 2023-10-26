@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - Minor unit tests
+- Food security and related tables for Mali
 
 ## [0.5.5] - 2023-10-19
 
