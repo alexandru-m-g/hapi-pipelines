@@ -35,14 +35,15 @@ class Pipelines:
         self.locations = Locations(
             configuration=configuration, session=session, use_live=use_live
         )
+        countries = configuration["HAPI_countries"]
         libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
         )
         self.adminone = AdminLevel(admin_level=1)
         self.admintwo = AdminLevel(admin_level=2)
-        self.adminone.setup_from_libhxl_dataset(libhxl_dataset)
-        self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
+        self.adminone.setup_from_libhxl_dataset(libhxl_dataset, countries)
+        self.admintwo.setup_from_libhxl_dataset(libhxl_dataset, countries)
 
         self.org = Org(session=session)
         self.org_type = OrgType(
@@ -63,7 +64,7 @@ class Pipelines:
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
-            configuration["HAPI_countries"],
+            countries,
             today,
             errors_on_exit=errors_on_exit,
             scrapers_to_run=scrapers_to_run,

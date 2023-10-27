@@ -67,7 +67,7 @@ hapi-schema==0.3.2
     # via hapi-pipelines (pyproject.toml)
 hdx-python-api==6.1.3
     # via hdx-python-scraper
-hdx-python-country==3.5.7
+hdx-python-country @ git+ssh://git@github.com/OCHA-DAP/hdx-python-country@adminlevel_countries
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-api
@@ -167,7 +167,7 @@ pydantic-core==2.10.1
     # via pydantic
 pygments==2.16.1
     # via rich
-pyopenssl==23.2.0
+pyopenssl==23.3.0
     # via
     #   hdx-python-api
     #   ndg-httpsclient
