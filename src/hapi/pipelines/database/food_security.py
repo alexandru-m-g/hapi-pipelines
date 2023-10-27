@@ -49,9 +49,6 @@ class FoodSecurity(BaseUploader):
                 reference_period_year_column = column_names.index(
                     "reference_period_year"
                 )
-                population_total_column = column_names.index(
-                    "population_total"
-                )
                 population_in_phase_columns = {
                     "1": column_names.index("population_phase1"),
                     "2": column_names.index("population_phase2"),
@@ -59,6 +56,7 @@ class FoodSecurity(BaseUploader):
                     "4": column_names.index("population_phase4"),
                     "5": column_names.index("population_phase5"),
                     "3+": column_names.index("population_phase3+"),
+                    "all": column_names.index("population_total"),
                 }
                 # Loop through each pcode
                 values = admin_results["values"]
@@ -74,12 +72,6 @@ class FoodSecurity(BaseUploader):
                                 admin_code
                             ][irow]
                         )
-                        population_total = int(
-                            values[population_total_column][admin_code][irow]
-                        )
-                        if population_total == 0:
-                            logger.error(f"0 total pop for {admin_code}")
-                            continue
                         (
                             reference_period_start,
                             reference_period_end,
@@ -90,6 +82,12 @@ class FoodSecurity(BaseUploader):
                             year=values[reference_period_year_column][
                                 admin_code
                             ][irow],
+                        )
+                        # Total population required to calculate fraction in phase
+                        population_total = int(
+                            values[population_in_phase_columns["all"]][
+                                admin_code
+                            ][irow]
                         )
                         for ipc_phase_code in self._ipc_phase.data:
                             population_in_phase = values[
@@ -105,7 +103,6 @@ class FoodSecurity(BaseUploader):
                                 ipc_type_code=ipc_type_code,
                                 reference_period_start=reference_period_start,
                                 reference_period_end=reference_period_end,
-                                population_total=population_total,
                                 population_in_phase=population_in_phase,
                                 population_fraction_in_phase=population_in_phase
                                 / population_total,
@@ -119,7 +116,7 @@ class FoodSecurity(BaseUploader):
 def _get_ipc_type_code_from_data(ipc_type_from_data: str) -> str:
     mapping = {
         "current": "current",
-        "projected": "first_projection",
+        "projected": "first projection",
     }
     try:
         return mapping[ipc_type_from_data]

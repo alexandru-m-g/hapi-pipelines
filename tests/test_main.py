@@ -120,10 +120,10 @@ class TestHAPIPipelines:
                     )
                     assert count == 12215
                     count = session.scalar(select(func.count(DBIpcPhase.code)))
-                    assert count == 6
+                    assert count == 7
                     count = session.scalar(select(func.count(DBIpcType.code)))
                     assert count == 3
                     count = session.scalar(
                         select(func.count(DBFoodSecurity.id))
                     )
-                    assert count == 37254
+                    assert count == 43463

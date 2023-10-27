@@ -8,6 +8,7 @@ ipc_phase_names:
   "4": "Phase 4: Emergency"
   "5": "Phase 5: Catastrophe/Famine"
   "3+": "Phase 3+: In Need of Action"
+  "all": "Phases 1, 2, 3, 4, and 5"
 
 ipc_phase_descriptions:
   "1": >
@@ -39,6 +40,9 @@ ipc_phase_descriptions:
     not necessarily reflect the full population in need of urgent action. This
     is because some households may be in Phase 2 or even 1 but only because of
     receipt of assistance, and thus, they may be in need of continued action.
+  "all": >
+    Sum of population in phases 1, 2, 3, 4, and 5. Used as the denominator
+    to determine the fraction of population per phase.
 
 ipc_type_descriptions:
   current: >
