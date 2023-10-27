@@ -27,7 +27,9 @@ class Sector(BaseUploader):
     def populate(self):
         logger.info("Populating sector table")
         reader = Read.get_reader()
-        headers, iterator = reader.read(self._datasetinfo)
+        headers, iterator = reader.read(
+            self._datasetinfo, file_prefix="sector"
+        )
         for row in iterator:
             code = row["#sector +code +acronym"]
             name = row["#sector +name +preferred +i_en"]

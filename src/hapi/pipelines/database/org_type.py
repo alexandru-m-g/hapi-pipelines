@@ -26,7 +26,9 @@ class OrgType(BaseUploader):
     def populate(self):
         logger.info("Populating org type table")
         reader = Read.get_reader()
-        headers, iterator = reader.read(self._datasetinfo)
+        headers, iterator = reader.read(
+            self._datasetinfo, file_prefix="org_type"
+        )
         for row in iterator:
             code = row["#org +type +code +v_hrinfo"]
             description = row["#org +type +preferred"]

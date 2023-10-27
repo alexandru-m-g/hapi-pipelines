@@ -27,7 +27,11 @@ class Org(BaseUploader):
         logger.info("Populating org mapping")
         reader = Read.get_reader()
         headers, iterator = reader.get_tabular_rows(
-            self._datasetinfo["url"], headers=2, dict_form=True, format="csv"
+            self._datasetinfo["url"],
+            headers=2,
+            dict_form=True,
+            format="csv",
+            file_prefix="org",
         )
         for row in iterator:
             org_name = row.get("#x_pattern")
