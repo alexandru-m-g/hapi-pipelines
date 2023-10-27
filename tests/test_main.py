@@ -94,11 +94,11 @@ class TestHAPIPipelines:
                     pipelines.output()
 
                     count = session.scalar(select(func.count(DBLocation.id)))
-                    assert count == 3
+                    assert count == 5
                     count = session.scalar(select(func.count(DBAdmin1.id)))
-                    assert count == 84
+                    assert count == 122
                     count = session.scalar(select(func.count(DBAdmin2.id)))
-                    assert count == 1312
+                    assert count == 1465
                     count = session.scalar(select(func.count(DBDataset.id)))
                     assert count == 7
                     count = session.scalar(select(func.count(DBResource.id)))
@@ -126,4 +126,4 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBFoodSecurity.id))
                     )
-                    assert count == 13678
+                    assert count == 43463
