@@ -2,7 +2,10 @@ from hapi_schema.db_admin1 import view_params_admin1
 from hapi_schema.db_admin2 import view_params_admin2
 from hapi_schema.db_age_range import view_params_age_range
 from hapi_schema.db_dataset import view_params_dataset
+from hapi_schema.db_food_security import view_params_food_security
 from hapi_schema.db_gender import view_params_gender
+from hapi_schema.db_ipc_phase import view_params_ipc_phase
+from hapi_schema.db_ipc_type import view_params_ipc_type
 from hapi_schema.db_location import view_params_location
 from hapi_schema.db_operational_presence import (
     view_params_operational_presence,
@@ -22,7 +25,10 @@ build_views(
             view_params_admin2,
             view_params_age_range,
             view_params_dataset,
+            view_params_food_security,
             view_params_gender,
+            view_params_ipc_phase,
+            view_params_ipc_type,
             view_params_location,
             view_params_operational_presence,
             view_params_org,

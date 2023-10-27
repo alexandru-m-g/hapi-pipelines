@@ -10,7 +10,10 @@ from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.age_range import AgeRange
+from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.gender import Gender
+from hapi.pipelines.database.ipc_phase import IpcPhase
+from hapi.pipelines.database.ipc_type import IpcType
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
 from hapi.pipelines.database.operational_presence import OperationalPresence
@@ -61,6 +64,16 @@ class Pipelines:
         )
         self.age_range = AgeRange(session=session)
 
+        self.ipc_phase = IpcPhase(
+            session=session,
+            ipc_phase_names=configuration["ipc_phase_names"],
+            ipc_phase_descriptions=configuration["ipc_phase_descriptions"],
+        )
+        self.ipc_type = IpcType(
+            session=session,
+            ipc_type_descriptions=configuration["ipc_type_descriptions"],
+        )
+
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
             configuration["HAPI_countries"],
@@ -102,6 +115,9 @@ class Pipelines:
         _create_configurable_scrapers(
             "operational_presence", "admintwo", adminlevel=self.admintwo
         )
+        _create_configurable_scrapers(
+            "food_security", "admintwo", adminlevel=self.admintwo
+        )
 
     def run(self):
         self.runner.run()
@@ -113,6 +129,8 @@ class Pipelines:
         self.org_type.populate()
         self.sector.populate()
         self.gender.populate()
+        self.ipc_phase.populate()
+        self.ipc_type.populate()
 
         results = self.runner.get_hapi_results(
             self.configurable_scrapers["population"]
@@ -141,3 +159,16 @@ class Pipelines:
             results=results,
         )
         operational_presence.populate()
+
+        results = self.runner.get_hapi_results(
+            self.configurable_scrapers["food_security"]
+        )
+        food_security = FoodSecurity(
+            session=self.session,
+            metadata=self.metadata,
+            admins=self.admins,
+            ipc_phase=self.ipc_phase,
+            ipc_type=self.ipc_type,
+            results=results,
+        )
+        food_security.populate()

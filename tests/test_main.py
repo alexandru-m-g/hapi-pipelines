@@ -7,7 +7,10 @@ from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_age_range import DBAgeRange
 from hapi_schema.db_dataset import DBDataset
+from hapi_schema.db_food_security import DBFoodSecurity
 from hapi_schema.db_gender import DBGender
+from hapi_schema.db_ipc_phase import DBIpcPhase
+from hapi_schema.db_ipc_type import DBIpcType
 from hapi_schema.db_location import DBLocation
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hapi_schema.db_org import DBOrg
@@ -37,8 +40,9 @@ class TestHAPIPipelines:
         UserAgent.set_global("test")
         project_configs = [
             "core.yaml",
-            "population.yaml",
+            "food_security.yaml",
             "operational_presence.yaml",
+            "population.yaml",
         ]
         project_config_dict = load_yamls(project_configs)
         project_config_dict = add_defaults(project_config_dict)
@@ -96,9 +100,9 @@ class TestHAPIPipelines:
                     count = session.scalar(select(func.count(DBAdmin2.id)))
                     assert count == 1312
                     count = session.scalar(select(func.count(DBDataset.id)))
-                    assert count == 6
+                    assert count == 7
                     count = session.scalar(select(func.count(DBResource.id)))
-                    assert count == 11
+                    assert count == 12
                     count = session.scalar(select(func.count(DBOrgType.code)))
                     assert count == 14
                     count = session.scalar(select(func.count(DBSector.code)))
@@ -115,3 +119,11 @@ class TestHAPIPipelines:
                         select(func.count(DBOperationalPresence.id))
                     )
                     assert count == 12215
+                    count = session.scalar(select(func.count(DBIpcPhase.code)))
+                    assert count == 7
+                    count = session.scalar(select(func.count(DBIpcType.code)))
+                    assert count == 3
+                    count = session.scalar(
+                        select(func.count(DBFoodSecurity.id))
+                    )
+                    assert count == 13678

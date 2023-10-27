@@ -49,7 +49,7 @@ def _scraper_add_defaults(
 
 
 def _combine_default(country: Dict, default: Dict) -> Dict:
-    for list_name in ["input", "list", "output", "output_hxl"]:
+    for list_name in ("input", "list", "output", "output_hxl"):
         if list_name not in country.keys():
             country[list_name] = []
         if list_name in default:
