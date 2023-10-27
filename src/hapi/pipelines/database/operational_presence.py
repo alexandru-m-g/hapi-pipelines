@@ -3,6 +3,7 @@ from logging import getLogger
 from typing import Dict
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
+from hdx.location.names import clean_name
 from sqlalchemy.orm import Session
 
 from . import admins
@@ -84,7 +85,7 @@ class OperationalPresence(BaseUploader):
                         if (
                             org_acronym is not None
                             and org_name is not None
-                            and (org_acronym, org_name, org_type_code)
+                            and (org_acronym, clean_name(org_name), org_type_code)
                             not in self._org.data
                         ):
                             self._org.populate_single(
@@ -122,7 +123,7 @@ class OperationalPresence(BaseUploader):
                             resource_id
                         ]
                         org_ref = self._org.data[
-                            (org_acronym, org_name, org_type_code)
+                            (org_acronym, clean_name(org_name), org_type_code)
                         ]
                         admin2_ref = self._admins.admin2_data[admin2_code]
                         row = (resource_ref, org_ref, sector_code, admin2_ref)
