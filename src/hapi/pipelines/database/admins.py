@@ -80,7 +80,7 @@ class Admins(BaseUploader):
                     and code in self._orphan_admin2s.keys()
                 ):
                     parent_ref = self.admin1_data[
-                        get_admin1_to_location_connector_code(
+                        _get_admin1_to_location_connector_code(
                             location_code=self._orphan_admin2s[code]
                         )
                     ]
@@ -116,7 +116,7 @@ class Admins(BaseUploader):
             )
             admin_row = DBAdmin1(
                 location_ref=location_ref,
-                code=get_admin1_to_location_connector_code(
+                code=_get_admin1_to_location_connector_code(
                     location_code=location_code
                 ),
                 name="UNSPECIFIED",
@@ -136,7 +136,7 @@ class Admins(BaseUploader):
             )
             admin_row = DBAdmin2(
                 admin1_ref=admin1_ref,
-                code=get_admin2_to_admin1_connector_code(
+                code=_get_admin2_to_admin1_connector_code(
                     admin1_code=admin1_code
                 ),
                 name="UNSPECIFIED",
@@ -155,7 +155,7 @@ class Admins(BaseUploader):
         raise ValueError(f"Pcode {pcode} not in admin1 or admin2 tables.")
 
 
-def get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
+def _get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
     """Get the code for an unspecified admin2, based on the admin1 code.
 
     Note that if you need to make the connection between admin2 and
@@ -170,9 +170,31 @@ def get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
     return f"{admin1_code}-XXX"
 
 
-def get_admin1_to_location_connector_code(location_code: str) -> str:
+def _get_admin1_to_location_connector_code(location_code: str) -> str:
     """Get the code for an unspecified admin1, based on the location code."""
     return f"{location_code}-XXX"
+
+
+def get_admin2_code_based_on_level(admin_code: str, admin_level: str) -> str:
+    if admin_level == "national":
+        admin1_code = _get_admin1_to_location_connector_code(
+            location_code=admin_code
+        )
+        admin2_code = _get_admin2_to_admin1_connector_code(
+            admin1_code=admin1_code
+        )
+    elif admin_level == "adminone":
+        admin2_code = _get_admin2_to_admin1_connector_code(
+            admin1_code=admin_code
+        )
+    elif admin_level == "admintwo":
+        admin2_code = admin_code
+    else:
+        raise KeyError(
+            f"Admin level {admin_level} not one of 'national',"
+            f"'adminone', 'admintwo'"
+        )
+    return admin2_code
 
 
 class _AdminFilter(AbstractStreamingFilter, ABC):
