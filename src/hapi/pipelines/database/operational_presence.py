@@ -85,7 +85,11 @@ class OperationalPresence(BaseUploader):
                         if (
                             org_acronym is not None
                             and org_name is not None
-                            and (org_acronym, clean_name(org_name), org_type_code)
+                            and (
+                                org_acronym,
+                                clean_name(org_name),
+                                org_type_code,
+                            )
                             not in self._org.data
                         ):
                             self._org.populate_single(
