@@ -71,7 +71,7 @@ class Org(BaseUploader):
             org_name_clean = clean_name(org_name)
             org_map_info = org_name_map_clean.get(org_name_clean)
         if not org_map_info:
-            return {}
+            return {"#org+name": org_name}
         org_info = {"#org+name": org_map_info["#org+name"]}
         if not org_info["#org+name"]:
             org_info["#org+name"] = org_map_info["#x_pattern"]
