@@ -56,19 +56,28 @@ class OperationalPresence(BaseUploader):
 
                 for admin_code, org_names in values[org_name_index].items():
                     for i, org_name in enumerate(org_names):
-                        org_acronym = values[org_acronym_index][admin_code][i]
-                        org_type_code = None
-                        if org_type_name_index:
-                            org_type_name = values[org_type_name_index][
-                                admin_code
-                            ][i]
-                            org_type_code = self._org_type.get_org_type_code(
-                                org_type_name
-                            )
-                            if not org_type_code:
-                                logger.error(
-                                    f"Org type {org_type_name} not in table"
+                        # TODO: find the country name for get_org_info parameter "location"
+                        org_info = self._org.get_org_info(
+                            org_name, location="Country code"
+                        )
+                        org_name = org_info.get("#org+name")
+                        org_acronym = org_info.get(
+                            "#org+acronym",
+                            values[org_acronym_index][admin_code][i],
+                        )
+                        org_type_code = org_info.get("#org+type+code")
+                        if not org_type_code:
+                            if org_type_name_index:
+                                org_type_name = values[org_type_name_index][
+                                    admin_code
+                                ][i]
+                                org_type_code = (
+                                    self._org_type.get_org_type_code(
+                                        org_type_name
+                                    )
                                 )
+                        if not org_type_code:
+                            logger.error("Org type missing or not in table")
                         # TODO: find out how unique orgs are. Currently checking that
                         #  combo of acronym/name/type is unique. (More clarity will come
                         #  from HAPI-166).

@@ -2,11 +2,12 @@ import logging
 from typing import Dict
 
 from hapi_schema.db_org import DBOrg
+from hdx.location.names import clean_name
 from hdx.scraper.utilities.reader import Read
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from hapi.pipelines.database.base_uploader import BaseUploader
+from .base_uploader import BaseUploader
 
 logger = logging.getLogger(__name__)
 
@@ -55,3 +56,27 @@ class Org(BaseUploader):
         )
         for result in results:
             self.data[(result[1], result[2], result[3])] = result[0]
+
+    def get_org_info(self, org_name: str, location: str) -> Dict[str, str]:
+        org_name_map = {
+            on: self._org_map[on]
+            for on in self._org_map
+            if self._org_map[on]["#country+name"] in [location, None]
+        }
+        org_map_info = org_name_map.get(org_name)
+        if not org_map_info:
+            org_name_map_clean = {
+                clean_name(on): org_name_map[on] for on in org_name_map
+            }
+            org_name_clean = clean_name(org_name)
+            org_map_info = org_name_map_clean.get(org_name_clean)
+        if not org_map_info:
+            return {}
+        org_info = {"#org+name": org_map_info["#org+name"]}
+        if not org_info["#org+name"]:
+            org_info["#org+name"] = org_map_info["#x_pattern"]
+        if org_map_info["#org+acronym"]:
+            org_info["#org+acronym"] = org_map_info["#org+acronym"]
+        if org_map_info["#org+type+code"]:
+            org_info["#org+type+code"] = org_map_info["#org+type+code"]
+        return org_info
