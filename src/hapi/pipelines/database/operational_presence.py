@@ -56,7 +56,7 @@ class OperationalPresence(BaseUploader):
 
                 for admin_code, org_names in values[org_name_index].items():
                     for i, org_name in enumerate(org_names):
-                        # TODO: find the country name for get_org_info parameter "location"
+                        # TODO: find the country code for get_org_info parameter "location"
                         org_info = self._org.get_org_info(
                             org_name, location="Country code"
                         )

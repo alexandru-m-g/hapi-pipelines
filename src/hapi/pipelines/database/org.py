@@ -61,7 +61,7 @@ class Org(BaseUploader):
         org_name_map = {
             on: self._org_map[on]
             for on in self._org_map
-            if self._org_map[on]["#country+name"] in [location, None]
+            if self._org_map[on]["#country+code"] in [location, None]
         }
         org_map_info = org_name_map.get(org_name)
         if not org_map_info:
