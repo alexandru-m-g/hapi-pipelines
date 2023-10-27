@@ -29,7 +29,7 @@ class Org(BaseUploader):
             self._datasetinfo["url"], headers=2, dict_form=True, format="csv"
         )
         for row in iterator:
-            org_name = row.pop("#x_pattern")
+            org_name = row.get("#x_pattern")
             self._org_map[org_name] = row
 
     def populate_single(
