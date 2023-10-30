@@ -5,7 +5,7 @@ from hapi_schema.db_org_type import DBOrgType
 from hdx.scraper.utilities.reader import Read
 from sqlalchemy.orm import Session
 
-from ..utilities.text_parsing import get_code_from_name
+from ..utilities.mappings import get_code_from_name
 from .base_uploader import BaseUploader
 
 logger = logging.getLogger(__name__)

@@ -6,7 +6,7 @@ from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from ..utilities.text_parsing import get_code_from_name
+from ..utilities.mappings import get_code_from_name
 from .base_uploader import BaseUploader
 
 logger = logging.getLogger(__name__)
