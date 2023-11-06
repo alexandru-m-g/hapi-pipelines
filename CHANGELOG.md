@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.6.2] - 2023-11-06
+
+### Added
+
+- Org mapping table to deduplicate orgs
+- Fuzzy matching for sector and org types
+
 ## [0.6.1] - 2023-10-28
 
 ### Added
@@ -56,6 +63,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - DB Export GitHub action runs on tag push
+
+## [0.4.2] - 2023-10-13
+
+### Added
+
+- Add operational presence code matching to funtion in utilities
 
 ## [0.4.2] - 2023-10-12
 

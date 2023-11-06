@@ -48,7 +48,10 @@ class Pipelines:
         self.adminone.setup_from_libhxl_dataset(libhxl_dataset, countries)
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset, countries)
 
-        self.org = Org(session=session)
+        self.org = Org(
+            session=session,
+            datasetinfo=configuration["org"],
+        )
         self.org_type = OrgType(
             session=session,
             datasetinfo=configuration["org_type"],
@@ -132,6 +135,7 @@ class Pipelines:
         self.metadata.populate()
         self.org_type.populate()
         self.sector.populate()
+        self.org.populate()
         self.gender.populate()
         self.ipc_phase.populate()
         self.ipc_type.populate()
