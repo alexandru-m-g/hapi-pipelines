@@ -90,6 +90,4 @@ class Org(BaseUploader):
         return org_info
 
     def add_org_to_lookup(self, org_name_orig, org_name_official):
-        dict_of_sets_add(
-            self._org_lookup, org_name_official, org_name_orig
-        )
+        dict_of_sets_add(self._org_lookup, org_name_official, org_name_orig)
