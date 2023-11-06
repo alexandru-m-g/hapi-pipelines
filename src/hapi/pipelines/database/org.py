@@ -91,5 +91,5 @@ class Org(BaseUploader):
 
     def add_org_to_lookup(self, org_name_orig, org_name_official):
         dict_of_sets_add(
-            self._org_lookup, clean_name(org_name_official), org_name_orig
+            self._org_lookup, org_name_official, org_name_orig
         )
