@@ -105,7 +105,9 @@ class FoodSecurity(BaseUploader):
                                 reference_period_end=reference_period_end,
                                 population_in_phase=population_in_phase,
                                 population_fraction_in_phase=population_in_phase
-                                / population_total,
+                                / population_total
+                                if population_in_phase
+                                else 0.0,
                                 # TODO: For v2+, add to scraper (HAPI-199)
                                 source_data="not yet implemented",
                             )

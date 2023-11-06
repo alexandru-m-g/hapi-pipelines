@@ -46,7 +46,10 @@ class Pipelines:
         self.adminone = AdminLevel(admin_level=1)
         self.admintwo = AdminLevel(admin_level=2)
         self.adminone.setup_from_libhxl_dataset(libhxl_dataset, countries)
+        self.adminone.load_pcode_formats()
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset, countries)
+        self.admintwo.load_pcode_formats()
+        self.admintwo.set_parent_admins_from_adminlevels([self.adminone])
 
         self.org = Org(session=session)
         self.org_type = OrgType(
