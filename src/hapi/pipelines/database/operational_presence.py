@@ -86,7 +86,7 @@ class OperationalPresence(BaseUploader):
                             org_acronym is not None
                             and org_name is not None
                             and (
-                                org_acronym,
+                                org_acronym.upper(),
                                 clean_name(org_name),
                                 org_type_code,
                             )
@@ -127,7 +127,7 @@ class OperationalPresence(BaseUploader):
                             resource_id
                         ]
                         org_ref = self._org.data[
-                            (org_acronym, clean_name(org_name), org_type_code)
+                            (org_acronym.upper(), clean_name(org_name), org_type_code)
                         ]
                         admin2_ref = self._admins.admin2_data[admin2_code]
                         row = (resource_ref, org_ref, sector_code, admin2_ref)

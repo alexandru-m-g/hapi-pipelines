@@ -59,7 +59,7 @@ class Org(BaseUploader):
             select(DBOrg.id, DBOrg.acronym, DBOrg.name, DBOrg.org_type_code)
         )
         for result in results:
-            self.data[(result[1], clean_name(result[2]), result[3])] = result[
+            self.data[(result[1].upper(), clean_name(result[2]), result[3])] = result[
                 0
             ]
 
