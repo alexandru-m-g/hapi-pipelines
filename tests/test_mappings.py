@@ -76,6 +76,11 @@ def test_get_code_from_name():
         )
         is None
     )
+    assert get_code_from_name("NGO", org_type_lookup, org_type_map) is None
+    assert (
+        get_code_from_name("International", org_type_lookup, org_type_map)
+        is None
+    )
     assert get_code_from_name("LOGISTIQUE", sector_lookup, sector_map) == "LOG"
     assert get_code_from_name("CCCM", sector_lookup, sector_map) == "CCM"
     assert get_code_from_name("Santé", sector_lookup, sector_map) == "HEA"

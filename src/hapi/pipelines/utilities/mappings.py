@@ -33,14 +33,6 @@ def get_code_from_name(
         alternative_name=name_clean,
     )
     if name_index is None:
-        names = list(code_mapping.keys())
-        names_lower = [x.lower() for x in names]
-        name_index = Phonetics().match(
-            possible_names=names_lower,
-            name=name,
-            alternative_name=name_clean,
-        )
-    if name_index is None:
         return None
     name = names[name_index]
     code = code_lookup.get(name, code_mapping.get(name))
