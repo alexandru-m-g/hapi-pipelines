@@ -1,12 +1,12 @@
 import logging
 from typing import Dict
-from unicodedata import normalize
 
 from hapi_schema.db_sector import DBSector
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
+from ..utilities.mappings import get_code_from_name
 from .base_uploader import BaseUploader
 
 logger = logging.getLogger(__name__)
@@ -45,12 +45,9 @@ class Sector(BaseUploader):
         self._session.commit()
 
     def get_sector_code(self, sector: str) -> str:
-        # TODO: implement fuzzy matching of sector names/codes (HAPI-193)
-        sector_code = self.data.get(sector)
-        if sector_code:
-            return sector_code
-        sector = (
-            normalize("NFKD", sector).encode("ascii", "ignore").decode("ascii")
+        sector_code = get_code_from_name(
+            name=sector,
+            code_lookup=self.data,
+            code_mapping=self._sector_map,
         )
-        sector_code = self._sector_map.get(sector.lower())
         return sector_code

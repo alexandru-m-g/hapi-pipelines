@@ -114,7 +114,7 @@ class TestHAPIPipelines:
                     count = session.scalar(select(func.count(DBPopulation.id)))
                     assert count == 45861
                     count = session.scalar(select(func.count(DBOrg.id)))
-                    assert count == 539
+                    assert count == 498
                     count = session.scalar(
                         select(func.count(DBOperationalPresence.id))
                     )
@@ -127,3 +127,14 @@ class TestHAPIPipelines:
                         select(func.count(DBFoodSecurity.id))
                     )
                     assert count == 103264
+
+                    org_mapping = pipelines.org._org_lookup
+                    assert org_mapping["Action against Hunger"] == {
+                        "Action contre la Faim",
+                        "Action Against Hunger",
+                    }
+                    assert org_mapping["United Nations Children's Fund"] == {
+                        "Fonds des Nations Unies pour l'Enfance",
+                        "United Nations Children's Fund",
+                        "United Nations Children's Emergency Fund",
+                    }

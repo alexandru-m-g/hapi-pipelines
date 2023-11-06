@@ -51,7 +51,10 @@ class Pipelines:
         self.admintwo.load_pcode_formats()
         self.admintwo.set_parent_admins_from_adminlevels([self.adminone])
 
-        self.org = Org(session=session)
+        self.org = Org(
+            session=session,
+            datasetinfo=configuration["org"],
+        )
         self.org_type = OrgType(
             session=session,
             datasetinfo=configuration["org_type"],
@@ -135,6 +138,7 @@ class Pipelines:
         self.metadata.populate()
         self.org_type.populate()
         self.sector.populate()
+        self.org.populate()
         self.gender.populate()
         self.ipc_phase.populate()
         self.ipc_type.populate()
