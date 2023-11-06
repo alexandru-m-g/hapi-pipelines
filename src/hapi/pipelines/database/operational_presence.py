@@ -61,6 +61,9 @@ class OperationalPresence(BaseUploader):
                         org_info = self._org.get_org_info(
                             org_name, location="Country code"
                         )
+                        self._org.add_org_to_lookup(
+                            org_name, org_info.get("#org+name")
+                        )
                         org_name = org_info.get("#org+name")
                         org_acronym = org_info.get(
                             "#org+acronym",
@@ -127,7 +130,11 @@ class OperationalPresence(BaseUploader):
                             resource_id
                         ]
                         org_ref = self._org.data[
-                            (org_acronym.upper(), clean_name(org_name), org_type_code)
+                            (
+                                org_acronym.upper(),
+                                clean_name(org_name),
+                                org_type_code,
+                            )
                         ]
                         admin2_ref = self._admins.admin2_data[admin2_code]
                         row = (resource_ref, org_ref, sector_code, admin2_ref)

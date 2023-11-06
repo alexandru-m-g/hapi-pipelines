@@ -4,6 +4,7 @@ from typing import Dict
 from hapi_schema.db_org import DBOrg
 from hdx.location.names import clean_name
 from hdx.scraper.utilities.reader import Read
+from hdx.utilities.dictandlist import dict_of_sets_add
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -22,6 +23,7 @@ class Org(BaseUploader):
         self._datasetinfo = datasetinfo
         self.data = {}
         self._org_map = {}
+        self._org_lookup = {}
 
     def populate(self):
         logger.info("Populating org mapping")
@@ -59,9 +61,9 @@ class Org(BaseUploader):
             select(DBOrg.id, DBOrg.acronym, DBOrg.name, DBOrg.org_type_code)
         )
         for result in results:
-            self.data[(result[1].upper(), clean_name(result[2]), result[3])] = result[
-                0
-            ]
+            self.data[
+                (result[1].upper(), clean_name(result[2]), result[3])
+            ] = result[0]
 
     def get_org_info(self, org_name: str, location: str) -> Dict[str, str]:
         org_name_map = {
@@ -86,3 +88,8 @@ class Org(BaseUploader):
         if org_map_info["#org+type+code"]:
             org_info["#org+type+code"] = org_map_info["#org+type+code"]
         return org_info
+
+    def add_org_to_lookup(self, org_name_orig, org_name_official):
+        dict_of_sets_add(
+            self._org_lookup, clean_name(org_name_official), org_name_orig
+        )
