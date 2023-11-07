@@ -107,10 +107,10 @@ food_security_adminone:
     dataset: "cadre-harmonise"
     format: "xlsx"
     admin:
-      - ~
+      - "adm0_pcod3"
       - "adm1_pcod2"
-    admin_exact: True
-    prefilter: "adm0_pcod3 in ['TCD'] and adm2_pcod2 is None"
+    admin_exact: False
+    prefilter: "adm0_pcod3 in ['NGA', 'TCD'] and adm2_pcod2 is None"
     filter_cols:
       - "adm0_pcod3"
       - "adm2_pcod2"
@@ -120,9 +120,9 @@ food_security_admintwo:
     dataset: "cadre-harmonise"
     format: "xlsx"
     admin:
-      - ~
+      - "adm0_pcod3"
       - "adm2_pcod2"
-    admin_exact: True
-    prefilter: "adm0_pcod3 in ['BFA', 'MLI', 'TCD']"
+    admin_exact: False
+    prefilter: "adm0_pcod3 in ['BFA', 'MLI', 'NGA', 'TCD']"
     filter_cols:
       - "adm0_pcod3"
