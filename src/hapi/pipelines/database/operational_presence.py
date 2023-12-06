@@ -144,9 +144,9 @@ class OperationalPresence(BaseUploader):
                         rows.append(row)
                         operational_presence_row = DBOperationalPresence(
                             resource_ref=resource_ref,
+                            admin2_ref=admin2_ref,
                             org_ref=org_ref,
                             sector_code=sector_code,
-                            admin2_ref=admin2_ref,
                             reference_period_start=reference_period_start,
                             reference_period_end=reference_period_end,
                             # TODO: Add to scraper (HAPI-199)
