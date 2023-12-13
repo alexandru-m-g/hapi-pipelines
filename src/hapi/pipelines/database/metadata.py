@@ -1,10 +1,8 @@
 import logging
 
-import hxl
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_resource import DBResource
 from hdx.scraper.runner import Runner
-from hxl import InputOptions
 from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader
@@ -44,23 +42,14 @@ class Metadata(BaseUploader):
             resources = dataset["resources"]
             for resource_id, resource in resources.items():
                 # Then add the resources
-                download_url = resource["download_url"]
-                hxl_info = hxl.info(
-                    download_url, InputOptions(encoding="utf-8")
-                )
-                is_hxlated = False
-                for sheet in hxl_info["sheets"]:
-                    if sheet["is_hxlated"]:
-                        is_hxlated = True
-                        break
                 resource_row = DBResource(
                     hdx_id=resource_id,
                     dataset_ref=dataset_row.id,
                     name=resource["name"],
                     format=resource["format"],
                     update_date=resource["update_date"],
-                    is_hxl=is_hxlated,
-                    download_url=download_url,
+                    is_hxl=resource["is_hxl"],
+                    download_url=resource["download_url"],
                 )
                 self._session.add(resource_row)
                 self._session.commit()
