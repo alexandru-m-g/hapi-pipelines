@@ -66,8 +66,8 @@ class Population(BaseUploader):
                         age_range_code is not None
                         and age_range_code not in self._age_range.data
                     ):
-                        self._age_range.populate_single(
-                            age_range_code=age_range_code
+                        raise ValueError(
+                            f"Age range code {age_range_code} not in table"
                         )
                     for admin_code, value in values.items():
                         admin2_code = admins.get_admin2_code_based_on_level(

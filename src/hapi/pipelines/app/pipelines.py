@@ -69,7 +69,9 @@ class Pipelines:
             session=session,
             gender_descriptions=configuration["gender_descriptions"],
         )
-        self.age_range = AgeRange(session=session)
+        self.age_range = AgeRange(
+            session=session, age_range_codes=configuration["age_range_codes"]
+        )
 
         self.ipc_phase = IpcPhase(
             session=session,
