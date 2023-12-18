@@ -23,6 +23,25 @@ gender_descriptions:
   m: "male"
   x: "non-binary"
 
+age_range_codes:
+  - "0-4"
+  - "10-14"
+  - "15-19"
+  - "20-24"
+  - "25-29"
+  - "30-34"
+  - "35-39"
+  - "40-44"
+  - "45-49"
+  - "5-9"
+  - "50-54"
+  - "55-59"
+  - "60-64"
+  - "65-69"
+  - "70-74"
+  - "75-79"
+  - "80+"
+
 sector:
   dataset: "global-coordination-groups-beta"
   resource: "Global Coordination Groups (Beta) CSV"

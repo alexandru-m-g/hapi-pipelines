@@ -69,8 +69,9 @@ class Pipelines:
             session=session,
             gender_descriptions=configuration["gender_descriptions"],
         )
-        self.age_range = AgeRange(session=session)
-
+        self.age_range = AgeRange(
+            session=session, age_range_codes=configuration["age_range_codes"]
+        )
         self.ipc_phase = IpcPhase(
             session=session,
             ipc_phase_names=configuration["ipc_phase_names"],
@@ -140,6 +141,7 @@ class Pipelines:
         self.sector.populate()
         self.org.populate()
         self.gender.populate()
+        self.age_range.populate()
         self.ipc_phase.populate()
         self.ipc_type.populate()
 

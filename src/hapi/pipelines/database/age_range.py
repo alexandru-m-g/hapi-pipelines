@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 from hapi_schema.db_age_range import DBAgeRange
 from sqlalchemy.orm import Session
@@ -9,16 +10,17 @@ logger = logging.getLogger(__name__)
 
 
 class AgeRange(BaseUploader):
-    def __init__(self, session: Session):
+    def __init__(self, session: Session, age_range_codes: List[str]):
         super().__init__(session)
-        self.data = []
+        self.data = age_range_codes
 
     def populate(self):
-        raise NotImplementedError()
+        logger.info("Populating age ranges table")
+        for age_range_code in self.data:
+            self.populate_single(age_range_code)
+        self._session.commit()
 
     def populate_single(self, age_range_code: str):
-        logger.info(f"Adding age range code {age_range_code}")
-        # Check and exit if already exists
         ages = age_range_code.split("-")
         if len(ages) == 2:
             # Format: 0-5
@@ -31,5 +33,3 @@ class AgeRange(BaseUploader):
             code=age_range_code, age_min=age_min, age_max=age_max
         )
         self._session.add(age_range_row)
-        self._session.commit()
-        self.data.append(age_range_code)
