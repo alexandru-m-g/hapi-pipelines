@@ -41,19 +41,12 @@ age_range_codes:
   - "70-74"
   - "75-79"
   - "80+"
+  - "0-17"
+  - "18+"
 
 sector:
   dataset: "global-coordination-groups-beta"
   resource: "Global Coordination Groups (Beta) CSV"
-  format: "csv"
-  headers: 2
-
-org:
-  url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSfBWvSu3fKA743VvHtgf-pIGkYH7zhy-NP7DZgEV9_a6YU7vtCeWhbLM56aUL1iIfrfv5UBvvjVt7B/pub?gid=1040329566&single=true&output=csv"
-
-org_type:
-  dataset: "organization-types-beta"
-  resource: "Organization Types (Beta) - CSV"
   format: "csv"
   headers: 2
 
@@ -77,6 +70,15 @@ sector_map:
   sante: "HEA"
   wash: "WSH"
 
+org:
+  url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSfBWvSu3fKA743VvHtgf-pIGkYH7zhy-NP7DZgEV9_a6YU7vtCeWhbLM56aUL1iIfrfv5UBvvjVt7B/pub?gid=1040329566&single=true&output=csv"
+
+org_type:
+  dataset: "organization-types-beta"
+  resource: "Organization Types (Beta) - CSV"
+  format: "csv"
+  headers: 2
+
 org_type_map:
   agence un: "447"
   govt: "435"
@@ -86,3 +88,13 @@ org_type_map:
   ong int: "437"
   ong nat: "441"
   un agency: "447"
+
+population_group_descriptions:
+  refugees: "refugees"
+  idps: "internally displaced persons"
+
+population_status_descriptions:
+  affected: "number of people in affected"
+  inneed: "number of people in need"
+  targeted: "number of people in targeted"
+  reached: "number of people reached"

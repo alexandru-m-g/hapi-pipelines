@@ -21,7 +21,7 @@ theme_name_default:
 
 theme_name_national:
   theme_name_foo:
-    other_parmas: pass
+    other_params: pass
     input:
       - c4
     list:
@@ -31,7 +31,7 @@ theme_name_national:
     output_hxl:
       - "#c4"
   theme_name_bar:
-    other_parmas: pass
+    other_params: pass
   theme_name_no_default:
     input:
       - c5

@@ -12,6 +12,7 @@ from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.age_range import AgeRange
 from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.gender import Gender
+from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
 from hapi.pipelines.database.ipc_phase import IpcPhase
 from hapi.pipelines.database.ipc_type import IpcType
 from hapi.pipelines.database.locations import Locations
@@ -20,6 +21,8 @@ from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
+from hapi.pipelines.database.population_group import PopulationGroup
+from hapi.pipelines.database.population_status import PopulationStatus
 from hapi.pipelines.database.sector import Sector
 
 
@@ -51,6 +54,18 @@ class Pipelines:
         self.admintwo.load_pcode_formats()
         self.admintwo.set_parent_admins_from_adminlevels([self.adminone])
 
+        self.gender = Gender(
+            session=session,
+            gender_descriptions=configuration["gender_descriptions"],
+        )
+        self.age_range = AgeRange(
+            session=session, age_range_codes=configuration["age_range_codes"]
+        )
+        self.sector = Sector(
+            session=session,
+            datasetinfo=configuration["sector"],
+            sector_map=configuration["sector_map"],
+        )
         self.org = Org(
             session=session,
             datasetinfo=configuration["org"],
@@ -60,17 +75,17 @@ class Pipelines:
             datasetinfo=configuration["org_type"],
             org_type_map=configuration["org_type_map"],
         )
-        self.sector = Sector(
+        self.population_group = PopulationGroup(
             session=session,
-            datasetinfo=configuration["sector"],
-            sector_map=configuration["sector_map"],
+            population_group_descriptions=configuration[
+                "population_group_descriptions"
+            ],
         )
-        self.gender = Gender(
+        self.population_status = PopulationStatus(
             session=session,
-            gender_descriptions=configuration["gender_descriptions"],
-        )
-        self.age_range = AgeRange(
-            session=session, age_range_codes=configuration["age_range_codes"]
+            population_status_descriptions=configuration[
+                "population_status_descriptions"
+            ],
         )
         self.ipc_phase = IpcPhase(
             session=session,
@@ -129,6 +144,9 @@ class Pipelines:
         _create_configurable_scrapers(
             "food_security", "admintwo", adminlevel=self.admintwo
         )
+        _create_configurable_scrapers(
+            "humanitarian_needs", "admintwo", adminlevel=self.admintwo
+        )
 
     def run(self):
         self.runner.run()
@@ -137,11 +155,13 @@ class Pipelines:
         self.locations.populate()
         self.admins.populate()
         self.metadata.populate()
-        self.org_type.populate()
-        self.sector.populate()
-        self.org.populate()
         self.gender.populate()
         self.age_range.populate()
+        self.sector.populate()
+        self.org.populate()
+        self.org_type.populate()
+        self.population_group.populate()
+        self.population_status.populate()
         self.ipc_phase.populate()
         self.ipc_type.populate()
 
@@ -185,3 +205,20 @@ class Pipelines:
             results=results,
         )
         food_security.populate()
+
+        results = self.runner.get_hapi_results(
+            self.configurable_scrapers["humanitarian_needs"]
+        )
+
+        humanitarian_needs = HumanitarianNeeds(
+            session=self.session,
+            metadata=self.metadata,
+            admins=self.admins,
+            gender=self.gender,
+            age_range=self.age_range,
+            sector=self.sector,
+            population_group=self.population_group,
+            population_status=self.population_status,
+            results=results,
+        )
+        humanitarian_needs.populate()

@@ -1,0 +1,50 @@
+#Humanitarian needs config file
+
+### HXL Tag example form
+# Assume they have the form:
+# #inneed
+# #inneed+boys
+
+humanitarian_needs_admintwo:
+  humanitarian_needs_tcd:
+    dataset: "chad-humanitarian-needs-overview"
+    resource: "TCD_HPC2023_Rev_PiN-Targets"
+    format: "xlsx"
+    use_hxl: True
+    admin:
+      - ~
+      - "#admé+code"
+    admin_exact: True
+    input:
+      - "#inneed +ind"
+      - "#targeted +ind"
+    output:
+      - "InNeed"
+      - "Targeted"
+    output_hxl:
+      - "#inneed+total"
+      - "#targeted+total"
+#  humanitarian_needs_yem_hno:
+#    dataset: "yemen-humanitarian-needs-overview"
+#    resource: "YEM_PIN_2023.xlsx"
+#    format: "xlsx"
+#  humanitarian_needs_yem_tgt:
+#    resource: "YEM_TRG_2023.xlsx"
+#    format: "xlsx"
+#    use_hxl: False
+#    admin:
+#      - ~
+#      - "admin2Pcode"
+#    admin_exact: True
+#    input:
+#      - "F_TL"
+#      - "M_TL"
+#      - "T_TL"
+#    output:
+#      - "F_TL"
+#      - "M_TL"
+#      - "T_TL"
+#    output_hxl:
+#      - "#population+f+total"
+#      - "#population+m+total"
+#      - "#population+total"

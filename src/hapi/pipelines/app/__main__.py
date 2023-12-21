@@ -2,7 +2,8 @@
 """
 import argparse
 import logging
-from os import getenv
+from os import getenv, remove
+from os.path import exists
 from typing import List, Optional
 
 from hdx.api.configuration import Configuration
@@ -94,7 +95,10 @@ def main(
     elif db_uri:
         params = get_params_from_connection_uri(db_uri)
     else:
-        params = {"dialect": "sqlite", "database": "hapi.db"}
+        filename = "hapi.db"
+        if exists(filename):
+            remove(filename)
+        params = {"dialect": "sqlite", "database": filename}
     logger.info(f"> Database parameters: {params}")
     configuration = Configuration.read()
     with ErrorsOnExit() as errors_on_exit:
@@ -159,6 +163,7 @@ if __name__ == "__main__":
     project_configs = [
         "core.yaml",
         "food_security.yaml",
+        "humanitarian_needs.yaml",
         "operational_presence.yaml",
         "population.yaml",
     ]
