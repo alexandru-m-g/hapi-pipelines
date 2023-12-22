@@ -24,10 +24,55 @@ humanitarian_needs_admintwo:
     output_hxl:
       - "#inneed+total"
       - "#targeted+total"
-#  humanitarian_needs_yem_hno:
-#    dataset: "yemen-humanitarian-needs-overview"
-#    resource: "YEM_PIN_2023.xlsx"
-#    format: "xlsx"
+  humanitarian_needs_yem_hno:
+    dataset: "yemen-humanitarian-needs-overview"
+    resource: "YEM_PIN_2023.xlsx"
+    format: "xlsx"
+    headers: 2
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm2 +code"
+    admin_exact: True
+    input:
+      - "#population +idps"
+      - "#population +residents"
+      - "#inneed"
+      - "#inneed +boys"
+      - "#inneed +men"
+      - "#inneed +girls"
+      - "#inneed +women"
+      - "#inneed +wsh"
+      - "#inneed +wsh +boys"
+      - "#inneed +wsh +men"
+      - "#inneed +wsh +girls"
+      - "#inneed +wsh +women"
+    output:
+      - "IDP population"
+      - "Resident population"
+      - "InNeed"
+      - "InNeed Boys"
+      - "InNeed Men"
+      - "InNeed Girls"
+      - "InNeed Women"
+      - "InNeed WASH"
+      - "InNeed WASH boys"
+      - "InNeed WASH men"
+      - "InNeed WASH girls"
+      - "InNeed WASH women"
+    output_hxl:
+      - "#population+idps"
+      - "#population+residents"
+      - "#inneed+total"
+      - "#inneed+m+age0_17"
+      - "#inneed+m+age18plus"
+      - "#inneed+f+age0_17"
+      - "#inneed+f+age18plus"
+      - "#inneed+wsh+total"
+      - "#inneed+wsh+m+age0_17"
+      - "#inneed+wsh+m+age18plus"
+      - "#inneed+wsh+f+age0_17"
+      - "#inneed+wsh+f+age18plus"
 #  humanitarian_needs_yem_tgt:
 #    resource: "YEM_TRG_2023.xlsx"
 #    format: "xlsx"

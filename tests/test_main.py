@@ -98,37 +98,37 @@ class TestHAPIPipelines:
                     pipelines.output()
 
                     count = session.scalar(select(func.count(DBResource.id)))
-                    assert count == 13
+                    assert count == 14
                     count = session.scalar(select(func.count(DBDataset.id)))
-                    assert count == 8
+                    assert count == 9
                     count = session.scalar(select(func.count(DBLocation.id)))
-                    assert count == 5
+                    assert count == 6
                     count = session.scalar(select(func.count(DBAdmin1.id)))
-                    assert count == 122
+                    assert count == 145
                     count = session.scalar(select(func.count(DBAdmin2.id)))
-                    assert count == 1465
-                    count = session.scalar(select(func.count(DBGender.code)))
+                    assert count == 1823
+                    count = session.scalar(
+                        select(func.count(DBPopulationStatus.code))
+                    )
+                    assert count == 5
+                    count = session.scalar(
+                        select(func.count(DBPopulationGroup.code))
+                    )
                     assert count == 3
-                    count = session.scalar(select(func.count(DBAgeRange.code)))
-                    assert count == 19
-                    count = session.scalar(select(func.count(DBSector.code)))
-                    assert count == 15
                     count = session.scalar(select(func.count(DBOrg.id)))
                     assert count == 498
                     count = session.scalar(select(func.count(DBOrgType.code)))
                     assert count == 14
-                    count = session.scalar(
-                        select(func.count(DBPopulationGroup.code))
-                    )
-                    assert count == 2
-                    count = session.scalar(
-                        select(func.count(DBPopulationStatus.code))
-                    )
-                    assert count == 4
+                    count = session.scalar(select(func.count(DBSector.code)))
+                    assert count == 15
                     count = session.scalar(select(func.count(DBIpcPhase.code)))
                     assert count == 7
                     count = session.scalar(select(func.count(DBIpcType.code)))
                     assert count == 3
+                    count = session.scalar(select(func.count(DBGender.code)))
+                    assert count == 3
+                    count = session.scalar(select(func.count(DBAgeRange.code)))
+                    assert count == 19
                     count = session.scalar(select(func.count(DBPopulation.id)))
                     assert count == 45861
                     count = session.scalar(
@@ -142,7 +142,7 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBHumanitarianNeeds.id))
                     )
-                    assert count == 140
+                    assert count == 4136
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {

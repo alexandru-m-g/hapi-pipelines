@@ -49,6 +49,7 @@ def parse_args():
         default=None,
         help="Database connection parameters. Overrides --db-uri.",
     )
+    parser.add_argument("-th", "--themes", default=None, help="Themes to run")
     parser.add_argument(
         "-sc", "--scrapers", default=None, help="Scrapers to run"
     )
@@ -72,6 +73,7 @@ def parse_args():
 def main(
     db_uri: Optional[str] = None,
     db_params: Optional[str] = None,
+    themes_to_run: Optional[List[str]] = None,
     scrapers_to_run: Optional[List[str]] = None,
     save: bool = False,
     use_saved: bool = False,
@@ -84,7 +86,10 @@ def main(
     Args:
         db_uri (Optional[str]): Database connection URI. Defaults to None.
         db_params (Optional[str]): Database connection parameters. Defaults to None.
+        themes_to_run (Optional[ListTuple[str]]): Themes to run. Defaults to None (all themes).
+        scrapers_to_run (Optional[ListTuple[str]]): Scrapers to run. Defaults to None (all scrapers).
         save (bool): Whether to save state for testing. Defaults to False.
+        use_saved (bool): Whether to use saved state for testing. Defaults to False.
 
     Returns:
         None
@@ -125,6 +130,7 @@ def main(
                     configuration,
                     session,
                     today,
+                    themes_to_run,
                     scrapers_to_run,
                     errors_on_exit,
                 )
@@ -156,6 +162,10 @@ if __name__ == "__main__":
         db_uri = getenv("DB_URI")
     if db_uri and "://" not in db_uri:
         db_uri = f"postgresql://{db_uri}"
+    if args.themes:
+        themes_to_run = args.themes.split(",")
+    else:
+        themes_to_run = None
     if args.scrapers:
         scrapers_to_run = args.scrapers.split(",")
     else:
@@ -178,6 +188,7 @@ if __name__ == "__main__":
         project_config_dict=project_config_dict,
         db_uri=db_uri,
         db_params=args.db_params,
+        themes_to_run=themes_to_run,
         scrapers_to_run=scrapers_to_run,
         save=args.save,
         use_saved=args.use_saved,

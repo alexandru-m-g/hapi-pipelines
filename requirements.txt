@@ -59,7 +59,7 @@ google-auth==2.25.2
     #   gspread
 google-auth-oauthlib==1.2.0
     # via gspread
-greenlet==3.0.2
+greenlet==3.0.3
     # via sqlalchemy
 gspread==5.12.3
     # via hdx-python-scraper

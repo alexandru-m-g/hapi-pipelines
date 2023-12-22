@@ -45,7 +45,7 @@ class Sector(BaseUploader):
             )
             self._session.add(sector_row)
             pattern = code.lower().replace("-", "_")
-            self.patterns.append(TagPattern.parse(pattern))
+            self.patterns.append(TagPattern.parse(f"#*+{pattern}"))
         self._session.commit()
 
     def get_sector_code(self, sector: str) -> str:
