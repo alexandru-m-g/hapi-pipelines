@@ -30,6 +30,7 @@ population_group_descriptions:
   residents: "residents"
   refugees: "refugees"
   idps: "internally displaced persons"
+  returnees: "returnees"
 
 sector:
   dataset: "global-coordination-groups-beta"
@@ -101,3 +102,5 @@ age_range_codes:
   - "80+"
   - "0-17"
   - "18+"
+  - "18-64"
+  - "65+"
