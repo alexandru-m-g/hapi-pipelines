@@ -94,6 +94,10 @@ class HumanitarianNeeds(BaseUploader):
                         disabled_marker = None  # no disabled attribute
                     # TODO: Will there be columns for able bodied?
                     for admin_code, value in values.items():
+                        try:
+                            value = int(value)
+                        except (ValueError, TypeError):
+                            continue
                         admin2_code = admins.get_admin2_code_based_on_level(
                             admin_code=admin_code, admin_level=admin_level
                         )
@@ -108,7 +112,7 @@ class HumanitarianNeeds(BaseUploader):
                             gender_code=gender_code,
                             age_range_code=age_range_code,
                             disabled_marker=disabled_marker,
-                            population=int(value),
+                            population=value,
                             reference_period_start=reference_period_start,
                             reference_period_end=reference_period_end,
                             # TODO: For v2+, add to scraper (HAPI-199)
