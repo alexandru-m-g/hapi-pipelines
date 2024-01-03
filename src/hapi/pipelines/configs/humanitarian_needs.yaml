@@ -5,10 +5,520 @@
 # #inneed
 # #inneed+boys
 
+humanitarian_needs_adminone:
+  humanitarian_needs_afg_total:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "Total"
+    headers: 6
+    use_hxl: True
+    filter_cols:
+      - "#adm2+code"
+    prefilter: "#adm2+code == '-'"
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+m+children+idps"
+      - "#inneed+f+children+idps"
+      - "#inneed+m+adult+idps"
+      - "#inneed+f+adult+idps"
+      - "#inneed+idps"
+      - "#inneed+m+children+returnees"
+      - "#inneed+f+children+returnees"
+      - "#inneed+m+adult+returnees"
+      - "#inneed+f+adult+returnees"
+      - "#inneed+returnees"
+      - "#inneed+m+children+refugees"
+      - "#inneed+f+children+refugees"
+      - "#inneed+m+adult+refugees"
+      - "#inneed+f+adult+refugees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed Total"
+      - "Inneed IDPs Boys"
+      - "Inneed IDPs Girls"
+      - "Inneed IDPs Men"
+      - "Inneed IDPs Women"
+      - "Inneed IDPs"
+      - "Inneed Returnees Boys"
+      - "Inneed Returnees Girls"
+      - "Inneed Returnees Men"
+      - "Inneed Returnees Women"
+      - "Inneed Returnees"
+      - "Inneed Refugees Boys"
+      - "Inneed Refugees Girls"
+      - "Inneed Refugees Men"
+      - "Inneed Refugees Women"
+      - "Inneed Refugees"
+      - "Inneed Children"
+      - "Inneed Adults"
+      - "Inneed Elderly"
+      - "Inneed Disabled"
+    output_hxl:
+      - "#inneed+total"
+      - "#inneed+idps+m+age0_17"
+      - "#inneed+idps+f+age0_17"
+      - "#inneed+idps+m+age18plus"
+      - "#inneed+idps+f+age18plus"
+      - "#inneed+idps"
+      - "#inneed+returnees+m+age0_17"
+      - "#inneed+returnees+f+age0_17"
+      - "#inneed+returnees+m+age18plus"
+      - "#inneed+returnees+f+age18plus"
+      - "#inneed+returnees"
+      - "#inneed+refugees+m+age0_17"
+      - "#inneed+refugees+f+age0_17"
+      - "#inneed+refugees+m+age18plus"
+      - "#inneed+refugees+f+age18plus"
+      - "#inneed+refugees"
+      - "#inneed+age0_17"
+      - "#inneed+age18_64"
+      - "#inneed+age65plus"
+      - "#inneed+disabled"
+  humanitarian_needs_afg_edu:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "EDU"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed EDU"
+      - "Inneed EDU IDPs"
+      - "Inneed EDU Returnees"
+      - "Inneed EDU Refugees"
+      - "Inneed EDU Children"
+      - "Inneed EDU Adults"
+      - "Inneed EDU Elderly"
+      - "Inneed EDU Disabled"
+    output_hxl:
+      - "#inneed+edu"
+      - "#inneed+edu+idps"
+      - "#inneed+edu+returnees"
+      - "#inneed+edu+refugees"
+      - "#inneed+edu+age0_17"
+      - "#inneed+edu+age18_64"
+      - "#inneed+edu+age65plus"
+      - "#inneed+edu+disabled"
+  humanitarian_needs_afg_shl:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "SHL"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed SHL"
+      - "Inneed SHL IDPs"
+      - "Inneed SHL Returnees"
+      - "Inneed SHL Refugees"
+      - "Inneed SHL Children"
+      - "Inneed SHL Adults"
+      - "Inneed SHL Elderly"
+      - "Inneed SHL Disabled"
+    output_hxl:
+      - "#inneed+shl"
+      - "#inneed+shl+idps"
+      - "#inneed+shl+returnees"
+      - "#inneed+shl+refugees"
+      - "#inneed+shl+age0_17"
+      - "#inneed+shl+age18_64"
+      - "#inneed+shl+age65plus"
+      - "#inneed+shl+disabled"
+  humanitarian_needs_afg_fsc:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "FSC"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed FSC"
+      - "Inneed FSC IDPs"
+      - "Inneed FSC Returnees"
+      - "Inneed FSC Refugees"
+      - "Inneed FSC Children"
+      - "Inneed FSC Adults"
+      - "Inneed FSC Elderly"
+      - "Inneed FSC Disabled"
+    output_hxl:
+      - "#inneed+fsc"
+      - "#inneed+fsc+idps"
+      - "#inneed+fsc+returnees"
+      - "#inneed+fsc+refugees"
+      - "#inneed+fsc+age0_17"
+      - "#inneed+fsc+age18_64"
+      - "#inneed+fsc+age65plus"
+      - "#inneed+fsc+disabled"
+  humanitarian_needs_afg_hea:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "HEA"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed HEA"
+      - "Inneed HEA IDPs"
+      - "Inneed HEA Returnees"
+      - "Inneed HEA Refugees"
+      - "Inneed HEA Children"
+      - "Inneed HEA Adults"
+      - "Inneed HEA Elderly"
+      - "Inneed HEA Disabled"
+    output_hxl:
+      - "#inneed+hea"
+      - "#inneed+hea+idps"
+      - "#inneed+hea+returnees"
+      - "#inneed+hea+refugees"
+      - "#inneed+hea+age0_17"
+      - "#inneed+hea+age18_64"
+      - "#inneed+hea+age65plus"
+      - "#inneed+hea+disabled"
+  humanitarian_needs_afg_nut:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "NUT"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed NUT"
+      - "Inneed NUT IDPs"
+      - "Inneed NUT Returnees"
+      - "Inneed NUT Refugees"
+      - "Inneed NUT Children"
+      - "Inneed NUT Adults"
+      - "Inneed NUT Elderly"
+      - "Inneed NUT Disabled"
+    output_hxl:
+      - "#inneed+nut"
+      - "#inneed+nut+idps"
+      - "#inneed+nut+returnees"
+      - "#inneed+nut+refugees"
+      - "#inneed+nut+age0_17"
+      - "#inneed+nut+age18_64"
+      - "#inneed+nut+age65plus"
+      - "#inneed+nut+disabled"
+  humanitarian_needs_afg_pro:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "PRO"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed PRO"
+      - "Inneed PRO IDPs"
+      - "Inneed PRO Returnees"
+      - "Inneed PRO Refugees"
+      - "Inneed PRO Children"
+      - "Inneed PRO Adults"
+      - "Inneed PRO Elderly"
+      - "Inneed PRO Disabled"
+    output_hxl:
+      - "#inneed+pro"
+      - "#inneed+pro+idps"
+      - "#inneed+pro+returnees"
+      - "#inneed+pro+refugees"
+      - "#inneed+pro+age0_17"
+      - "#inneed+pro+age18_64"
+      - "#inneed+pro+age65plus"
+      - "#inneed+pro+disabled"
+  humanitarian_needs_afg_pro_cpn:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "PRO_CP"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed PRO_CPN"
+      - "Inneed PRO_CPN IDPs"
+      - "Inneed PRO_CPN Returnees"
+      - "Inneed PRO_CPN Refugees"
+      - "Inneed PRO_CPN Children"
+      - "Inneed PRO_CPN Adults"
+      - "Inneed PRO_CPN Elderly"
+      - "Inneed PRO_CPN Disabled"
+    output_hxl:
+      - "#inneed+pro_cpn"
+      - "#inneed+pro_cpn+idps"
+      - "#inneed+pro_cpn+returnees"
+      - "#inneed+pro_cpn+refugees"
+      - "#inneed+pro_cpn+age0_17"
+      - "#inneed+pro_cpn+age18_64"
+      - "#inneed+pro_cpn+age65plus"
+      - "#inneed+pro_cpn+disabled"
+  humanitarian_needs_afg_pro_hlp:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "PRO_HLP"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed PRO_HLP"
+      - "Inneed PRO_HLP IDPs"
+      - "Inneed PRO_HLP Returnees"
+      - "Inneed PRO_HLP Refugees"
+      - "Inneed PRO_HLP Children"
+      - "Inneed PRO_HLP Adults"
+      - "Inneed PRO_HLP Elderly"
+      - "Inneed PRO_HLP Disabled"
+    output_hxl:
+      - "#inneed+pro_hlp"
+      - "#inneed+pro_hlp+idps"
+      - "#inneed+pro_hlp+returnees"
+      - "#inneed+pro_hlp+refugees"
+      - "#inneed+pro_hlp+age0_17"
+      - "#inneed+pro_hlp+age18_64"
+      - "#inneed+pro_hlp+age65plus"
+      - "#inneed+pro_hlp+disabled"
+  humanitarian_needs_afg_pro_gbv:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "PRO_GBV"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed PRO_GBV"
+      - "Inneed PRO_GBV IDPs"
+      - "Inneed PRO_GBV Returnees"
+      - "Inneed PRO_GBV Refugees"
+      - "Inneed PRO_GBV Children"
+      - "Inneed PRO_GBV Adults"
+      - "Inneed PRO_GBV Elderly"
+      - "Inneed PRO_GBV Disabled"
+    output_hxl:
+      - "#inneed+pro_gbv"
+      - "#inneed+pro_gbv+idps"
+      - "#inneed+pro_gbv+returnees"
+      - "#inneed+pro_gbv+refugees"
+      - "#inneed+pro_gbv+age0_17"
+      - "#inneed+pro_gbv+age18_64"
+      - "#inneed+pro_gbv+age65plus"
+      - "#inneed+pro_gbv+disabled"
+  humanitarian_needs_afg_pro_min:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "PRO_MA"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed PRO_MIN"
+      - "Inneed PRO_MIN IDPs"
+      - "Inneed PRO_MIN Returnees"
+      - "Inneed PRO_MIN Refugees"
+      - "Inneed PRO_MIN Children"
+      - "Inneed PRO_MIN Adults"
+      - "Inneed PRO_MIN Elderly"
+      - "Inneed PRO_MIN Disabled"
+    output_hxl:
+      - "#inneed+pro_min"
+      - "#inneed+pro_min+idps"
+      - "#inneed+pro_min+returnees"
+      - "#inneed+pro_min+refugees"
+      - "#inneed+pro_min+age0_17"
+      - "#inneed+pro_min+age18_64"
+      - "#inneed+pro_min+age65plus"
+      - "#inneed+pro_min+disabled"
+  humanitarian_needs_afg_wsh:
+    dataset: "afghanistan-humanitarian-needs-overview"
+    resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
+    format: "xlsx"
+    sheet: "WAS"
+    headers: 6
+    use_hxl: True
+    admin:
+      - ~
+      - "#adm1+code"
+    admin_exact: True
+    input:
+      - "#inneed"
+      - "#inneed+idps"
+      - "#inneed+returnees"
+      - "#inneed+refugees"
+      - "#inneed+children"
+      - "#inneed+adults"
+      - "#inneed+elderly"
+      - "#inneed+disability"
+    output:
+      - "Inneed WSH"
+      - "Inneed WSH IDPs"
+      - "Inneed WSH Returnees"
+      - "Inneed WSH Refugees"
+      - "Inneed WSH Children"
+      - "Inneed WSH Adults"
+      - "Inneed WSH Elderly"
+      - "Inneed WSH Disabled"
+    output_hxl:
+      - "#inneed+wsh"
+      - "#inneed+wsh+idps"
+      - "#inneed+wsh+returnees"
+      - "#inneed+wsh+refugees"
+      - "#inneed+wsh+age0_17"
+      - "#inneed+wsh+age18_64"
+      - "#inneed+wsh+age65plus"
+      - "#inneed+wsh+disabled"
+
 humanitarian_needs_admintwo:
   humanitarian_needs_afg:
     dataset: "afghanistan-humanitarian-needs-overview"
     resource: "afg_hno_pin_2024.xlsx"
+    filename: "humanitarian_needs_afg.xlsx"
     format: "xlsx"
     sheet: "Total"
     headers: 6
@@ -88,7 +598,7 @@ humanitarian_needs_admintwo:
     use_hxl: True
     admin:
       - ~
-      - "#admé+code"
+      - "#adm2+code"
     admin_exact: True
     input:
       - "#inneed +ind"

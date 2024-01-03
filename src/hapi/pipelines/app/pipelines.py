@@ -150,6 +150,9 @@ class Pipelines:
             "food_security", "admintwo", adminlevel=self.admintwo
         )
         _create_configurable_scrapers(
+            "humanitarian_needs", "adminone", adminlevel=self.adminone
+        )
+        _create_configurable_scrapers(
             "humanitarian_needs", "admintwo", adminlevel=self.admintwo
         )
 
