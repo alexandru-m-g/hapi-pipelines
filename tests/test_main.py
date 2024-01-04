@@ -9,6 +9,7 @@ from hapi_schema.db_age_range import DBAgeRange
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_food_security import DBFoodSecurity
 from hapi_schema.db_gender import DBGender
+from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 from hapi_schema.db_ipc_phase import DBIpcPhase
 from hapi_schema.db_ipc_type import DBIpcType
 from hapi_schema.db_location import DBLocation
@@ -16,6 +17,8 @@ from hapi_schema.db_operational_presence import DBOperationalPresence
 from hapi_schema.db_org import DBOrg
 from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_population import DBPopulation
+from hapi_schema.db_population_group import DBPopulationGroup
+from hapi_schema.db_population_status import DBPopulationStatus
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_sector import DBSector
 from hdx.api.configuration import Configuration
@@ -41,6 +44,7 @@ class TestHAPIPipelines:
         project_configs = [
             "core.yaml",
             "food_security.yaml",
+            "humanitarian_needs.yaml",
             "operational_presence.yaml",
             "population.yaml",
         ]
@@ -93,40 +97,52 @@ class TestHAPIPipelines:
                     logger.info("Writing to database")
                     pipelines.output()
 
-                    count = session.scalar(select(func.count(DBLocation.id)))
-                    assert count == 5
-                    count = session.scalar(select(func.count(DBAdmin1.id)))
-                    assert count == 122
-                    count = session.scalar(select(func.count(DBAdmin2.id)))
-                    assert count == 1465
-                    count = session.scalar(select(func.count(DBDataset.id)))
-                    assert count == 7
                     count = session.scalar(select(func.count(DBResource.id)))
-                    assert count == 12
+                    assert count == 16
+                    count = session.scalar(select(func.count(DBDataset.id)))
+                    assert count == 10
+                    count = session.scalar(select(func.count(DBLocation.id)))
+                    assert count == 6
+                    count = session.scalar(select(func.count(DBAdmin1.id)))
+                    assert count == 145
+                    count = session.scalar(select(func.count(DBAdmin2.id)))
+                    assert count == 1823
+                    count = session.scalar(
+                        select(func.count(DBPopulationStatus.code))
+                    )
+                    assert count == 5
+                    count = session.scalar(
+                        select(func.count(DBPopulationGroup.code))
+                    )
+                    assert count == 4
+                    count = session.scalar(select(func.count(DBOrg.id)))
+                    assert count == 498
                     count = session.scalar(select(func.count(DBOrgType.code)))
                     assert count == 14
                     count = session.scalar(select(func.count(DBSector.code)))
                     assert count == 15
-                    count = session.scalar(select(func.count(DBGender.code)))
-                    assert count == 3
-                    count = session.scalar(select(func.count(DBAgeRange.code)))
-                    assert count == 17
-                    count = session.scalar(select(func.count(DBPopulation.id)))
-                    assert count == 45861
-                    count = session.scalar(select(func.count(DBOrg.id)))
-                    assert count == 498
-                    count = session.scalar(
-                        select(func.count(DBOperationalPresence.id))
-                    )
-                    assert count == 12215
                     count = session.scalar(select(func.count(DBIpcPhase.code)))
                     assert count == 7
                     count = session.scalar(select(func.count(DBIpcType.code)))
                     assert count == 3
+                    count = session.scalar(select(func.count(DBGender.code)))
+                    assert count == 3
+                    count = session.scalar(select(func.count(DBAgeRange.code)))
+                    assert count == 21
+                    count = session.scalar(select(func.count(DBPopulation.id)))
+                    assert count == 45861
+                    count = session.scalar(
+                        select(func.count(DBOperationalPresence.id))
+                    )
+                    assert count == 12215
                     count = session.scalar(
                         select(func.count(DBFoodSecurity.id))
                     )
                     assert count == 103264
+                    count = session.scalar(
+                        select(func.count(DBHumanitarianNeeds.id))
+                    )
+                    assert count == 47126
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {

@@ -2,6 +2,7 @@ import logging
 from typing import Dict
 
 from hapi_schema.db_gender import DBGender
+from hxl import TagPattern
 from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader
@@ -14,6 +15,7 @@ class Gender(BaseUploader):
         super().__init__(session)
         self._gender_descriptions = gender_descriptions
         self.data = []
+        self.patterns = []
 
     def populate(self):
         logger.info("Populating gender table")
@@ -21,4 +23,5 @@ class Gender(BaseUploader):
             gender_row = DBGender(code=gender, description=description)
             self._session.add(gender_row)
             self.data.append(gender)
+            self.patterns.append(TagPattern.parse(f"#*+{gender}"))
         self._session.commit()

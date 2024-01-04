@@ -12,6 +12,7 @@ from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.age_range import AgeRange
 from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.gender import Gender
+from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
 from hapi.pipelines.database.ipc_phase import IpcPhase
 from hapi.pipelines.database.ipc_type import IpcType
 from hapi.pipelines.database.locations import Locations
@@ -20,6 +21,8 @@ from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
+from hapi.pipelines.database.population_group import PopulationGroup
+from hapi.pipelines.database.population_status import PopulationStatus
 from hapi.pipelines.database.sector import Sector
 
 
@@ -29,12 +32,14 @@ class Pipelines:
         configuration: Dict,
         session: Session,
         today: datetime,
+        themes_to_run: Optional[ListTuple[str]] = None,
         scrapers_to_run: Optional[ListTuple[str]] = None,
         errors_on_exit: Optional[ErrorsOnExit] = None,
         use_live: bool = True,
     ):
         self.configuration = configuration
         self.session = session
+        self.themes_to_run = themes_to_run
         self.locations = Locations(
             configuration=configuration, session=session, use_live=use_live
         )
@@ -51,6 +56,18 @@ class Pipelines:
         self.admintwo.load_pcode_formats()
         self.admintwo.set_parent_admins_from_adminlevels([self.adminone])
 
+        self.population_status = PopulationStatus(
+            session=session,
+            population_status_descriptions=configuration[
+                "population_status_descriptions"
+            ],
+        )
+        self.population_group = PopulationGroup(
+            session=session,
+            population_group_descriptions=configuration[
+                "population_group_descriptions"
+            ],
+        )
         self.org = Org(
             session=session,
             datasetinfo=configuration["org"],
@@ -65,13 +82,6 @@ class Pipelines:
             datasetinfo=configuration["sector"],
             sector_map=configuration["sector_map"],
         )
-        self.gender = Gender(
-            session=session,
-            gender_descriptions=configuration["gender_descriptions"],
-        )
-        self.age_range = AgeRange(
-            session=session, age_range_codes=configuration["age_range_codes"]
-        )
         self.ipc_phase = IpcPhase(
             session=session,
             ipc_phase_names=configuration["ipc_phase_names"],
@@ -80,6 +90,13 @@ class Pipelines:
         self.ipc_type = IpcType(
             session=session,
             ipc_type_descriptions=configuration["ipc_type_descriptions"],
+        )
+        self.gender = Gender(
+            session=session,
+            gender_descriptions=configuration["gender_descriptions"],
+        )
+        self.age_range = AgeRange(
+            session=session, age_range_codes=configuration["age_range_codes"]
         )
 
         Sources.set_default_source_date_format("%Y-%m-%d")
@@ -97,21 +114,24 @@ class Pipelines:
         def _create_configurable_scrapers(
             prefix, level, suffix_attribute=None, adminlevel=None
         ):
-            suffix = f"_{level}"
-            source_configuration = Sources.create_source_configuration(
-                suffix_attribute=suffix_attribute,
-                admin_sources=True,
-                adminlevel=adminlevel,
-            )
-            scrapers = self.runner.add_configurables(
-                self.configuration[f"{prefix}{suffix}"],
-                level,
-                adminlevel=adminlevel,
-                source_configuration=source_configuration,
-                suffix=suffix,
-            )
-            current_scrapers = self.configurable_scrapers.get(prefix, [])
-            self.configurable_scrapers[prefix] = current_scrapers + scrapers
+            if not self.themes_to_run or prefix in self.themes_to_run:
+                suffix = f"_{level}"
+                source_configuration = Sources.create_source_configuration(
+                    suffix_attribute=suffix_attribute,
+                    admin_sources=True,
+                    adminlevel=adminlevel,
+                )
+                scrapers = self.runner.add_configurables(
+                    self.configuration[f"{prefix}{suffix}"],
+                    level,
+                    adminlevel=adminlevel,
+                    source_configuration=source_configuration,
+                    suffix=suffix,
+                )
+                current_scrapers = self.configurable_scrapers.get(prefix, [])
+                self.configurable_scrapers[prefix] = (
+                    current_scrapers + scrapers
+                )
 
         _create_configurable_scrapers("population", "national")
         _create_configurable_scrapers(
@@ -129,6 +149,12 @@ class Pipelines:
         _create_configurable_scrapers(
             "food_security", "admintwo", adminlevel=self.admintwo
         )
+        _create_configurable_scrapers(
+            "humanitarian_needs", "adminone", adminlevel=self.adminone
+        )
+        _create_configurable_scrapers(
+            "humanitarian_needs", "admintwo", adminlevel=self.admintwo
+        )
 
     def run(self):
         self.runner.run()
@@ -137,51 +163,80 @@ class Pipelines:
         self.locations.populate()
         self.admins.populate()
         self.metadata.populate()
+        self.population_status.populate()
+        self.population_group.populate()
+        self.org.populate()
         self.org_type.populate()
         self.sector.populate()
-        self.org.populate()
-        self.gender.populate()
-        self.age_range.populate()
         self.ipc_phase.populate()
         self.ipc_type.populate()
+        self.gender.populate()
+        self.age_range.populate()
 
-        results = self.runner.get_hapi_results(
-            self.configurable_scrapers["population"]
-        )
+        if not self.themes_to_run or "population" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["population"]
+            )
 
-        population = Population(
-            session=self.session,
-            metadata=self.metadata,
-            admins=self.admins,
-            gender=self.gender,
-            age_range=self.age_range,
-            results=results,
-        )
-        population.populate()
+            population = Population(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                gender=self.gender,
+                age_range=self.age_range,
+                results=results,
+            )
+            population.populate()
 
-        results = self.runner.get_hapi_results(
-            self.configurable_scrapers["operational_presence"]
-        )
-        operational_presence = OperationalPresence(
-            session=self.session,
-            metadata=self.metadata,
-            admins=self.admins,
-            org=self.org,
-            org_type=self.org_type,
-            sector=self.sector,
-            results=results,
-        )
-        operational_presence.populate()
+        if (
+            not self.themes_to_run
+            or "operational_presence" in self.themes_to_run
+        ):
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["operational_presence"]
+            )
+            operational_presence = OperationalPresence(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                org=self.org,
+                org_type=self.org_type,
+                sector=self.sector,
+                results=results,
+            )
+            operational_presence.populate()
 
-        results = self.runner.get_hapi_results(
-            self.configurable_scrapers["food_security"]
-        )
-        food_security = FoodSecurity(
-            session=self.session,
-            metadata=self.metadata,
-            admins=self.admins,
-            ipc_phase=self.ipc_phase,
-            ipc_type=self.ipc_type,
-            results=results,
-        )
-        food_security.populate()
+        if not self.themes_to_run or "food_security" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["food_security"]
+            )
+            food_security = FoodSecurity(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                ipc_phase=self.ipc_phase,
+                ipc_type=self.ipc_type,
+                results=results,
+            )
+            food_security.populate()
+
+        if (
+            not self.themes_to_run
+            or "humanitarian_needs" in self.themes_to_run
+        ):
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["humanitarian_needs"]
+            )
+
+            humanitarian_needs = HumanitarianNeeds(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                population_status=self.population_status,
+                population_group=self.population_group,
+                sector=self.sector,
+                gender=self.gender,
+                age_range=self.age_range,
+                results=results,
+            )
+            humanitarian_needs.populate()

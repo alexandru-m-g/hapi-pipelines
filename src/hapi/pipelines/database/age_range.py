@@ -2,6 +2,7 @@ import logging
 from typing import List
 
 from hapi_schema.db_age_range import DBAgeRange
+from hxl import TagPattern
 from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader
@@ -13,6 +14,7 @@ class AgeRange(BaseUploader):
     def __init__(self, session: Session, age_range_codes: List[str]):
         super().__init__(session)
         self.data = age_range_codes
+        self.patterns = []
 
     def populate(self):
         logger.info("Populating age ranges table")
@@ -25,11 +27,14 @@ class AgeRange(BaseUploader):
         if len(ages) == 2:
             # Format: 0-5
             age_min, age_max = int(ages[0]), int(ages[1])
+            pattern_string = f"age{age_min}_{age_max}"
         else:
             # Format: 80+
             age_min = int(age_range_code.replace("+", ""))
             age_max = None
+            pattern_string = f"age{age_min}plus"
         age_range_row = DBAgeRange(
             code=age_range_code, age_min=age_min, age_max=age_max
         )
         self._session.add(age_range_row)
+        self.patterns.append(TagPattern.parse(f"#*+{pattern_string}"))

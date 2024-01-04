@@ -7,6 +7,7 @@ HAPI_countries:
   - MLI
   - NGA
   - TCD
+  - YEM
 
 country_name_overrides:
   BOL: "Bolivia"
@@ -17,6 +18,64 @@ country_name_mappings:
 
 orphan_admin2s:
   SS0001: "SSD"
+
+population_status_descriptions:
+  population: "number of people assessed"
+  affected: "number of people in affected"
+  inneed: "number of people in need"
+  targeted: "number of people in targeted"
+  reached: "number of people reached"
+
+population_group_descriptions:
+  residents: "residents"
+  refugees: "refugees"
+  idps: "internally displaced persons"
+  returnees: "returnees"
+
+sector:
+  dataset: "global-coordination-groups-beta"
+  resource: "Global Coordination Groups (Beta) CSV"
+  format: "csv"
+  headers: 2
+
+org:
+  url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSfBWvSu3fKA743VvHtgf-pIGkYH7zhy-NP7DZgEV9_a6YU7vtCeWhbLM56aUL1iIfrfv5UBvvjVt7B/pub?gid=1040329566&single=true&output=csv"
+
+org_type:
+  dataset: "organization-types-beta"
+  resource: "Organization Types (Beta) - CSV"
+  format: "csv"
+  headers: 2
+
+org_type_map:
+  agence un: "447"
+  govt: "435"
+  ingo: "437"
+  mouv. cr: "445"
+  nngo: "441"
+  ong int: "437"
+  ong nat: "441"
+  un agency: "447"
+
+sector_map:
+  abris: "SHL"
+  cccm: "CCM"
+  coordination: "CCM"
+  education: "EDU"
+  eha: "WSH"
+  erl: "ERY"
+  nutrition: "NUT"
+  "operatioanl presence: water, sanitation & hygiene": "WSH"
+  "operational presence: education in emergencies": "EDU"
+  "operational presence: emergency shelter & non-food items": "SHL"
+  "operational presence: food security & agriculture": "FSC"
+  "operational presence: health": "HEA"
+  "operational presence: nutrition": "NUT"
+  "operational presence: protection": "PRO"
+  protection: "PRO"
+  sa: "FSC"
+  sante: "HEA"
+  wash: "WSH"
 
 gender_descriptions:
   f: "female"
@@ -41,48 +100,7 @@ age_range_codes:
   - "70-74"
   - "75-79"
   - "80+"
-
-sector:
-  dataset: "global-coordination-groups-beta"
-  resource: "Global Coordination Groups (Beta) CSV"
-  format: "csv"
-  headers: 2
-
-org:
-  url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSfBWvSu3fKA743VvHtgf-pIGkYH7zhy-NP7DZgEV9_a6YU7vtCeWhbLM56aUL1iIfrfv5UBvvjVt7B/pub?gid=1040329566&single=true&output=csv"
-
-org_type:
-  dataset: "organization-types-beta"
-  resource: "Organization Types (Beta) - CSV"
-  format: "csv"
-  headers: 2
-
-sector_map:
-  abris: "SHL"
-  cccm: "CCM"
-  coordination: "CCM"
-  education: "EDU"
-  eha: "WSH"
-  erl: "ERY"
-  nutrition: "NUT"
-  "operatioanl presence: water, sanitation & hygiene": "WSH"
-  "operational presence: education in emergencies": "EDU"
-  "operational presence: emergency shelter & non-food items": "SHL"
-  "operational presence: food security & agriculture": "FSC"
-  "operational presence: health": "HEA"
-  "operational presence: nutrition": "NUT"
-  "operational presence: protection": "PRO"
-  protection: "PRO"
-  sa: "FSC"
-  sante: "HEA"
-  wash: "WSH"
-
-org_type_map:
-  agence un: "447"
-  govt: "435"
-  ingo: "437"
-  mouv. cr: "445"
-  nngo: "441"
-  ong int: "437"
-  ong nat: "441"
-  un agency: "447"
+  - "0-17"
+  - "18+"
+  - "18-64"
+  - "65+"
