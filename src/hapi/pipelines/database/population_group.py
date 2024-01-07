@@ -17,7 +17,7 @@ class PopulationGroup(BaseUploader):
         super().__init__(session)
         self._population_group_descriptions = population_group_descriptions
         self.data = []
-        self.patterns = []
+        self.pattern_to_code = {}
 
     def populate(self):
         logger.info("Populating population group table")
@@ -30,5 +30,6 @@ class PopulationGroup(BaseUploader):
             )
             self._session.add(population_group_row)
             self.data.append(population_group)
-            self.patterns.append(TagPattern.parse(f"#*+{population_group}"))
+            tagpattern = TagPattern.parse(f"#*+{population_group}")
+            self.pattern_to_code[tagpattern] = population_group
         self._session.commit()

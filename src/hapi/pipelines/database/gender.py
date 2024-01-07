@@ -15,7 +15,7 @@ class Gender(BaseUploader):
         super().__init__(session)
         self._gender_descriptions = gender_descriptions
         self.data = []
-        self.patterns = []
+        self.pattern_to_code = {}
 
     def populate(self):
         logger.info("Populating gender table")
@@ -23,5 +23,6 @@ class Gender(BaseUploader):
             gender_row = DBGender(code=gender, description=description)
             self._session.add(gender_row)
             self.data.append(gender)
-            self.patterns.append(TagPattern.parse(f"#*+{gender}"))
+            tagpattern = TagPattern.parse(f"#*+{gender}")
+            self.pattern_to_code[tagpattern] = gender
         self._session.commit()

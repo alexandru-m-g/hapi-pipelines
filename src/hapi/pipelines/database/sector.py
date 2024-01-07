@@ -24,7 +24,7 @@ class Sector(BaseUploader):
         self._datasetinfo = datasetinfo
         self.data = {}
         self._sector_map = sector_map
-        self.patterns = []
+        self.pattern_to_code = {}
 
     def populate(self):
         logger.info("Populating sector table")
@@ -45,7 +45,8 @@ class Sector(BaseUploader):
             )
             self._session.add(sector_row)
             pattern = code.lower().replace("-", "_")
-            self.patterns.append(TagPattern.parse(f"#*+{pattern}"))
+            pattern = TagPattern.parse(f"#*+{pattern}")
+            self.pattern_to_code[pattern] = code
         self._session.commit()
 
     def get_sector_code(self, sector: str) -> str:

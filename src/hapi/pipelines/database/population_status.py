@@ -17,7 +17,7 @@ class PopulationStatus(BaseUploader):
         super().__init__(session)
         self._population_status_descriptions = population_status_descriptions
         self.data = []
-        self.patterns = []
+        self.pattern_to_code = {}
 
     def populate(self):
         logger.info("Populating population status table")
@@ -30,5 +30,6 @@ class PopulationStatus(BaseUploader):
             )
             self._session.add(population_status_row)
             self.data.append(population_status)
-            self.patterns.append(TagPattern.parse(f"#{population_status}"))
+            tagpattern = TagPattern.parse(f"#{population_status}")
+            self.pattern_to_code[tagpattern] = population_status
         self._session.commit()

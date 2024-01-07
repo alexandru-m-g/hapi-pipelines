@@ -35,27 +35,25 @@ class HumanitarianNeeds(BaseUploader):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
-        self.population_status_patterns = population_status.patterns
-        self.population_group_patterns = population_group.patterns
-        self.sector_patterns = sector.patterns
-        self.gender_patterns = gender.patterns
-        self.age_range_patterns = age_range.patterns
+        self.population_status_pattern_to_code = (
+            population_status.pattern_to_code
+        )
+        self.population_group_pattern_to_code = (
+            population_group.pattern_to_code
+        )
+        self.sector_pattern_to_code = sector.pattern_to_code
+        self.gender_pattern_to_code = gender.pattern_to_code
+        self.age_range_pattern_to_code = age_range.pattern_to_code
         self.disabled_pattern = TagPattern.parse("#*+disabled")
         self._results = results
 
     def populate(self):
         logger.info("Populating humanitarian needs table")
 
-        def match_column(col, patterns):
-            for pattern in patterns:
+        def match_column(col, pattern_to_code):
+            for pattern in pattern_to_code:
                 if pattern.match(col):
-                    result = pattern.tag
-                    if result and result != "#*":
-                        return result[1:]
-                    result = pattern.include_attributes
-                    if result:
-                        return next(iter(result))
-                    break
+                    return pattern_to_code[pattern]
             return None
 
         for dataset in self._results.values():
@@ -70,23 +68,27 @@ class HumanitarianNeeds(BaseUploader):
                     column = Column.parse(hxl_tag)
                     # "#inneed" "#affected"
                     population_status_code = match_column(
-                        column, self.population_status_patterns
+                        column, self.population_status_pattern_to_code
                     )
                     if not population_status_code:
                         raise ValueError(f"Invalid HXL tag {hxl_tag}!")
                     # "#*+idps" "#*+refugees"
                     population_group_code = match_column(
-                        column, self.population_group_patterns
+                        column, self.population_group_pattern_to_code
                     )
                     # "#*+wsh" "#*+pro_gbv"
-                    sector_code = match_column(column, self.sector_patterns)
+                    sector_code = match_column(
+                        column, self.sector_pattern_to_code
+                    )
                     if sector_code:
                         sector_code = sector_code.upper()
                     # "#*+f" "#*+m"
-                    gender_code = match_column(column, self.gender_patterns)
+                    gender_code = match_column(
+                        column, self.gender_pattern_to_code
+                    )
                     # "#*+age0_4" "#*+age80plus"
                     age_range_code = match_column(
-                        column, self.age_range_patterns
+                        column, self.age_range_pattern_to_code
                     )
                     # "#*+disabled"
                     disabled_marker = self.disabled_pattern.match(column)
