@@ -593,7 +593,7 @@ humanitarian_needs_admintwo:
 
   humanitarian_needs_tcd:
     dataset: "chad-humanitarian-needs-overview"
-    resource: "TCD_HPC2023_Rev_PiN-Targets"
+    resource: "tcd_hpc2023_rev_pin-cible_20231006.xlsx"
     format: "xlsx"
     use_hxl: True
     admin:
