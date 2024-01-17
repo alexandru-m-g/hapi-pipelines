@@ -17,6 +17,7 @@ from hapi.pipelines.database.ipc_phase import IpcPhase
 from hapi.pipelines.database.ipc_type import IpcType
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
+from hapi.pipelines.database.national_risk import NationalRisk
 from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
@@ -155,6 +156,7 @@ class Pipelines:
         _create_configurable_scrapers(
             "humanitarian_needs", "admintwo", adminlevel=self.admintwo
         )
+        _create_configurable_scrapers("national_risk", "national")
 
     def run(self):
         self.runner.run()
@@ -240,3 +242,16 @@ class Pipelines:
                 results=results,
             )
             humanitarian_needs.populate()
+
+        if not self.themes_to_run or "national_risk" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["national_risk"]
+            )
+
+            national_risk = NationalRisk(
+                session=self.session,
+                metadata=self.metadata,
+                locations=self.locations,
+                results=results,
+            )
+            national_risk.populate()
