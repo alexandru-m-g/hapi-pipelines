@@ -13,6 +13,7 @@ from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 from hapi_schema.db_ipc_phase import DBIpcPhase
 from hapi_schema.db_ipc_type import DBIpcType
 from hapi_schema.db_location import DBLocation
+from hapi_schema.db_national_risk import DBNationalRisk
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hapi_schema.db_org import DBOrg
 from hapi_schema.db_org_type import DBOrgType
@@ -45,6 +46,7 @@ class TestHAPIPipelines:
             "core.yaml",
             "food_security.yaml",
             "humanitarian_needs.yaml",
+            "national_risk.yaml",
             "operational_presence.yaml",
             "population.yaml",
         ]
@@ -98,9 +100,9 @@ class TestHAPIPipelines:
                     pipelines.output()
 
                     count = session.scalar(select(func.count(DBResource.id)))
-                    assert count == 16
+                    assert count == 17
                     count = session.scalar(select(func.count(DBDataset.id)))
-                    assert count == 10
+                    assert count == 11
                     count = session.scalar(select(func.count(DBLocation.id)))
                     assert count == 6
                     count = session.scalar(select(func.count(DBAdmin1.id)))
@@ -143,6 +145,10 @@ class TestHAPIPipelines:
                         select(func.count(DBHumanitarianNeeds.id))
                     )
                     assert count == 47126
+                    count = session.scalar(
+                        select(func.count(DBNationalRisk.id))
+                    )
+                    assert count == 6
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {
