@@ -4,6 +4,7 @@ from typing import Dict
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.location.names import clean_name
+from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
 from . import admins
@@ -57,6 +58,9 @@ class OperationalPresence(BaseUploader):
 
                 for admin_code, org_names in values[org_name_index].items():
                     for i, org_name in enumerate(org_names):
+                        admin2_code = admins.get_admin2_code_based_on_level(
+                            admin_code=admin_code, admin_level=admin_level
+                        )
                         # TODO: find the country code for get_org_info parameter "location"
                         org_info = self._org.get_org_info(
                             org_name, location="Country code"
@@ -95,37 +99,20 @@ class OperationalPresence(BaseUploader):
                             )
                             not in self._org.data
                         ):
+                            # Date is release date of HAPI v1
                             self._org.populate_single(
                                 acronym=org_acronym,
                                 org_name=org_name,
                                 org_type=org_type_code,
-                                reference_period_start=reference_period_start,
-                                reference_period_end=reference_period_end,
+                                reference_period_start=parse_date(
+                                    "2023-11-21"
+                                ),
                             )
                         sector = values[sector_index][admin_code][i]
                         sector_code = self._sector.get_sector_code(sector)
                         if not sector_code:
                             logger.error(f"Sector {sector} not in table")
 
-                        if admin_level == "national":
-                            admin1_code = (
-                                admins.get_admin1_to_location_connector_code(
-                                    admin_code
-                                )
-                            )
-                            admin2_code = (
-                                admins.get_admin2_to_admin1_connector_code(
-                                    admin1_code
-                                )
-                            )
-                        if admin_level == "adminone":
-                            admin2_code = (
-                                admins.get_admin2_to_admin1_connector_code(
-                                    admin1_code=admin_code
-                                )
-                            )
-                        elif admin_level == "admintwo":
-                            admin2_code = admin_code
                         resource_ref = self._metadata.resource_data[
                             resource_id
                         ]
