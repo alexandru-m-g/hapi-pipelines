@@ -45,7 +45,7 @@ class Org(BaseUploader):
         org_name,
         org_type,
         reference_period_start,
-        reference_period_end,
+        reference_period_end=None,
     ):
         logger.info(f"Adding org {org_name}")
         org_row = DBOrg(
