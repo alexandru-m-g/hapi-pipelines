@@ -64,6 +64,14 @@ class TestHAPIPipelines:
         return join("tests", "fixtures")
 
     def test_pipelines(self, configuration, folder):
+        configuration["HAPI_countries"] = [
+            "AFG",
+            "BFA",
+            "MLI",
+            "NGA",
+            "TCD",
+            "YEM",
+        ]
         with ErrorsOnExit() as errors_on_exit:
             with temp_dir(
                 "TestHAPIPipelines",
