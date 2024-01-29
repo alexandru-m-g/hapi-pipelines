@@ -15,6 +15,26 @@ def add_defaults(config: Dict) -> Dict:
     return config
 
 
+def subset_scraper_countries(config: Dict, countries_to_remove: List) -> Dict:
+    countries_to_remove = [c.lower() for c in countries_to_remove]
+    for key in config:
+        scraper_name = key.rsplit("_")
+        if scraper_name[-1] not in ["national", "adminone", "admintwo"]:
+            continue
+        subkeys_to_delete = []
+        for subkey in config[key]:
+            subscraper_name = subkey.rsplit("_")
+            subscraper_country = list(
+                set(subscraper_name) & set(countries_to_remove)
+            )
+            if len(subscraper_country) == 0:
+                continue
+            subkeys_to_delete.append(subkey)
+        for subkey in subkeys_to_delete:
+            del config[key][subkey]
+    return config
+
+
 def _find_defaults(config: Dict) -> List:
     default_list = []
     for key in config:
