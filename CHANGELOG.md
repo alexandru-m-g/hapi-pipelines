@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.6.9] - 2024-01-30
+
+### Added
+
+- Add population data for all HRP countries
+
 ## [0.6.8] - 2024-01-23
 
 ### Changed
