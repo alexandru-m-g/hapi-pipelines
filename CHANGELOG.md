@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.6.9] - 2024-01-30
 
+### Changed
+
+- Allow dates to be specified in scraper config
+
 ### Added
 
 - Add population data for all HRP countries
