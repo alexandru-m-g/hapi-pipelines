@@ -54,6 +54,7 @@ class TestHAPIPipelines:
             "population.yaml",
         ]
         project_config_dict = load_yamls(project_configs)
+        # TODO: Add subsetting countries functionality to hdx-python-scraper (HAPI-336)
         hapi_countries = ["AFG", "BFA", "MLI", "NGA", "TCD", "YEM"]
         countries_to_remove = [
             country
