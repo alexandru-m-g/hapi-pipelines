@@ -1,5 +1,5 @@
-"""Entry point to start data freshness
-"""
+"""Entry point to start HAPI pipelines"""
+
 import argparse
 import logging
 from os import getenv, remove

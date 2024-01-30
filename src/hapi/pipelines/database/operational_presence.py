@@ -1,4 +1,5 @@
 """Functions specific to the operational presence theme."""
+
 from logging import getLogger
 from typing import Dict
 

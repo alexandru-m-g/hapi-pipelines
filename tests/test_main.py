@@ -34,6 +34,9 @@ from sqlalchemy import func, select
 from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.__main__ import add_defaults
 from hapi.pipelines.app.pipelines import Pipelines
+from hapi.pipelines.utilities.process_config_defaults import (
+    subset_scraper_countries,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +54,18 @@ class TestHAPIPipelines:
             "population.yaml",
         ]
         project_config_dict = load_yamls(project_configs)
+        # TODO: Add subsetting countries functionality to hdx-python-scraper (HAPI-336)
+        hapi_countries = ["AFG", "BFA", "MLI", "NGA", "TCD", "YEM"]
+        countries_to_remove = [
+            country
+            for country in project_config_dict["HAPI_countries"]
+            if country not in hapi_countries
+        ]
+        project_config_dict["HAPI_countries"] = hapi_countries
+        project_config_dict = subset_scraper_countries(
+            project_config_dict,
+            countries_to_remove,
+        )
         project_config_dict = add_defaults(project_config_dict)
         Configuration._create(
             hdx_read_only=True,
@@ -100,9 +115,9 @@ class TestHAPIPipelines:
                     pipelines.output()
 
                     count = session.scalar(select(func.count(DBResource.id)))
-                    assert count == 17
+                    assert count == 23
                     count = session.scalar(select(func.count(DBDataset.id)))
-                    assert count == 11
+                    assert count == 13
                     count = session.scalar(select(func.count(DBLocation.id)))
                     assert count == 6
                     count = session.scalar(select(func.count(DBAdmin1.id)))
@@ -130,9 +145,9 @@ class TestHAPIPipelines:
                     count = session.scalar(select(func.count(DBGender.code)))
                     assert count == 3
                     count = session.scalar(select(func.count(DBAgeRange.code)))
-                    assert count == 21
+                    assert count == 29
                     count = session.scalar(select(func.count(DBPopulation.id)))
-                    assert count == 45861
+                    assert count == 54123
                     count = session.scalar(
                         select(func.count(DBOperationalPresence.id))
                     )
