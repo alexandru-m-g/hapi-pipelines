@@ -41,8 +41,8 @@ class OperationalPresence(BaseUploader):
         rows = []
         number_duplicates = 0
         for dataset in self._results.values():
-            reference_period_start = dataset["reference_period"]["startdate"]
-            reference_period_end = dataset["reference_period"]["enddate"]
+            time_period_start = dataset["time_period"]["start"]
+            time_period_end = dataset["time_period"]["end"]
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
                 hxl_tags = admin_results["headers"][1]
@@ -104,9 +104,7 @@ class OperationalPresence(BaseUploader):
                                 acronym=org_acronym,
                                 org_name=org_name,
                                 org_type=org_type_code,
-                                reference_period_start=parse_date(
-                                    "2023-11-21"
-                                ),
+                                time_period_start=parse_date("2023-11-21"),
                             )
                         sector = values[sector_index][admin_code][i]
                         sector_code = self._sector.get_sector_code(sector)
@@ -134,8 +132,8 @@ class OperationalPresence(BaseUploader):
                             admin2_ref=admin2_ref,
                             org_ref=org_ref,
                             sector_code=sector_code,
-                            reference_period_start=reference_period_start,
-                            reference_period_end=reference_period_end,
+                            reference_period_start=time_period_start,
+                            reference_period_end=time_period_end,
                             # TODO: Add to scraper (HAPI-199)
                             source_data="not yet implemented",
                         )

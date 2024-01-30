@@ -32,12 +32,10 @@ class NationalRisk(BaseUploader):
             datasetinfo = self._metadata.runner.scrapers[
                 "national_risk_national"
             ].datasetinfo
-            reference_period_start = datasetinfo["source_date"][
-                "default_date"
-            ]["start"]
-            reference_period_end = datasetinfo["source_date"]["default_date"][
-                "end"
+            time_period_start = datasetinfo["source_date"]["default_date"][
+                "start"
             ]
+            time_period_end = datasetinfo["source_date"]["default_date"]["end"]
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
                 hxl_tags = admin_results["headers"][1]
@@ -73,8 +71,8 @@ class NationalRisk(BaseUploader):
                         meta_avg_recentness_years=values[
                             "#meta+recentness+avg"
                         ].get(location),
-                        reference_period_start=reference_period_start,
-                        reference_period_end=reference_period_end,
+                        reference_period_start=time_period_start,
+                        reference_period_end=time_period_end,
                         # TODO: For v2+, add to scraper (HAPI-199)
                         source_data="not yet implemented",
                     )
