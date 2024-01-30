@@ -44,16 +44,16 @@ class Org(BaseUploader):
         acronym,
         org_name,
         org_type,
-        reference_period_start,
-        reference_period_end=None,
+        time_period_start,
+        time_period_end=None,
     ):
         logger.info(f"Adding org {org_name}")
         org_row = DBOrg(
             acronym=acronym,
             name=org_name,
             org_type_code=org_type,
-            reference_period_start=reference_period_start,
-            reference_period_end=reference_period_end,
+            reference_period_start=time_period_start,
+            reference_period_end=time_period_end,
         )
         self._session.add(org_row)
         self._session.commit()

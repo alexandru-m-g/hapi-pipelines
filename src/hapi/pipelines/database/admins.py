@@ -71,7 +71,7 @@ class Admins(BaseUploader):
         for i, row in enumerate(admin_filter):
             code = row.get("#adm+code")
             name = row.get("#adm+name")
-            reference_period_start = parse_date(row.get("#date+start"))
+            time_period_start = parse_date(row.get("#date+start"))
             parent = row.get("#adm+code+parent")
             parent_ref = parent_dict.get(parent)
             if not parent_ref:
@@ -92,14 +92,14 @@ class Admins(BaseUploader):
                     location_ref=parent_ref,
                     code=code,
                     name=name,
-                    reference_period_start=reference_period_start,
+                    reference_period_start=time_period_start,
                 )
             elif desired_admin_level == "2":
                 admin_row = DBAdmin2(
                     admin1_ref=parent_ref,
                     code=code,
                     name=name,
-                    reference_period_start=reference_period_start,
+                    reference_period_start=time_period_start,
                 )
             self._session.add(admin_row)
             if i % self._limit == 0:
@@ -108,7 +108,7 @@ class Admins(BaseUploader):
 
     def _add_admin1_connector_rows(self):
         for location_code, location_ref in self._locations.data.items():
-            reference_period_start = (
+            time_period_start = (
                 self._session.query(DBLocation)
                 .filter(DBLocation.id == location_ref)
                 .one()
@@ -121,14 +121,14 @@ class Admins(BaseUploader):
                 ),
                 name="UNSPECIFIED",
                 is_unspecified=True,
-                reference_period_start=reference_period_start,
+                reference_period_start=time_period_start,
             )
             self._session.add(admin_row)
         self._session.commit()
 
     def _add_admin2_connector_rows(self):
         for admin1_code, admin1_ref in self.admin1_data.items():
-            reference_period_start = (
+            time_period_start = (
                 self._session.query(DBAdmin1)
                 .filter(DBAdmin1.id == admin1_ref)
                 .one()
@@ -141,7 +141,7 @@ class Admins(BaseUploader):
                 ),
                 name="UNSPECIFIED",
                 is_unspecified=True,
-                reference_period_start=reference_period_start,
+                reference_period_start=time_period_start,
             )
             self._session.add(admin_row)
         self._session.commit()
