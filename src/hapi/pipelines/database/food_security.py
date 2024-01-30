@@ -73,9 +73,9 @@ class FoodSecurity(BaseUploader):
                             ][irow]
                         )
                         (
-                            reference_period_start,
-                            reference_period_end,
-                        ) = _get_reference_period(
+                            time_period_start,
+                            time_period_end,
+                        ) = _get_time_period(
                             month_range=values[reference_period_months_column][
                                 admin_code
                             ][irow],
@@ -101,8 +101,8 @@ class FoodSecurity(BaseUploader):
                                 admin2_ref=admin2_ref,
                                 ipc_phase_code=ipc_phase_code,
                                 ipc_type_code=ipc_type_code,
-                                reference_period_start=reference_period_start,
-                                reference_period_end=reference_period_end,
+                                reference_period_start=time_period_start,
+                                reference_period_end=time_period_end,
                                 population_in_phase=population_in_phase,
                                 population_fraction_in_phase=(
                                     population_in_phase / population_total
@@ -129,11 +129,11 @@ def _get_ipc_type_code_from_data(ipc_type_from_data: str) -> str:
         ) from e
 
 
-def _get_reference_period(month_range: str, year: str) -> (datetime, datetime):
-    reference_period_start = parse_date_range(
+def _get_time_period(month_range: str, year: str) -> (datetime, datetime):
+    time_period_start = parse_date_range(
         f"{year} {month_range.split('-')[0]}"
     )[0]
-    reference_period_end = parse_date_range(
-        f"{year} {month_range.split('-')[1]}"
-    )[1]
-    return reference_period_start, reference_period_end
+    time_period_end = parse_date_range(f"{year} {month_range.split('-')[1]}")[
+        1
+    ]
+    return time_period_start, time_period_end

@@ -34,10 +34,10 @@ classifiers = [
 requires-python = ">=3.8"
 
 dependencies = [
-    "hapi-schema>= 0.5.0",
-    "hdx-python-country>= 3.6.3",
+    "hapi-schema>= 0.6.0",
+    "hdx-python-country>= 3.6.4",
     "hdx-python-database[postgresql]>= 1.2.9",
-    "hdx-python-scraper>= 2.3.2",
+    "hdx-python-scraper>= 2.3.3",
     "libhxl",
     "sqlalchemy"
 ]
@@ -92,22 +92,14 @@ test = """
        """
 
 [[tool.hatch.envs.test.matrix]]
-python = ["3.11"]
+python = ["3.12"]
 
 [tool.hatch.envs.lint]
 detached = true
-dependencies = [
-  "black",
-  "ruff",
-]
+dependencies = ["ruff"]
 
 [tool.hatch.envs.lint.scripts]
 style = [
-  "ruff --config .config/ruff.toml {args:.}",
-  "black --config .config/black.toml --check --diff {args:.}",
-]
-# Not used for anything at the moment
-fmt = [
-  "black --config .config/black.toml {args:.}",
-  "ruff --config .config/ruff.toml --fix {args:.}",
+  "ruff check --config .config/ruff.toml --diff {args:.}",
+  "ruff format --config .config/ruff.toml --diff {args:.}",
 ]

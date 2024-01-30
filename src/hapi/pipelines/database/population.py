@@ -40,8 +40,8 @@ class Population(BaseUploader):
     def populate(self):
         logger.info("Populating population table")
         for dataset in self._results.values():
-            reference_period_start = dataset["reference_period"]["startdate"]
-            reference_period_end = dataset["reference_period"]["enddate"]
+            time_period_start = dataset["time_period"]["start"]
+            time_period_end = dataset["time_period"]["end"]
 
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
@@ -81,8 +81,8 @@ class Population(BaseUploader):
                             gender_code=gender_code,
                             age_range_code=age_range_code,
                             population=int(value),
-                            reference_period_start=reference_period_start,
-                            reference_period_end=reference_period_end,
+                            reference_period_start=time_period_start,
+                            reference_period_end=time_period_end,
                             # TODO: For v2+, add to scraper (HAPI-199)
                             source_data="not yet implemented",
                         )
