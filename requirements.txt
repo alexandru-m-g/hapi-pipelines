@@ -78,7 +78,7 @@ hdx-python-database[postgresql]==1.2.9
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-database
-hdx-python-scraper==2.3.3
+hdx-python-scraper==2.3.4
     # via hapi-pipelines (pyproject.toml)
 hdx-python-utilities==3.6.4
     # via
@@ -141,7 +141,7 @@ packaging==23.2
     # via pytest
 petl==1.7.14
     # via frictionless
-platformdirs==4.1.0
+platformdirs==4.2.0
     # via virtualenv
 pluggy==1.4.0
     # via pytest
