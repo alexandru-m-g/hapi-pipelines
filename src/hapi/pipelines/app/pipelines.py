@@ -33,7 +33,7 @@ class Pipelines:
         configuration: Dict,
         session: Session,
         today: datetime,
-        themes_to_run: Optional[ListTuple[str]] = None,
+        themes_to_run: Optional[Dict] = None,
         scrapers_to_run: Optional[ListTuple[str]] = None,
         errors_on_exit: Optional[ErrorsOnExit] = None,
         use_live: bool = True,
@@ -115,24 +115,46 @@ class Pipelines:
         def _create_configurable_scrapers(
             prefix, level, suffix_attribute=None, adminlevel=None
         ):
-            if not self.themes_to_run or prefix in self.themes_to_run:
-                suffix = f"_{level}"
-                source_configuration = Sources.create_source_configuration(
-                    suffix_attribute=suffix_attribute,
-                    admin_sources=True,
-                    adminlevel=adminlevel,
-                )
-                scrapers = self.runner.add_configurables(
-                    self.configuration[f"{prefix}{suffix}"],
-                    level,
-                    adminlevel=adminlevel,
-                    source_configuration=source_configuration,
-                    suffix=suffix,
-                )
-                current_scrapers = self.configurable_scrapers.get(prefix, [])
-                self.configurable_scrapers[prefix] = (
-                    current_scrapers + scrapers
-                )
+            if self.themes_to_run:
+                if prefix not in self.themes_to_run:
+                    return
+                countryiso3s = self.themes_to_run[prefix]
+            else:
+                countryiso3s = None
+            suffix = f"_{level}"
+            source_configuration = Sources.create_source_configuration(
+                suffix_attribute=suffix_attribute,
+                admin_sources=True,
+                adminlevel=adminlevel,
+            )
+            if countryiso3s:
+                configuration = {}
+                # This assumes format prefix_iso_.... eg.
+                # population_gtm, humanitarian_needs_afg_total
+                iso3_index = len(prefix) + 1
+                for key, value in self.configuration[
+                    f"{prefix}{suffix}"
+                ].items():
+                    if len(key) < iso3_index + 3:
+                        continue
+                    countryiso3 = key[iso3_index : iso3_index + 3]
+                    if countryiso3.upper() not in countryiso3s:
+                        continue
+                    configuration[key] = value
+            else:
+                configuration = self.configuration[f"{prefix}{suffix}"]
+            scraper_names = self.runner.add_configurables(
+                configuration,
+                level,
+                adminlevel=adminlevel,
+                source_configuration=source_configuration,
+                suffix=suffix,
+                countryiso3s=countryiso3s,
+            )
+            current_scrapers = self.configurable_scrapers.get(prefix, [])
+            self.configurable_scrapers[prefix] = (
+                current_scrapers + scraper_names
+            )
 
         _create_configurable_scrapers("population", "national")
         _create_configurable_scrapers(

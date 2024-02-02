@@ -4,7 +4,7 @@ import argparse
 import logging
 from os import getenv, remove
 from os.path import exists
-from typing import List, Optional
+from typing import Dict, Optional
 
 from hdx.api.configuration import Configuration
 from hdx.database import Database
@@ -16,6 +16,7 @@ from hdx.utilities.dictandlist import args_to_dict
 from hdx.utilities.easy_logging import setup_logging
 from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import temp_dir
+from hdx.utilities.typehint import ListTuple
 
 from hapi.pipelines._version import __version__
 from hapi.pipelines.app import (
@@ -73,8 +74,8 @@ def parse_args():
 def main(
     db_uri: Optional[str] = None,
     db_params: Optional[str] = None,
-    themes_to_run: Optional[List[str]] = None,
-    scrapers_to_run: Optional[List[str]] = None,
+    themes_to_run: Optional[Dict] = None,
+    scrapers_to_run: Optional[ListTuple[str]] = None,
     save: bool = False,
     use_saved: bool = False,
     **ignore,
@@ -86,7 +87,7 @@ def main(
     Args:
         db_uri (Optional[str]): Database connection URI. Defaults to None.
         db_params (Optional[str]): Database connection parameters. Defaults to None.
-        themes_to_run (Optional[ListTuple[str]]): Themes to run. Defaults to None (all themes).
+        themes_to_run (Optional[Dict[str]]): Themes to run. Defaults to None (all themes).
         scrapers_to_run (Optional[ListTuple[str]]): Scrapers to run. Defaults to None (all scrapers).
         save (bool): Whether to save state for testing. Defaults to False.
         use_saved (bool): Whether to use saved state for testing. Defaults to False.
@@ -163,7 +164,13 @@ if __name__ == "__main__":
     if db_uri and "://" not in db_uri:
         db_uri = f"postgresql://{db_uri}"
     if args.themes:
-        themes_to_run = args.themes.split(",")
+        themes_to_run = {}
+        for theme in args.themes.split(","):
+            theme_strs = theme.split(":")
+            if len(theme_strs) == 1:
+                themes_to_run[theme_strs[0]] = None
+            else:
+                themes_to_run[theme_strs[0]] = theme_strs[1]
     else:
         themes_to_run = None
     if args.scrapers:
