@@ -37,7 +37,7 @@ dependencies = [
     "hapi-schema>= 0.6.0",
     "hdx-python-country>= 3.6.4",
     "hdx-python-database[postgresql]>= 1.2.9",
-    "hdx-python-scraper>= 2.3.4",
+    "hdx-python-scraper>= 2.3.5",
     "libhxl",
     "sqlalchemy"
 ]
