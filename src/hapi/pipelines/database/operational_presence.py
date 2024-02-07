@@ -50,7 +50,10 @@ class OperationalPresence(BaseUploader):
                 values = admin_results["values"]
 
                 org_name_index = hxl_tags.index("#org+name")
-                org_acronym_index = hxl_tags.index("#org+acronym")
+                try:
+                    org_acronym_index = hxl_tags.index("#org+acronym")
+                except ValueError:
+                    org_acronym_index = hxl_tags.index("#org+name")
                 try:
                     org_type_name_index = hxl_tags.index("#org+type+name")
                 except ValueError:
