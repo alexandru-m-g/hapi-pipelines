@@ -78,6 +78,7 @@ class OperationalPresence(BaseUploader):
                             values[org_acronym_index][admin_code][i],
                         )
                         org_type_code = org_info.get("#org+type+code")
+                        org_type_name = None
                         if not org_type_code:
                             if org_type_name_index:
                                 org_type_name = values[org_type_name_index][
@@ -88,8 +89,8 @@ class OperationalPresence(BaseUploader):
                                         org_type_name
                                     )
                                 )
-                        if not org_type_code:
-                            logger.error("Org type missing or not in table")
+                        if org_type_name and not org_type_code:
+                            logger.error(f"Org type {org_type_name} not in table")
                         # TODO: find out how unique orgs are. Currently checking that
                         #  combo of acronym/name/type is unique. (More clarity will come
                         #  from HAPI-166).
@@ -114,6 +115,7 @@ class OperationalPresence(BaseUploader):
                         sector_code = self._sector.get_sector_code(sector)
                         if not sector_code:
                             logger.error(f"Sector {sector} not in table")
+                            continue
 
                         resource_ref = self._metadata.resource_data[
                             resource_id
