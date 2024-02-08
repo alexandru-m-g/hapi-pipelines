@@ -30,7 +30,7 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 
-lookup = "hapi-pipelines)"
+lookup = "hapi-pipelines"
 
 
 def parse_args():
