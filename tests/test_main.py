@@ -156,7 +156,7 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBNationalRisk.id))
                     )
-                    assert count == 6
+                    assert count == 25
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {

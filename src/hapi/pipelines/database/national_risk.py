@@ -6,7 +6,7 @@ from typing import Dict
 from hapi_schema.db_national_risk import DBNationalRisk
 from sqlalchemy.orm import Session
 
-from . import locations
+from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
 
@@ -18,59 +18,60 @@ class NationalRisk(BaseUploader):
         self,
         session: Session,
         metadata: Metadata,
-        locations: locations.Locations,
+        admins: admins.Admins,
         results: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
-        self._locations = locations
+        self._admins = admins
         self._results = results
 
     def populate(self):
         logger.info("Populating national risk table")
         for dataset in self._results.values():
-            datasetinfo = self._metadata.runner.scrapers[
-                "national_risk_national"
-            ].datasetinfo
-            time_period_start = datasetinfo["source_date"]["default_date"][
-                "start"
-            ]
-            time_period_end = datasetinfo["source_date"]["default_date"]["end"]
+            time_period_start = dataset["time_period"]["start"]
+            time_period_end = dataset["time_period"]["end"]
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
                 hxl_tags = admin_results["headers"][1]
-                locations = list(admin_results["values"][0].keys())
-                values = {
-                    hxl_tag: value
-                    for hxl_tag, value in zip(
-                        hxl_tags, admin_results["values"]
-                    )
-                }
+                admin_codes = list(admin_results["values"][0].keys())
+                values = admin_results["values"]
 
-                for location in locations:
-                    risk_class = values["#risk+class"].get(location)
+                for admin_code in admin_codes:
+                    admin2_code = admins.get_admin2_code_based_on_level(
+                        admin_code=admin_code, admin_level=admin_level
+                    )
+                    risk_class = values[hxl_tags.index("#risk+class")].get(
+                        admin_code
+                    )
                     if risk_class:
                         risk_class = _get_risk_class_code_from_data(risk_class)
 
                     national_risk_row = DBNationalRisk(
                         resource_ref=self._metadata.resource_data[resource_id],
-                        location_ref=self._locations.data[location],
+                        admin2_ref=self._admins.admin2_data[admin2_code],
                         risk_class=risk_class,
-                        global_rank=values["#risk+rank"][location],
-                        overall_risk=values["#risk+total"][location],
-                        hazard_exposure_risk=values["#risk+hazard"][location],
-                        vulnerability_risk=values["#risk+vulnerability"][
-                            location
-                        ],
-                        coping_capacity_risk=values["#risk+coping+capacity"][
-                            location
-                        ],
+                        global_rank=values[hxl_tags.index("#risk+rank")].get(
+                            admin_code
+                        ),
+                        overall_risk=values[hxl_tags.index("#risk+total")].get(
+                            admin_code
+                        ),
+                        hazard_exposure_risk=values[
+                            hxl_tags.index("#risk+hazard")
+                        ].get(admin_code),
+                        vulnerability_risk=values[
+                            hxl_tags.index("#risk+vulnerability")
+                        ].get(admin_code),
+                        coping_capacity_risk=values[
+                            hxl_tags.index("#risk+coping+capacity")
+                        ].get(admin_code),
                         meta_missing_indicators_pct=values[
-                            "#meta+missing+indicators+pct"
-                        ].get(location),
+                            hxl_tags.index("#meta+missing+indicators+pct")
+                        ].get(admin_code),
                         meta_avg_recentness_years=values[
-                            "#meta+recentness+avg"
-                        ].get(location),
+                            hxl_tags.index("#meta+recentness+avg")
+                        ].get(admin_code),
                         reference_period_start=time_period_start,
                         reference_period_end=time_period_end,
                         # TODO: For v2+, add to scraper (HAPI-199)

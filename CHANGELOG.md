@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.7.1] - 2024-02-07
+
+### Added
+
+- Added all HRP countries to national risk theme
+
+### Changed
+
+- Linked national risk to admin 2 level
+
 ## [0.7.0] - 2024-01-30
 
 ### Added
