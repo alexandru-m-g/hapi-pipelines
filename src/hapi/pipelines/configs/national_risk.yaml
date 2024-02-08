@@ -12,7 +12,7 @@ national_risk_national:
       end: "31/12/2024"
     filter_cols:
       - "ISO3"
-    prefilter: "ISO3 in ['AFG', 'BFA', 'MLI', 'NGA', 'TCD', 'YEM']"
+    prefilter: "ISO3 in ['AFG', 'BFA', 'CAF', 'CMR', 'COD', 'COL', 'ETH', 'GTM', 'HND', 'HTI', 'MLI', 'MMR', 'MOZ', 'NER', 'NGA', 'PSE', 'SDN', 'SLV', 'SOM', 'SSD', 'SYR', 'TCD', 'UKR', 'VEN', 'YEM']"
     admin:
       - "ISO3"
     admin_exact: True
