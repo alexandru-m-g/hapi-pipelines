@@ -1,3 +1,19 @@
+operational_presence_default:
+  scrapers_with_defaults:
+    - "operational_presence_afg"
+    - "operational_presence_mli"
+    - "operational_presence_nga"
+  output:
+    - "org_name"
+    - "org_acronym"
+    - "org_type_name"
+    - "sector"
+  output_hxl:
+    - "#org+name"
+    - "#org+acronym"
+    - "#org+type+name"
+    - "#sector"
+
 operational_presence_admintwo:
   operational_presence_afg:
     dataset: "afghanistan-who-does-what-where-january-to-march-2023"
@@ -22,16 +38,6 @@ operational_presence_admintwo:
       - "#org +acronym"
       - "#org +type +name"
       - "#sector +cluster +name"
-    output:
-      - "org_name"
-      - "org_acronym"
-      - "org_type_name"
-      - "sector"
-    output_hxl:
-      - "#org+name"
-      - "#org+acronym"
-      - "#org+type+name"
-      - "#sector"
 
   operational_presence_mli:
     dataset: "mali-operational-presence"
@@ -57,16 +63,6 @@ operational_presence_admintwo:
       - "Organisation Accronyme"
       - "Type Organisation"
       - "Cluster"
-    output:
-      - "org_name"
-      - "org_acronym"
-      - "org_type_name"
-      - "sector"
-    output_hxl:
-      - "#org+name"
-      - "#org+acronym"
-      - "#org+type+name"
-      - "#sector"
 
   operational_presence_nga:
     dataset: "nigeria-3w"
@@ -91,14 +87,4 @@ operational_presence_admintwo:
       - "#org+name"
       - "#org +acronym"
       - "#org +type"
-      - "#sector"
-    output:
-      - "org_name"
-      - "org_acronym"
-      - "org_type_name"
-      - "sector"
-    output_hxl:
-      - "#org+name"
-      - "#org+acronym"
-      - "#org+type+name"
       - "#sector"
