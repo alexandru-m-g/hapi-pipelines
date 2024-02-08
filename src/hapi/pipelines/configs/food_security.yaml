@@ -110,7 +110,7 @@ food_security_adminone:
       - "adm0_pcod3"
       - "adm1_pcod2"
     admin_exact: False
-    prefilter: "adm0_pcod3 in ['NGA', 'TCD'] and adm2_pcod2 is None"
+    prefilter: "adm0_pcod3 in ['AFG', 'BFA', 'CAF', 'CMR', 'COD', 'COL', 'ETH', 'GTM', 'HND', 'HTI', 'MLI', 'MMR', 'MOZ', 'NER', 'NGA', 'PSE', 'SDN', 'SLV', 'SOM', 'SSD', 'SYR', 'TCD', 'UKR', 'VEN', 'YEM'] and adm2_pcod2 is None"
     filter_cols:
       - "adm0_pcod3"
       - "adm2_pcod2"
@@ -123,6 +123,6 @@ food_security_admintwo:
       - "adm0_pcod3"
       - "adm2_pcod2"
     admin_exact: False
-    prefilter: "adm0_pcod3 in ['BFA', 'MLI', 'NGA', 'TCD']"
+    prefilter: "adm0_pcod3 in ['AFG', 'BFA', 'CAF', 'CMR', 'COD', 'COL', 'ETH', 'GTM', 'HND', 'HTI', 'MLI', 'MMR', 'MOZ', 'NER', 'NGA', 'PSE', 'SDN', 'SLV', 'SOM', 'SSD', 'SYR', 'TCD', 'UKR', 'VEN', 'YEM']"
     filter_cols:
       - "adm0_pcod3"
