@@ -89,7 +89,7 @@ class TestHAPIPipelines:
                     logger.info("Initialising pipelines")
                     themes_to_run = {
                         "population": ("AFG", "BFA", "MLI", "NGA", "TCD"),
-                        "operational_presence": None,
+                        "operational_presence": ("AFG", "MLI", "NGA"),
                         "food_security": None,
                         "humanitarian_needs": None,
                         "national_risk": None,
