@@ -4,6 +4,9 @@ operational_presence_admintwo:
     resource: "afghanistan-3w-operational-presence-january-march-2023.csv"
     format: "csv"
     headers: 1
+    source_date:
+      start: "01/01/2023"
+      end: "31/03/2023"
     use_hxl: True
     admin:
       - ~
@@ -36,6 +39,9 @@ operational_presence_admintwo:
     format: "xlsx"
     sheet: "ML_5W"
     headers: 1
+    source_date:
+      start: "01/04/2023"
+      end: "30/06/2023"
     use_hxl: False
     admin:
       - ~
@@ -68,6 +74,9 @@ operational_presence_admintwo:
     format: "xlsx"
     sheet: "NGA_3Ws_Apr_Jun_2023"
     headers: 1
+    source_date:
+      start: "01/04/2023"
+      end: "30/06/2023"
     use_hxl: True
     admin:
       - ~
