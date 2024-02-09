@@ -44,7 +44,7 @@ jobs:
       - name: Run Pipeline
         run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
         env:
-          HDX_KEY: ${{ secrets.HDX_KEY }}
+          HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
 
       - name: Dump PostgreSQL DB
         run: |
