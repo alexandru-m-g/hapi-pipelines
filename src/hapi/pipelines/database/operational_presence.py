@@ -90,7 +90,9 @@ class OperationalPresence(BaseUploader):
                                     )
                                 )
                         if org_type_name and not org_type_code:
-                            logger.error(f"Org type {org_type_name} not in table")
+                            logger.error(
+                                f"Org type {org_type_name} not in table"
+                            )
                         # TODO: find out how unique orgs are. Currently checking that
                         #  combo of acronym/name/type is unique. (More clarity will come
                         #  from HAPI-166).
