@@ -57,7 +57,11 @@ class OperationalPresence(BaseUploader):
                     org_type_name_index = hxl_tags.index("#org+type+name")
                 except ValueError:
                     org_type_name_index = None
-                sector_index = hxl_tags.index("#sector")
+                try:
+                    sector_index = hxl_tags.index("#sector")
+                except ValueError:
+                    logger.error("Sector missing from dataset")
+                    continue
 
                 for admin_code, org_names in values[org_name_index].items():
                     for i, org_name in enumerate(org_names):
