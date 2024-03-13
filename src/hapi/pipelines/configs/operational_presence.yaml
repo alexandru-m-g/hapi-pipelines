@@ -1,9 +1,9 @@
 operational_presence_default:
   scrapers_with_defaults:
     - "operational_presence_afg"
-    - "operational_presence_caf"
+    # - "operational_presence_caf"
     - "operational_presence_cmr"
-    - "operational_presence_cod"
+    # - "operational_presence_cod"
     - "operational_presence_col"
     - "operational_presence_eth"
     - "operational_presence_gtm"
@@ -50,50 +50,50 @@ operational_presence_admintwo:
       - "#org +type +name"
       - "#sector +cluster +name"
 
-  operational_presence_bfa:
-    dataset: "burkina-faso-presence-operationnelle"
-    resource: "3W Burkina July-August 2023"
-    format: "xlsx"
-    sheet: "MATRICE"
-    headers: 2
-    use_hxl: True
-    admin:
-      - ~
-      - "#adm2+name"
-    admin_exact: False
-    input:
-      - "#org+name"
-      - "#sector"
-    list:
-      - "#org+name"
-      - "#sector"
-    output:
-      - "org_name"
-      - "sector"
-    output_hxl:
-      - "#org+name"
-      - "#sector"
+#  operational_presence_bfa:
+#    dataset: "burkina-faso-presence-operationnelle"
+#    resource: "3W Burkina July-August 2023"
+#    format: "xlsx"
+#    sheet: "MATRICE"
+#    headers: 2
+#    use_hxl: True
+#    admin:
+#      - ~
+#      - "#adm2+name"
+#    admin_exact: False
+#    input:
+#      - "#org+name"
+#      - "#sector"
+#    list:
+#      - "#org+name"
+#      - "#sector"
+#    output:
+#      - "org_name"
+#      - "sector"
+#    output_hxl:
+#      - "#org+name"
+#      - "#sector"
 
-  operational_presence_caf:
-    dataset: "republique-centrafricaine-presence-operationnelle"
-    resource: "3W_CAR_Dec2023"
-    format: "xlsx"
-    sheet: "Compil_3W_VF"
-    headers: 1
-    admin:
-      - ~
-      - "PCODE2"
-    admin_exact: True
-    input:
-      - "Description_Acteur"
-      - "ACTEUR"
-      - "TYPE_ORG"
-      - "SECTEUR"
-    list:
-      - "Description_Acteur"
-      - "ACTEUR"
-      - "TYPE_ORG"
-      - "SECTEUR"
+#  operational_presence_caf:
+#    dataset: "republique-centrafricaine-presence-operationnelle"
+#    resource: "3W_CAR_Dec2023"
+#    format: "xlsx"
+#    sheet: "Compil_3W_VF"
+#    headers: 1
+#    admin:
+#      - ~
+#      - "PCODE2"
+#    admin_exact: True
+#    input:
+#      - "Description_Acteur"
+#      - "ACTEUR"
+#      - "TYPE_ORG"
+#      - "SECTEUR"
+#    list:
+#      - "Description_Acteur"
+#      - "ACTEUR"
+#      - "TYPE_ORG"
+#      - "SECTEUR"
 
   operational_presence_cmr:
     dataset: "cameroon-5w-operational-presence"
@@ -116,26 +116,26 @@ operational_presence_admintwo:
       - "implementing_org_type"
       - "clusters"
 
-  operational_presence_cod:
-    dataset: "drc_presence_operationnelle"
-    resource: "rdc-3w_November-2023"
-    format: "xlsx"
-    sheet: "data"
-    headers: 1
-    admin:
-      - ~
-      - "adm2_pcode"
-    admin_exact: True
-    input:
-      - "implementing_org_name"
-      - "implementing_org_acronym"
-      - "implementing_org_type"
-      - "sectors"
-    list:
-      - "implementing_org_name"
-      - "implementing_org_acronym"
-      - "implementing_org_type"
-      - "sectors"
+#  operational_presence_cod:
+#    dataset: "drc_presence_operationnelle"
+#    resource: "rdc-3w_November-2023"
+#    format: "xlsx"
+#    sheet: "data"
+#    headers: 1
+#    admin:
+#      - ~
+#      - "adm2_pcode"
+#    admin_exact: True
+#    input:
+#      - "implementing_org_name"
+#      - "implementing_org_acronym"
+#      - "implementing_org_type"
+#      - "sectors"
+#    list:
+#      - "implementing_org_name"
+#      - "implementing_org_acronym"
+#      - "implementing_org_type"
+#      - "sectors"
 
   operational_presence_col:
     dataset: "colombia-4ws"
