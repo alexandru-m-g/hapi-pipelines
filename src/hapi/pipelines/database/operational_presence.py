@@ -1,11 +1,13 @@
 """Functions specific to the operational presence theme."""
 
 from logging import getLogger
+from os.path import join
 from typing import Dict
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.location.names import clean_name
 from hdx.utilities.dateparse import parse_date
+from hdx.utilities.dictandlist import write_list_to_csv
 from sqlalchemy.orm import Session
 
 from . import admins
@@ -37,9 +39,11 @@ class OperationalPresence(BaseUploader):
         self._sector = sector
         self._results = results
 
-    def populate(self):
+    def populate(self, debug=False):
         logger.info("Populating operational presence table")
         rows = []
+        if debug:
+            debug_rows = []
         number_duplicates = 0
         for dataset in self._results.values():
             time_period_start = dataset["time_period"]["end"]
@@ -64,16 +68,29 @@ class OperationalPresence(BaseUploader):
                     continue
 
                 for admin_code, org_names in values[org_name_index].items():
-                    for i, org_name in enumerate(org_names):
+                    for i, org_name_orig in enumerate(org_names):
                         admin2_code = admins.get_admin2_code_based_on_level(
                             admin_code=admin_code, admin_level=admin_level
                         )
+                        org_acronym_orig = values[org_acronym_index][
+                            admin_code
+                        ][i]
+                        if not org_name_orig:
+                            org_name_orig = org_acronym_orig
+                        sector_orig = values[sector_index][admin_code][i]
+                        if not sector_orig:
+                            continue
+                        org_type_orig = None
+                        if org_type_name_index:
+                            org_type_orig = values[org_type_name_index][
+                                admin_code
+                            ][i]
                         # TODO: find the country code for get_org_info parameter "location"
                         org_info = self._org.get_org_info(
-                            org_name, location="Country code"
+                            org_name_orig, location="Country code"
                         )
                         self._org.add_org_to_lookup(
-                            org_name, org_info.get("#org+name")
+                            org_name_orig, org_info.get("#org+name")
                         )
                         org_name = org_info.get("#org+name")
                         org_acronym = org_info.get(
@@ -87,11 +104,12 @@ class OperationalPresence(BaseUploader):
                                 org_type_name = values[org_type_name_index][
                                     admin_code
                                 ][i]
-                                org_type_code = (
-                                    self._org_type.get_org_type_code(
-                                        org_type_name
+                                if org_type_name:
+                                    org_type_code = (
+                                        self._org_type.get_org_type_code(
+                                            org_type_name
+                                        )
                                     )
-                                )
                         if org_type_name and not org_type_code:
                             logger.error(
                                 f"Org type {org_type_name} not in table"
@@ -116,10 +134,23 @@ class OperationalPresence(BaseUploader):
                                 org_type=org_type_code,
                                 time_period_start=parse_date("2023-11-21"),
                             )
-                        sector = values[sector_index][admin_code][i]
-                        sector_code = self._sector.get_sector_code(sector)
+                        sector_code = self._sector.get_sector_code(sector_orig)
+                        if debug:
+                            debug_row = {
+                                "org_name_orig": org_name_orig,
+                                "org_acronym_orig": org_acronym_orig,
+                                "org_type_orig": org_type_orig,
+                                "sector_orig": sector_orig,
+                                "org_name": org_name,
+                                "org_acronym": org_acronym,
+                                "org_type": org_type_code,
+                                "sector": sector_code,
+                            }
+                            debug_rows.append(debug_row)
+                            continue
+
                         if not sector_code:
-                            logger.error(f"Sector {sector} not in table")
+                            logger.error(f"Sector {sector_orig} not in table")
                             continue
 
                         resource_ref = self._metadata.resource_data[
@@ -148,6 +179,13 @@ class OperationalPresence(BaseUploader):
                             source_data="not yet implemented",
                         )
                         self._session.add(operational_presence_row)
+
+        if debug:
+            write_list_to_csv(
+                join("saved_data", "debug_operational_presence.csv"),
+                debug_rows,
+            )
+            return
         self._session.commit()
         logger.info(
             f"There were {number_duplicates} duplicate operational presence rows!"
