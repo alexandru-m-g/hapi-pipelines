@@ -2,6 +2,7 @@ from typing import Dict
 
 from hdx.location.names import clean_name
 from hdx.location.phonetics import Phonetics
+from hdx.utilities.text import multiple_replace
 
 
 def get_code_from_name(
@@ -22,6 +23,9 @@ def get_code_from_name(
     if code:
         return code
     name_clean = clean_name(name)
+    name_clean = multiple_replace(
+        name_clean, {"_": " ", "-": " ", ",": "", ".": "", ":": ""}
+    )
     code = code_mapping.get(name_clean)
     if code:
         return code
