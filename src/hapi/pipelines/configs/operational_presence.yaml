@@ -167,7 +167,7 @@ operational_presence_admintwo:
     admin:
       - ~
       - "Zone"
-    admin_exact: True
+    admin_exact: False
     input:
       - "Implementing agency full name"
       - "Implementing agency acronym"
@@ -463,7 +463,7 @@ operational_presence_admintwo:
     admin:
       - ~
       - "admin2pcode"
-    admin_exact: False
+    admin_exact: True
     input:
       - "organisation_name"
       - "organisation_acronym"

@@ -26,6 +26,7 @@ def get_code_from_name(
     name_clean = multiple_replace(
         name_clean, {"_": " ", "-": " ", ",": "", ".": "", ":": ""}
     )
+    name_clean = multiple_replace(name_clean, {"   ": " ", "  ": " "})
     code = code_mapping.get(name_clean)
     if code:
         return code
