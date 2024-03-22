@@ -226,6 +226,8 @@ class Pipelines:
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
+                adminone=self.adminone,
+                admintwo=self.admintwo,
                 org=self.org,
                 org_type=self.org_type,
                 sector=self.sector,

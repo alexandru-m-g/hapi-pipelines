@@ -5,6 +5,7 @@ from os.path import join
 from typing import Dict
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
+from hdx.location.adminlevel import AdminLevel
 from hdx.location.names import clean_name
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.dictandlist import write_list_to_csv
@@ -26,6 +27,8 @@ class OperationalPresence(BaseUploader):
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
+        adminone: AdminLevel,
+        admintwo: AdminLevel,
         org: Org,
         org_type: OrgType,
         sector: Sector,
@@ -34,6 +37,8 @@ class OperationalPresence(BaseUploader):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
+        self._adminone = adminone
+        self._admintwo = admintwo
         self._org = org
         self._org_type = org_type
         self._sector = sector
@@ -85,9 +90,17 @@ class OperationalPresence(BaseUploader):
                             org_type_orig = values[org_type_name_index][
                                 admin_code
                             ][i]
-                        # TODO: find the country code for get_org_info parameter "location"
+                        country_code = None
+                        if admin_level == "admintwo":
+                            country_code = self._admintwo.pcode_to_iso3.get(
+                                admin_code
+                            )
+                        if admin_level == "adminone":
+                            country_code = self._admintwo.pcode_to_iso3.get(
+                                admin_code
+                            )
                         org_info = self._org.get_org_info(
-                            org_name_orig, location="Country code"
+                            org_name_orig, location=country_code
                         )
                         self._org.add_org_to_lookup(
                             org_name_orig, org_info.get("#org+name")
