@@ -4,6 +4,7 @@ from typing import Dict
 from hapi_schema.db_sector import DBSector
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
+from hxl import TagPattern
 from sqlalchemy.orm import Session
 
 from ..utilities.mappings import get_code_from_name
@@ -23,6 +24,7 @@ class Sector(BaseUploader):
         self._datasetinfo = datasetinfo
         self.data = {}
         self._sector_map = sector_map
+        self.pattern_to_code = {}
 
     def populate(self):
         logger.info("Populating sector table")
@@ -36,6 +38,9 @@ class Sector(BaseUploader):
                 reference_period_start=parse_date(date),
             )
             self._session.add(sector_row)
+            pattern = code.lower().replace("-", "_")
+            pattern = TagPattern.parse(f"#*+{pattern}")
+            self.pattern_to_code[pattern] = code
 
         reader = Read.get_reader()
         headers, iterator = reader.read(
