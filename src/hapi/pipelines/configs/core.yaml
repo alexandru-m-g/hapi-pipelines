@@ -109,7 +109,7 @@ org_type_map:
 sector_map:
   abna: "SHL"
   abris: "SHL"
-  abris/bna/cccm: "shl"
+  abris/bna/cccm: "SHL"
   abris / nfi: "SHL"
   abris d'urgence et nfi: "SHL"
   action contre les mines: "PRO-MIN"
