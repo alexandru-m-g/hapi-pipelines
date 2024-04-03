@@ -110,6 +110,8 @@ class OperationalPresence(BaseUploader):
                             "#org+acronym",
                             values[org_acronym_index][admin_code][i],
                         )
+                        if org_acronym is not None and len(org_acronym) > 32:
+                            org_acronym = org_acronym[:32]
                         org_type_code = org_info.get("#org+type+code")
                         org_type_name = None
                         if not org_type_code:
@@ -134,7 +136,7 @@ class OperationalPresence(BaseUploader):
                             org_acronym is not None
                             and org_name is not None
                             and (
-                                org_acronym.upper(),
+                                clean_name(org_acronym).upper(),
                                 clean_name(org_name),
                                 org_type_code,
                             )
@@ -171,7 +173,7 @@ class OperationalPresence(BaseUploader):
                         ]
                         org_ref = self._org.data[
                             (
-                                org_acronym.upper(),
+                                clean_name(org_acronym).upper(),
                                 clean_name(org_name),
                                 org_type_code,
                             )
