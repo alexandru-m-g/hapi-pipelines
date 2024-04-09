@@ -126,7 +126,7 @@ class TestHAPIPipelines:
                     )
                     assert count == 4
                     count = session.scalar(select(func.count(DBOrg.id)))
-                    assert count == 498
+                    assert count == 497
                     count = session.scalar(select(func.count(DBOrgType.code)))
                     assert count == 18
                     count = session.scalar(select(func.count(DBSector.code)))

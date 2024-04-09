@@ -38,6 +38,9 @@ class Org(BaseUploader):
         for row in iterator:
             org_name = row.get("#x_pattern")
             self._org_map[org_name] = row
+            canonical_org_name = row.get("#org+name")
+            if canonical_org_name:
+                self._org_map[canonical_org_name] = row
 
     def populate_single(
         self,
