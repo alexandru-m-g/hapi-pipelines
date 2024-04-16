@@ -1,4 +1,4 @@
-from hapi.pipelines.database.population import _validate_hxl_tag
+from hapi.pipelines.patches.population import _validate_hxl_tag
 
 
 def test_validate_hxl_tag():

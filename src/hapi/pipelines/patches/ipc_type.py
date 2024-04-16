@@ -17,7 +17,7 @@ class IpcType(BaseUploader):
         self._ipc_type_descriptions = ipc_type_descriptions
         self.data = []
 
-    def populate(self):
+    def generate_hapi_patch(self):
         logger.info("Populating IPC phase table")
         for (
             ipc_type,

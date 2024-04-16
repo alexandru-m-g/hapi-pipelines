@@ -23,7 +23,7 @@ class OrgType(BaseUploader):
         self.data = {}
         self._org_type_map = org_type_map
 
-    def populate(self):
+    def generate_hapi_patch(self):
         logger.info("Populating org type table")
 
         def parse_org_type_values(code: str, description: str) -> None:

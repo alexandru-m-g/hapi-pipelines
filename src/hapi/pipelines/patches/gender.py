@@ -17,7 +17,7 @@ class Gender(BaseUploader):
         self.data = []
         self.pattern_to_code = {}
 
-    def populate(self):
+    def generate_hapi_patch(self):
         logger.info("Populating gender table")
         for gender, description in self._gender_descriptions.items():
             gender_row = DBGender(code=gender, description=description)

@@ -1,5 +1,5 @@
-# Collector specific configuration
-commit_limit: 1000
+# TODO: update this
+hapi_repo: "turnerm/test_hapi"
 
 HAPI_countries:
   - AFG

@@ -9,7 +9,6 @@ from hapi_schema.db_location import DBLocation
 from hdx.utilities.dateparse import parse_date
 from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader
 from .locations import Locations
@@ -24,11 +23,10 @@ class Admins(BaseUploader):
     def __init__(
         self,
         configuration: Dict,
-        session: Session,
         locations: Locations,
         libhxl_dataset: hxl.Dataset,
     ):
-        super().__init__(session)
+        super().__init__()
         self._limit = configuration["commit_limit"]
         self._orphan_admin2s = configuration["orphan_admin2s"]
         self._locations = locations
@@ -36,7 +34,7 @@ class Admins(BaseUploader):
         self.admin1_data = {}
         self.admin2_data = {}
 
-    def populate(self):
+    def generate_hapi_patch(self):
         logger.info("Populating admin1 table")
         self._update_admin_table(
             desired_admin_level="1",

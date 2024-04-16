@@ -19,7 +19,7 @@ class PopulationStatus(BaseUploader):
         self.data = []
         self.pattern_to_code = {}
 
-    def populate(self):
+    def generate_hapi_patch(self):
         logger.info("Populating population status table")
         for (
             population_status,

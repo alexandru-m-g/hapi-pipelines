@@ -19,7 +19,7 @@ class PopulationGroup(BaseUploader):
         self.data = []
         self.pattern_to_code = {}
 
-    def populate(self):
+    def generate_hapi_patch(self):
         logger.info("Populating population group table")
         for (
             population_group,

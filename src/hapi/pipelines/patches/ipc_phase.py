@@ -21,7 +21,7 @@ class IpcPhase(BaseUploader):
         self._ipc_phase_descriptions = ipc_phase_descriptions
         self.data = []
 
-    def populate(self):
+    def generate_hapi_patch(self):
         logger.info("Populating IPC phase table")
         for ipc_phase in self._ipc_phase_names.keys():
             ipc_phase_row = DBIpcPhase(

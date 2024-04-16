@@ -2,25 +2,17 @@
 
 import argparse
 import logging
-from os import getenv, remove
-from os.path import exists
-from typing import Dict, Optional
+from os import getenv
 
 from hdx.api.configuration import Configuration
-from hdx.database import Database
-from hdx.database.dburi import get_params_from_connection_uri
 from hdx.facades.keyword_arguments import facade
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import now_utc
-from hdx.utilities.dictandlist import args_to_dict
 from hdx.utilities.easy_logging import setup_logging
-from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import temp_dir
-from hdx.utilities.typehint import ListTuple
 
 from hapi.pipelines._version import __version__
 from hapi.pipelines.app import (
-    build_db_views,  # noqa: F401
     load_yamls,
 )
 from hapi.pipelines.app.pipelines import Pipelines
@@ -42,19 +34,6 @@ def parse_args():
         "-hs", "--hdx-site", default=None, help="HDX site to use"
     )
     parser.add_argument(
-        "-db", "--db-uri", default=None, help="Database connection string"
-    )
-    parser.add_argument(
-        "-dp",
-        "--db-params",
-        default=None,
-        help="Database connection parameters. Overrides --db-uri.",
-    )
-    parser.add_argument("-th", "--themes", default=None, help="Themes to run")
-    parser.add_argument(
-        "-sc", "--scrapers", default=None, help="Scrapers to run"
-    )
-    parser.add_argument(
         "-s",
         "--save",
         default=False,
@@ -72,10 +51,6 @@ def parse_args():
 
 
 def main(
-    db_uri: Optional[str] = None,
-    db_params: Optional[str] = None,
-    themes_to_run: Optional[Dict] = None,
-    scrapers_to_run: Optional[ListTuple[str]] = None,
     save: bool = False,
     use_saved: bool = False,
     **ignore,
@@ -85,10 +60,6 @@ def main(
     SQLite database with filename "hapi.db" is assumed.
 
     Args:
-        db_uri (Optional[str]): Database connection URI. Defaults to None.
-        db_params (Optional[str]): Database connection parameters. Defaults to None.
-        themes_to_run (Optional[Dict[str]]): Themes to run. Defaults to None (all themes).
-        scrapers_to_run (Optional[ListTuple[str]]): Scrapers to run. Defaults to None (all scrapers).
         save (bool): Whether to save state for testing. Defaults to False.
         use_saved (bool): Whether to use saved state for testing. Defaults to False.
 
@@ -96,49 +67,23 @@ def main(
         None
     """
     logger.info(f"##### {lookup} version {__version__} ####")
-    if db_params:
-        params = args_to_dict(db_params)
-    elif db_uri:
-        params = get_params_from_connection_uri(db_uri)
-    else:
-        filename = "hapi.db"
-        if exists(filename):
-            remove(filename)
-        params = {"dialect": "sqlite", "database": filename}
-    logger.info(f"> Database parameters: {params}")
     configuration = Configuration.read()
-    with ErrorsOnExit() as errors_on_exit:
-        with temp_dir() as temp_folder:
-            with Database(**params) as session:
-                testsession = None
-                if save:
-                    testsession = Database.get_session(
-                        "sqlite:///test_serialize.db"
-                    )
-                today = now_utc()
-                Read.create_readers(
-                    temp_folder,
-                    "saved_data",
-                    temp_folder,
-                    save,
-                    use_saved,
-                    hdx_auth=configuration.get_api_key(),
-                    today=today,
-                )
-                if scrapers_to_run:
-                    logger.info(f"Updating only scrapers: {scrapers_to_run}")
-                pipelines = Pipelines(
-                    configuration,
-                    session,
-                    today,
-                    themes_to_run,
-                    scrapers_to_run,
-                    errors_on_exit,
-                )
-                pipelines.run()
-                pipelines.output()
-                if testsession:
-                    testsession.close()
+    with temp_dir() as temp_folder:
+        today = now_utc()
+        Read.create_readers(
+            temp_folder,
+            "saved_data",
+            temp_folder,
+            save,
+            use_saved,
+            hdx_auth=configuration.get_api_key(),
+            today=today,
+        )
+        pipelines = Pipelines(
+            configuration,
+            today,
+        )
+        pipelines.output()
     logger.info("HAPI pipelines completed!")
 
 
@@ -158,32 +103,8 @@ if __name__ == "__main__":
     hdx_site = args.hdx_site
     if hdx_site is None:
         hdx_site = getenv("HDX_SITE", "prod")
-    db_uri = args.db_uri
-    if db_uri is None:
-        db_uri = getenv("DB_URI")
-    if db_uri and "://" not in db_uri:
-        db_uri = f"postgresql://{db_uri}"
-    if args.themes:
-        themes_to_run = {}
-        for theme in args.themes.split(","):
-            theme_strs = theme.split(":")
-            if len(theme_strs) == 1:
-                themes_to_run[theme_strs[0]] = None
-            else:
-                themes_to_run[theme_strs[0]] = theme_strs[1]
-    else:
-        themes_to_run = None
-    if args.scrapers:
-        scrapers_to_run = args.scrapers.split(",")
-    else:
-        scrapers_to_run = None
     project_configs = [
         "core.yaml",
-        "food_security.yaml",
-        "humanitarian_needs.yaml",
-        "national_risk.yaml",
-        "operational_presence.yaml",
-        "population.yaml",
     ]
     project_config_dict = load_yamls(project_configs)
     project_config_dict = add_defaults(project_config_dict)
@@ -194,10 +115,6 @@ if __name__ == "__main__":
         preprefix=preprefix,
         hdx_site=hdx_site,
         project_config_dict=project_config_dict,
-        db_uri=db_uri,
-        db_params=args.db_params,
-        themes_to_run=themes_to_run,
-        scrapers_to_run=scrapers_to_run,
         save=args.save,
         use_saved=args.use_saved,
     )
