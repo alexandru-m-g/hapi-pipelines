@@ -41,6 +41,9 @@ class Org(BaseUploader):
             canonical_org_name = row.get("#org+name")
             if canonical_org_name:
                 self._org_map[canonical_org_name] = row
+            org_acronym = row.get("#org+acronym")
+            if org_acronym:
+                self._org_map[org_acronym] = row
 
     def populate_single(
         self,
@@ -61,14 +64,13 @@ class Org(BaseUploader):
         self._session.add(org_row)
         self._session.commit()
         results = self._session.execute(
-            select(DBOrg.id, DBOrg.acronym, DBOrg.name, DBOrg.org_type_code)
+            select(DBOrg.id, DBOrg.acronym, DBOrg.name)
         )
         for result in results:
             self.data[
                 (
                     clean_name(result[1]).upper(),
                     clean_name(result[2]),
-                    result[3],
                 )
             ] = result[0]
 

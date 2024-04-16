@@ -96,7 +96,7 @@ class OperationalPresence(BaseUploader):
                                 admin_code
                             )
                         if admin_level == "adminone":
-                            country_code = self._admintwo.pcode_to_iso3.get(
+                            country_code = self._adminone.pcode_to_iso3.get(
                                 admin_code
                             )
                         org_info = self._org.get_org_info(
@@ -138,7 +138,6 @@ class OperationalPresence(BaseUploader):
                             and (
                                 clean_name(org_acronym).upper(),
                                 clean_name(org_name),
-                                org_type_code,
                             )
                             not in self._org.data
                         ):
@@ -152,6 +151,7 @@ class OperationalPresence(BaseUploader):
                         sector_code = self._sector.get_sector_code(sector_orig)
                         if debug:
                             debug_row = {
+                                "location": country_code,
                                 "org_name_orig": org_name_orig,
                                 "org_acronym_orig": org_acronym_orig,
                                 "org_type_orig": org_type_orig,
@@ -175,7 +175,6 @@ class OperationalPresence(BaseUploader):
                             (
                                 clean_name(org_acronym).upper(),
                                 clean_name(org_name),
-                                org_type_code,
                             )
                         ]
                         admin2_ref = self._admins.admin2_data[admin2_code]
