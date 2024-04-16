@@ -41,7 +41,7 @@ docopt==0.6.2
     # via
     #   ckanapi
     #   num2words
-docutils==0.21.1
+docutils==0.21
     # via defopt
 email-validator==2.1.1
     # via hdx-python-api
@@ -63,7 +63,7 @@ gspread==6.1.0
     # via hdx-python-scraper
 hapi-schema==0.6.2
     # via hapi-pipelines (pyproject.toml)
-hdx-python-api==6.2.7
+hdx-python-api==6.2.6
     # via hdx-python-scraper
 hdx-python-country==3.7.0
     # via
@@ -82,7 +82,7 @@ humanize==4.9.0
     # via frictionless
 identify==2.5.35
     # via pre-commit
-idna==3.7
+idna==3.6
     # via
     #   email-validator
     #   requests
@@ -163,9 +163,9 @@ pyasn1-modules==0.4.0
     # via google-auth
 pycparser==2.22
     # via cffi
-pydantic==2.7.0
+pydantic==2.6.4
     # via frictionless
-pydantic-core==2.18.1
+pydantic-core==2.16.3
     # via pydantic
 pygments==2.17.2
     # via rich
@@ -199,7 +199,7 @@ pyyaml==6.0.1
     #   frictionless
     #   pre-commit
     #   tableschema-to-template
-quantulum3==0.9.1
+quantulum3==0.9.0
     # via hdx-python-api
 ratelimit==2.2.1
     # via hdx-python-utilities
