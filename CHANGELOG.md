@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.7.6] - 2024-04-18
+
+### Added
+- Added hapi_updated_date fields to relevant tables
+
+### Changed
+- Updated test data for humanitarian needs theme
+
 ## [0.7.5] - 2024-04-09
 
 ### Changed
