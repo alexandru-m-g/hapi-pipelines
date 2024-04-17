@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict
 
 from hapi_schema.db_location import DBLocation
@@ -10,7 +11,11 @@ from .base_uploader import BaseUploader
 
 class Locations(BaseUploader):
     def __init__(
-        self, configuration: Dict, session: Session, use_live: bool = True
+        self,
+        configuration: Dict,
+        session: Session,
+        today: datetime,
+        use_live: bool = True,
     ):
         super().__init__(session)
         Country.countriesdata(
@@ -19,6 +24,7 @@ class Locations(BaseUploader):
             country_name_mappings=configuration["country_name_mappings"],
         )
         self._hapi_countries = configuration["HAPI_countries"]
+        self.today = today
         self.data = {}
 
     def populate(self):
@@ -30,6 +36,7 @@ class Locations(BaseUploader):
                 code=code,
                 name=country["#country+name+preferred"],
                 reference_period_start=parse_date(country["#date+start"]),
+                hapi_updated_date=self.today,
             )
             self._session.add(location_row)
             self._session.commit()

@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_resource import DBResource
@@ -11,9 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 class Metadata(BaseUploader):
-    def __init__(self, runner: Runner, session: Session):
+    def __init__(self, runner: Runner, session: Session, today: datetime):
         super().__init__(session)
         self.runner = runner
+        self.today = today
         self.dataset_data = {}
         self.resource_data = {}
 
@@ -50,6 +52,7 @@ class Metadata(BaseUploader):
                     update_date=resource["update_date"],
                     is_hxl=resource["is_hxl"],
                     download_url=resource["download_url"],
+                    hapi_updated_date=self.today,
                 )
                 self._session.add(resource_row)
                 self._session.commit()

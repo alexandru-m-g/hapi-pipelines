@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import Dict
 
 from hapi_schema.db_org import DBOrg
@@ -18,9 +19,11 @@ class Org(BaseUploader):
         self,
         session: Session,
         datasetinfo: Dict[str, str],
+        today: datetime,
     ):
         super().__init__(session)
         self._datasetinfo = datasetinfo
+        self.today = today
         self.data = {}
         self._org_map = {}
         self._org_lookup = {}
@@ -57,6 +60,7 @@ class Org(BaseUploader):
             org_type_code=org_type,
             reference_period_start=time_period_start,
             reference_period_end=time_period_end,
+            hapi_updated_date=self.today,
         )
         self._session.add(org_row)
         self._session.commit()
