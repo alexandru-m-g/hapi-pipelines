@@ -611,7 +611,7 @@ humanitarian_needs_admintwo:
       - "#targeted+total"
   humanitarian_needs_yem_inneed:
     dataset: "yemen-humanitarian-needs-overview"
-    resource: "YEM_PIN_2023.xlsx"
+    resource: "yem_pin_2024.xlsx"
     format: "xlsx"
     headers: 2
     use_hxl: True
@@ -789,7 +789,7 @@ humanitarian_needs_admintwo:
       - "#inneed+pro_cpn+f+age0_17"
   humanitarian_needs_yem_targeted:
     dataset: "yemen-humanitarian-needs-overview"
-    resource: "YEM_TRG_2023.xlsx"
+    resource: "people-targeted-2024-dataset.xlsx"
     format: "xlsx"
     headers:
       - 1
@@ -799,7 +799,7 @@ humanitarian_needs_admintwo:
       - "Demographic Information Dis_PCODE"
     admin_exact: True
     input:
-      - "Total Targeted People max"
+      - "Total Targeted People"
       - "Target People Disaggregated by Gender Men"
       - "Target People Disaggregated by Gender Women"
       - "Target People Disaggregated by Gender Boys"
