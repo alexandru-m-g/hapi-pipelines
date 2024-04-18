@@ -63,7 +63,7 @@ greenlet==3.0.3
     # via sqlalchemy
 gspread==6.1.0
     # via hdx-python-scraper
-hapi-schema==0.7.0
+hapi-schema==0.6.2
 hdx-python-api==6.2.7
     # via hdx-python-scraper
 hdx-python-country==3.7.0
