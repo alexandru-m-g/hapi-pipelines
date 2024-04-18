@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict
 
@@ -7,6 +8,13 @@ from hdx.utilities.dateparse import parse_date
 from .base_uploader import BaseUploader
 from hapi.pipelines.utilities.hapi_patch import HAPIPatch
 from hapi.pipelines.utilities.ident_creator import generate_random_md5
+
+
+@dataclass
+class LocationData:
+    ident: str
+    code: str
+    reference_period_start: datetime
 
 
 class Locations(BaseUploader):
@@ -21,25 +29,31 @@ class Locations(BaseUploader):
         )
         self._hapi_countries = configuration["HAPI_countries"]
         self._today = today
-        # Trying to give a meaningful name
-        self.iso3_ident_dict = {}
+        self.code_location_data_dict = {}
 
     def generate_hapi_patch(self):
-        values = []
+        rows = []
         for country in Country.countriesdata()["countries"].values():
             code = country["#country+code+v_iso3"]
             if code not in self._hapi_countries:
                 continue
-            ident = (generate_random_md5(),)
-            values.append(
+            ident = generate_random_md5()
+            reference_period_start = parse_date(country["#date+start"])
+            rows.append(
                 [
                     ident,
                     code,
                     country["#country+name+preferred"],
-                    parse_date(country["#date+start"]).isoformat(),
+                    reference_period_start.isoformat(),
                 ]
             )
-            self.iso3_ident_dict[code] = ident
+            # TODO: this is not going to work for versioning,
+            #  but maybe that's okay?
+            self.code_location_data_dict[code] = LocationData(
+                code=code,
+                ident=ident,
+                reference_period_start=reference_period_start,
+            )
 
         with HAPIPatch(self._hapi_repo) as hapi_patch:
             patch = {
@@ -60,7 +74,7 @@ class Locations(BaseUploader):
                                 "value": self._today.isoformat(),
                             },
                         ],
-                        "values": values,
+                        "values": rows,
                     }
                 ],
             }

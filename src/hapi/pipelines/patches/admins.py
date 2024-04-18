@@ -1,23 +1,29 @@
 import logging
 from abc import ABC
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Literal
 
 import hxl
-from hapi_schema.db_admin1 import DBAdmin1
-from hapi_schema.db_admin2 import DBAdmin2
-from hapi_schema.db_location import DBLocation
 from hdx.utilities.dateparse import parse_date
 from hxl.filters import AbstractStreamingFilter
-from sqlalchemy import select
 
 from .base_uploader import BaseUploader
 from .locations import Locations
+from hapi.pipelines.utilities.hapi_patch import HAPIPatch
+from hapi.pipelines.utilities.ident_creator import generate_random_md5
 
 logger = logging.getLogger(__name__)
 
 _ADMIN_LEVELS = ("1", "2")
 _ADMIN_LEVELS_LITERAL = Literal["1", "2"]
+
+
+@dataclass
+class Admin1Data:
+    ident: str
+    code: str
+    reference_period_start: datetime
 
 
 class Admins(BaseUploader):
@@ -29,38 +35,55 @@ class Admins(BaseUploader):
         today: datetime,
     ):
         super().__init__(configuration["hapi_repo"])
-        self._limit = configuration["commit_limit"]
         self._orphan_admin2s = configuration["orphan_admin2s"]
         self._libhxl_dataset = libhxl_dataset
         self._locations = locations
         self._today = today
-        self.admin1_data = {}
-        self.admin2_data = {}
+        self.admin1_pcode_ident_dict = {}
 
     def generate_hapi_patch(self):
-        logger.info("Generating admin1 patch")
-        # Query database to get locations ID
-        # Generate admin 1 rows
-        # Generate connector rows
-
-        self._update_admin_table(
+        logger.info("Generating admin1 patches")
+        # Generate admin 1 rows patch
+        rows = self._get_admin_rows(
             desired_admin_level="1",
-            parent_dict=self._locations.data,
+            parent_dict=self._locations.code_location_data_dict,
         )
-        self._add_admin1_connector_rows()
-        results = self._session.execute(select(DBAdmin1.id, DBAdmin1.code))
-        self.admin1_data = {result[1]: result[0] for result in results}
-        logger.info("Populating admin2 table")
-        self._update_admin_table(
+        with HAPIPatch(self._hapi_repo) as hapi_patch:
+            patch = {
+                "description": "Initial population of admin 1",
+                "sequence": hapi_patch.get_sequence_number(),
+                "database_schema_version": "0.7.0",
+                "changes": [
+                    {
+                        "type": "INSERT",
+                        "entity": "DBAdmin1",
+                        "headers": [
+                            "ident",
+                            "code",
+                            "name",
+                            "location_ident",
+                            "reference_period_start",
+                            {
+                                "name": "hapi_updated_date",
+                                "value": self._today.isoformat(),
+                            },
+                            {"name": "is_unspecified", "value": "FALSE"},
+                        ],
+                        "values": rows,
+                    }
+                ],
+            }
+            hapi_patch.create(theme="admin1", patch=patch)
+        # Generate admin 1 connector rows patch
+        rows = self._get_admin1_connector_rows()
+        logger.info("Generating admin2 patches")
+        rows = self._get_admin_rows(
             desired_admin_level="2",
-            parent_dict=self.admin1_data,
+            parent_dict=self.admin1_pcode_ident_dict,
         )
-        self._add_admin2_connector_rows()
-        results = self._session.execute(select(DBAdmin2.id, DBAdmin2.code))
-        for result in results:
-            self.admin2_data[result[1]] = result[0]
+        rows = self._get_admin2_connector_rows()
 
-    def _update_admin_table(
+    def _get_admin_rows(
         self,
         desired_admin_level: _ADMIN_LEVELS_LITERAL,
         parent_dict: Dict,
@@ -71,12 +94,14 @@ class Admins(BaseUploader):
         admin_filter = _AdminFilter(
             source=self._libhxl_dataset,
             desired_admin_level=desired_admin_level,
-            country_codes=list(self._locations.iso3_ident_dict.keys()),
+            country_codes=list(self._locations.code_location_data_dict.keys()),
         )
+        rows = []
         for i, row in enumerate(admin_filter):
+            ident = generate_random_md5()
             code = row.get("#adm+code")
             name = row.get("#adm+name")
-            time_period_start = parse_date(row.get("#date+start"))
+            reference_period_start = parse_date(row.get("#date+start"))
             parent = row.get("#adm+code+parent")
             parent_ref = parent_dict.get(parent)
             if not parent_ref:
@@ -84,7 +109,7 @@ class Admins(BaseUploader):
                     desired_admin_level == "2"
                     and code in self._orphan_admin2s.keys()
                 ):
-                    parent_ref = self.admin1_data[
+                    parent_ref = self.admin1_pcode_ident_dict[
                         _get_admin1_to_location_connector_code(
                             location_code=self._orphan_admin2s[code]
                         )
@@ -92,64 +117,58 @@ class Admins(BaseUploader):
                 else:
                     logger.warning(f"Missing parent {parent} for code {code}")
                     continue
-            if desired_admin_level == "1":
-                admin_row = DBAdmin1(
-                    location_ref=parent_ref,
+            # Columns are: ident, code, name, location_ident or admin1_ident,
+            # and reference_period_start
+            rows.append(
+                [ident, code, name, parent_ref, reference_period_start]
+            )
+            if desired_admin_level == 1:
+                self.admin1_pcode_ident_dict[code] = Admin1Data(
+                    ident=ident,
                     code=code,
-                    name=name,
-                    reference_period_start=time_period_start,
+                    reference_period_start=reference_period_start,
                 )
-            elif desired_admin_level == "2":
-                admin_row = DBAdmin2(
-                    admin1_ref=parent_ref,
-                    code=code,
-                    name=name,
-                    reference_period_start=time_period_start,
-                )
-            self._session.add(admin_row)
-            if i % self._limit == 0:
-                self._session.commit()
-        self._session.commit()
+        return rows
 
-    def _add_admin1_connector_rows(self):
-        for location_code, location_ref in self._locations.data.items():
-            time_period_start = (
-                self._session.query(DBLocation)
-                .filter(DBLocation.id == location_ref)
-                .one()
-                .reference_period_start
+    def _get_admin1_connector_rows(self) -> List:
+        rows = []
+        for (
+            location_code,
+            location_data,
+        ) in self._locations.code_location_data_dict.items():
+            ident = generate_random_md5()
+            code = _get_admin1_to_location_connector_code(
+                location_code=location_code
             )
-            admin_row = DBAdmin1(
-                location_ref=location_ref,
-                code=_get_admin1_to_location_connector_code(
-                    location_code=location_code
-                ),
-                name="UNSPECIFIED",
-                is_unspecified=True,
-                reference_period_start=time_period_start,
+            reference_period_start = location_data.reference_period_start
+            # Columns are: ident, code, location_ident, reference_period_start
+            rows.append(
+                [ident, code, location_data.ident, reference_period_start]
             )
-            self._session.add(admin_row)
-        self._session.commit()
+            self.admin1_pcode_ident_dict[code] = Admin1Data(
+                ident=ident,
+                code=code,
+                reference_period_start=reference_period_start,
+            )
+        return rows
 
-    def _add_admin2_connector_rows(self):
-        for admin1_code, admin1_ref in self.admin1_data.items():
-            time_period_start = (
-                self._session.query(DBAdmin1)
-                .filter(DBAdmin1.id == admin1_ref)
-                .one()
-                .reference_period_start
+    def _get_admin2_connector_rows(self) -> List:
+        rows = []
+        for admin1_code, admin1_data in self.admin1_pcode_ident_dict.items():
+            ident = generate_random_md5()
+            code = _get_admin2_to_admin1_connector_code(
+                admin1_code=admin1_code
             )
-            admin_row = DBAdmin2(
-                admin1_ref=admin1_ref,
-                code=_get_admin2_to_admin1_connector_code(
-                    admin1_code=admin1_code
-                ),
-                name="UNSPECIFIED",
-                is_unspecified=True,
-                reference_period_start=time_period_start,
+            # Columns are: ident, code, location_ident, reference_period_start
+            rows.append(
+                [
+                    ident,
+                    code,
+                    admin1_data.ident,
+                    admin1_data.reference_period_start,
+                ]
             )
-            self._session.add(admin_row)
-        self._session.commit()
+        return rows
 
     def get_admin_level(self, pcode: str) -> _ADMIN_LEVELS_LITERAL:
         """Given a pcode, return the admin level."""
