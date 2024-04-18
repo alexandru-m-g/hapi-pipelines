@@ -5,7 +5,7 @@ from abc import ABC
 from os import getenv
 from os.path import basename
 from time import sleep
-from typing import Any, Type
+from typing import Any
 
 from github import Auth, Github, UnknownObjectException
 
