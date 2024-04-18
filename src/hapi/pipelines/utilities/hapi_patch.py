@@ -19,29 +19,29 @@ class HAPIPatchError(Exception):
 class HAPIPatch(ABC):
     """Create patch JSON files in the HAPI GitHub repository. Handles locking
     and unlocking of repository and obtaining and incrementing the patch
-    sequence number.
+    sequence number. When used in with statement, unlocking occurs
+    automatically.
 
     Args:
         hapi_repo (str): GitHub repository in the form ORG/REPO
         no_attempts (int): Number of attempts to lock repo. Defaults to 100.
         sleep_time (int): How long to sleep. Defaults to 60.
-        githubclass (Type): GitHub class. Defaults to github.Github
     """
+
+    lock_name = "LOCK"
+    lock_value = "LOCKED"
 
     def __init__(
         self,
         hapi_repo: str,
         no_attempts: int = 100,
         sleep_time: int = 60,
-        githubclass: Type[Any] = Github,
     ) -> None:
         self.hapi_repo = hapi_repo
         self.no_attempts = no_attempts
         self.sleep_time = sleep_time
-        self.lock_name = "LOCK"
-        self.lock_value = "LOCKED"
         self.patch_regex = re.compile(r"hapi_patch_(\d*).*.json")
-        self.github = githubclass(auth=self.get_auth())
+        self.github = Github(auth=self.get_auth())
         self.repo = self.github.get_repo(self.hapi_repo)
         self.acquire_lock()
         self.sequence_number = self.get_sequence_number_from_repo()
@@ -61,6 +61,14 @@ class HAPIPatch(ABC):
             exc_type (Any): Exception type
             exc_value (Any): Exception value
             traceback (Any): Traceback
+
+        Returns:
+            None
+        """
+        self.close()
+
+    def close(self) -> None:
+        """Releases lock and closes GitHub connection.
 
         Returns:
             None

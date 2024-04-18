@@ -179,8 +179,11 @@ pyphonetics==0.5.3
 pyrsistent==0.20.0
     # via jsonschema
 pytest==8.1.1
-    # via pytest-cov
+    # via
+    #   pytest-cov
+    #   pytest-mock
 pytest-cov==5.0.0
+pytest-mock==3.14.0
 python-dateutil==2.8.2
     # via
     #   frictionless

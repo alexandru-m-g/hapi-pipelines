@@ -52,7 +52,7 @@ content-type = "text/markdown"
 Homepage = "https://github.com/OCHA-DAP/hapi-pipelines"
 
 [project.optional-dependencies]
-test = ["pytest", "pytest-cov"]
+test = ["pytest", "pytest-cov", "pytest-mock"]
 dev = ["pre-commit"]
 
 

@@ -44,22 +44,26 @@ class MockRepo:
         cls.result[filename] = {"message": message, "content": content}
 
 
-class MockGithub:
-    def __init__(self, auth):
-        pass
-
-    def get_repo(self, hapi_repo):
-        return MockRepo()
-
-    @staticmethod
-    def close():
-        pass
-
-
 class TestHAPIPatch:
-    def test_hapi_patch(self, monkeypatch):
+    @pytest.fixture(scope="function")
+    def mock_github(self, mocker):
+        mocker.patch(
+            "github.Github.__init__",
+            return_value=None,
+        )
+        mocker.patch(
+            "github.Github.get_repo",
+            return_value=MockRepo(),
+        )
+        mocker.patch(
+            "github.Github.close",
+            return_value=None,
+        )
+
+    def test_hapi_patch(self, mock_github, monkeypatch):
         monkeypatch.setenv("GITHUB_TOKEN", "test")
-        with HAPIPatch("test", githubclass=MockGithub) as hapi_patch:
+
+        with HAPIPatch("test") as hapi_patch:
             val = hapi_patch.get_sequence_number()
             assert val == 1
             patch = {"test": [{"key": "1"}, {"key": 2}]}
@@ -89,7 +93,7 @@ class TestHAPIPatch:
 
         MockRepo.variables = {"LOCK": MockValue("LOCKED")}
         with pytest.raises(HAPIPatchError):
-            HAPIPatch("test", 1, 0, MockGithub)
+            HAPIPatch("test", 1, 0)
 
         MockRepo.variables = {}
         MockRepo.files = [
@@ -97,7 +101,7 @@ class TestHAPIPatch:
             MockFile("dir", "test_dir"),
             MockFile("file", "hapi_patch_2_hno_afg.json"),
         ]
-        with HAPIPatch("test", githubclass=MockGithub) as hapi_patch:
+        with HAPIPatch("test") as hapi_patch:
             val = hapi_patch.get_sequence_number()
             assert val == 3
         monkeypatch.delenv("GITHUB_TOKEN")
