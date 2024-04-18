@@ -164,6 +164,9 @@ class Pipelines:
             "population", "admintwo", adminlevel=self.admintwo
         )
         _create_configurable_scrapers(
+            "operational_presence", "adminone", adminlevel=self.adminone
+        )
+        _create_configurable_scrapers(
             "operational_presence", "admintwo", adminlevel=self.admintwo
         )
         _create_configurable_scrapers(
@@ -223,6 +226,8 @@ class Pipelines:
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
+                adminone=self.adminone,
+                admintwo=self.admintwo,
                 org=self.org,
                 org_type=self.org_type,
                 sector=self.sector,

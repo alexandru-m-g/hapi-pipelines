@@ -38,6 +38,9 @@ class Org(BaseUploader):
         for row in iterator:
             org_name = row.get("#x_pattern")
             self._org_map[org_name] = row
+            canonical_org_name = row.get("#org+name")
+            if canonical_org_name:
+                self._org_map[canonical_org_name] = row
 
     def populate_single(
         self,
@@ -62,7 +65,11 @@ class Org(BaseUploader):
         )
         for result in results:
             self.data[
-                (result[1].upper(), clean_name(result[2]), result[3])
+                (
+                    clean_name(result[1]).upper(),
+                    clean_name(result[2]),
+                    result[3],
+                )
             ] = result[0]
 
     def get_org_info(self, org_name: str, location: str) -> Dict[str, str]:

@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.7.5] - 2024-04-09
+
+### Changed
+
+- Updated operational presence theme to better match organizations
+
+## [0.7.4] - 2024-04-02
+
+### Added
+
+- Added all HRP countries to operational presence theme
+
 ## [0.7.3] - 2024-02-26
 
 ### Added
