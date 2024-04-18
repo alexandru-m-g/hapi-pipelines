@@ -24,7 +24,8 @@ class HAPIPatch(ABC):
         self.patch_regex = re.compile(r"hapi_patch_(\d*).*.json")
         self.github = Github(auth=self.get_auth())
         self.repo = self.github.get_repo(self.hapi_repo)
-        self.acquire_lock()
+        # TODO: this doesnt' work for me
+        # self.acquire_lock()
         self.sequence_number = self.get_sequence_number_from_repo()
 
     def __enter__(self) -> "HAPIPatch":
@@ -92,6 +93,7 @@ class HAPIPatch(ABC):
         filename = f"hapi_patch_{self.sequence_number}_{theme}.json"
         message = f"Creating {filename}"
         logger.info(f"{message} in GitHub repository.")
-        content = json.dumps(patch, indent=None, separators=(",", ":"))
+        # TODO: is an indent okay, or makes the files too long?
+        content = json.dumps(patch, indent=2, separators=(",", ":"))
         self.repo.create_file(filename, message, content, **kwargs)
         self.sequence_number += 1

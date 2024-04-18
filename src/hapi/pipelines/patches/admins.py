@@ -1,5 +1,6 @@
 import logging
 from abc import ABC
+from datetime import datetime
 from typing import Dict, List, Literal
 
 import hxl
@@ -23,19 +24,25 @@ class Admins(BaseUploader):
     def __init__(
         self,
         configuration: Dict,
-        locations: Locations,
         libhxl_dataset: hxl.Dataset,
+        locations: Locations,
+        today: datetime,
     ):
-        super().__init__()
+        super().__init__(configuration["hapi_repo"])
         self._limit = configuration["commit_limit"]
         self._orphan_admin2s = configuration["orphan_admin2s"]
-        self._locations = locations
         self._libhxl_dataset = libhxl_dataset
+        self._locations = locations
+        self._today = today
         self.admin1_data = {}
         self.admin2_data = {}
 
     def generate_hapi_patch(self):
-        logger.info("Populating admin1 table")
+        logger.info("Generating admin1 patch")
+        # Query database to get locations ID
+        # Generate admin 1 rows
+        # Generate connector rows
+
         self._update_admin_table(
             desired_admin_level="1",
             parent_dict=self._locations.data,
@@ -64,7 +71,7 @@ class Admins(BaseUploader):
         admin_filter = _AdminFilter(
             source=self._libhxl_dataset,
             desired_admin_level=desired_admin_level,
-            country_codes=list(self._locations.data.keys()),
+            country_codes=list(self._locations.iso3_ident_dict.keys()),
         )
         for i, row in enumerate(admin_filter):
             code = row.get("#adm+code")
