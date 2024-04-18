@@ -8,8 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- Added national_risk_view, humanitarian_needs_view, population_group_view, 
-population_status_view 
+- Added national_risk_view, humanitarian_needs_view, population_group_view,
+population_status_view
 
 ## [0.7.2] - 2024-02-08
 
