@@ -114,7 +114,7 @@ class TestHAPIPipelines:
                     count = session.scalar(select(func.count(DBLocation.id)))
                     assert count == 25
                     count = session.scalar(select(func.count(DBAdmin1.id)))
-                    assert count == 478
+                    assert count == 479
                     count = session.scalar(select(func.count(DBAdmin2.id)))
                     assert count == 5935
                     count = session.scalar(
