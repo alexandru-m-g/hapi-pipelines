@@ -9,8 +9,8 @@ renderer:
   type: mkdocs
   output_directory: docs
   mkdocs_config:
-    site_name: HDX Data Freshness
-    theme: mkdocs
+    site_name: HAPI Pipelines
+    theme: material
     repo_url: "https://github.com/OCHA-DAP/hapi-pipelines"
   markdown:
     source_linker:
