@@ -51,7 +51,7 @@ jobs:
           mkdir database
           docker exec -t postgres-container pg_dump -U postgres -Fc hapi -f hapi_db.pg_restore
           docker cp postgres-container:/hapi_db.pg_restore database/hapi_db.pg_restore
-          docker exec -t postgres-container psql -d hapi -c "copy(select * from operational_presence_view) TO 'operational_presence.csv' (FORMAT csv, DELIMITER ',',  HEADER);"
+          docker exec -t postgres-container psql -U postgres -d hapi -c "copy(select * from operational_presence_view) TO 'operational_presence.csv' (FORMAT csv, DELIMITER ',',  HEADER);"
           docker cp postgres-container:/operational_presence.csv database/operational_presence.csv
 
       - name: Commit updated DB export
