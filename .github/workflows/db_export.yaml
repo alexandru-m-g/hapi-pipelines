@@ -17,6 +17,8 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: hapi
+        volumes:
+          - ${{ github.workspace }}/shared:/shared
         ports:
           - 5432:5432
         options: >-
@@ -31,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
@@ -46,17 +48,12 @@ jobs:
         env:
           HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
 
-      - name: Dump PostgreSQL DB
-        run: |
-          mkdir database
-          docker exec -t postgres-container pg_dump -U postgres -Fc hapi -f hapi_db.pg_restore
-          docker cp postgres-container:/hapi_db.pg_restore database/hapi_db.pg_restore
-          docker exec -t postgres-container psql -U postgres -d hapi -c "copy(select * from operational_presence_view) TO 'operational_presence.csv' (FORMAT csv, DELIMITER ',',  HEADER);"
-          docker cp postgres-container:/operational_presence.csv database/operational_presence.csv
+      - name: Dump PostgreSQL Views
+        run: docker exec -t postgres-container sh dump_views.sh
 
       - name: Commit updated DB export
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: db-export
-          folder: database
+          folder: shared
           target-folder: database
