@@ -51,7 +51,7 @@ jobs:
       - name: Dump PostgreSQL Views
         run: |
           cp dump_views.sh shared
-          docker exec -t postgres-container sh shared/dump_views.sh
+          docker exec -t postgres-container sh /shared/dump_views.sh
 
       - name: Commit updated DB export
         uses: JamesIves/github-pages-deploy-action@v4
