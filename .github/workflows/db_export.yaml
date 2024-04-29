@@ -47,14 +47,26 @@ jobs:
         run: |
           docker ps -a
 
-      - name: Run Pipeline
-        run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
-        env:
-          HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
+      # - name: Run Pipeline
+      #   run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
+      #   env:
+      #     HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
+
+      - name: Copy executable
+        run: |
+          docker cp dump_views.sh postgres:/shared/dump_views.sh
+
+      - name: Whoami
+        run: |
+          docker exec -t postgres whoami
+      
+      - name: ls
+        run: |
+          docker exec -t postgres ls -lha /shared
+
 
       - name: Dump PostgreSQL Views
         run: |
-          docker cp dump_views.sh postgres:/shared/dump_views.sh
           docker exec -t postgres sh /shared/dump_views.sh
 
       - name: Commit updated DB export
