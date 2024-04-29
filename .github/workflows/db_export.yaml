@@ -50,7 +50,7 @@ jobs:
 
       - name: Dump PostgreSQL Views
         run: |
-          docker cp dump_views.sh postgres-container:shared/dump_views.sh
+          docker cp dump_views.sh postgres-container:/shared/dump_views.sh
           docker exec -t postgres-container sh /shared/dump_views.sh
 
       - name: Commit updated DB export
