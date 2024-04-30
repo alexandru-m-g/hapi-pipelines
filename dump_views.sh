@@ -5,23 +5,23 @@ echo "Started at $now"
 
 mkdir -p database/csv
 
-tables=$(docker exec -t postgres-container psql -t -U postgres -d hapi -c \
+views=$(docker exec -t postgres-container psql -t -U postgres -d hapi -c \
   "select table_name from INFORMATION_SCHEMA.views WHERE table_schema = ANY (current_schemas(false))")
 
-for table in $tables
+for view in $views
 do
-  table=${table::-1}
-  if [[ -z "$table" ]]; then
+  view=${view::-1}
+  if [[ -z "$view" ]]; then
     continue
   fi
 
-  echo "Saving $table"
+  echo "Saving $view"
 
   docker exec -t postgres-container psql -U postgres -d hapi -c \
-    "\copy (select * from ${table}_view) TO STDOUT (FORMAT csv, DELIMITER ',',  HEADER);" \
+    "\copy (select * from ${view}) TO STDOUT (FORMAT csv, DELIMITER ',',  HEADER);" \
     | tee \
-    >(gzip > database/csv/${table}.csv.gz) \
-    >(md5sum | awk '{print $1}' > database/csv/${table}.hash) \
+    >(gzip > database/csv/${view}.csv.gz) \
+    >(md5sum | awk '{print $1}' > database/csv/${view}.hash) \
     >/dev/null
 done
 
