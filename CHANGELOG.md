@@ -4,13 +4,33 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.7.6] - 2024-04-18
+## [0.7.9] - 2024-05-03
 
 ### Added
+
 - Added hapi_updated_date fields to relevant tables
 
 ### Changed
+
 - Updated test data for humanitarian needs theme
+
+## [0.7.8] - 2024-05-01
+
+### Added
+
+- Output views
+
+## [0.7.7] - 2024-04-09
+
+### Removed
+
+- HAPI patch utility
+
+## [0.7.6] - 2024-04-09
+
+### Added
+
+- HAPI patch utility
 
 ## [0.7.5] - 2024-04-09
 

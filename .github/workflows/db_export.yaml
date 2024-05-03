@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
@@ -46,11 +46,9 @@ jobs:
         env:
           HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
 
-      - name: Dump PostgreSQL DB
+      - name: Dump PostgreSQL Views
         run: |
-          mkdir database
-          docker exec -t postgres-container pg_dump -U postgres -Fc hapi -f hapi_db.pg_restore
-          docker cp postgres-container:/hapi_db.pg_restore database/hapi_db.pg_restore
+          ./dump_views.sh
 
       - name: Commit updated DB export
         uses: JamesIves/github-pages-deploy-action@v4
