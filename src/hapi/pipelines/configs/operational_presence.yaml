@@ -139,7 +139,7 @@ operational_presence_admintwo:
 
   operational_presence_col:
     dataset: "colombia-4ws"
-    resource: "3W.xlsx"
+    resource: "COL_345W_Jan-Dec2023.xlsx"
     format: "xlsx"
     sheet: "Hoja-1"
     headers: 1
