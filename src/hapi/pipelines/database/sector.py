@@ -3,7 +3,6 @@ from typing import Dict
 
 from hapi_schema.db_sector import DBSector
 from hdx.scraper.utilities.reader import Read
-from hdx.utilities.dateparse import parse_date
 from hxl import TagPattern
 from sqlalchemy.orm import Session
 
@@ -29,13 +28,12 @@ class Sector(BaseUploader):
     def populate(self):
         logger.info("Populating sector table")
 
-        def parse_sector_values(code: str, name: str, date: str):
+        def parse_sector_values(code: str, name: str):
             self.data[name] = code
             self.data[code] = code
             sector_row = DBSector(
                 code=code,
                 name=name,
-                reference_period_start=parse_date(date),
             )
             self._session.add(sector_row)
             pattern = code.lower().replace("-", "_")
@@ -50,7 +48,6 @@ class Sector(BaseUploader):
             parse_sector_values(
                 code=row["#sector +code +acronym"],
                 name=row["#sector +name +preferred +i_en"],
-                date=row["#date +created"],
             )
 
         extra_entries = {
@@ -59,9 +56,7 @@ class Sector(BaseUploader):
             "Multi": "Multi-sector (unspecified)",
         }
         for code in extra_entries:
-            parse_sector_values(
-                code=code, name=extra_entries[code], date="2023-11-21"
-            )
+            parse_sector_values(code=code, name=extra_entries[code])
 
         self._session.commit()
 

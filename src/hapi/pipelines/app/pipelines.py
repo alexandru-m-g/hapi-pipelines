@@ -42,12 +42,15 @@ class Pipelines:
         self.session = session
         self.themes_to_run = themes_to_run
         self.locations = Locations(
-            configuration=configuration, session=session, use_live=use_live
+            configuration=configuration,
+            session=session,
+            today=today,
+            use_live=use_live,
         )
         countries = configuration["HAPI_countries"]
         libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
         self.admins = Admins(
-            configuration, session, self.locations, libhxl_dataset
+            configuration, session, self.locations, libhxl_dataset, today
         )
         self.adminone = AdminLevel(admin_level=1)
         self.admintwo = AdminLevel(admin_level=2)
@@ -72,6 +75,7 @@ class Pipelines:
         self.org = Org(
             session=session,
             datasetinfo=configuration["org"],
+            today=today,
         )
         self.org_type = OrgType(
             session=session,
@@ -109,7 +113,9 @@ class Pipelines:
         )
         self.configurable_scrapers = dict()
         self.create_configurable_scrapers()
-        self.metadata = Metadata(runner=self.runner, session=session)
+        self.metadata = Metadata(
+            runner=self.runner, session=session, today=today
+        )
 
     def create_configurable_scrapers(self):
         def _create_configurable_scrapers(
