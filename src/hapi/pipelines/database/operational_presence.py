@@ -7,7 +7,6 @@ from typing import Dict
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.location.adminlevel import AdminLevel
 from hdx.location.names import clean_name
-from hdx.utilities.dateparse import parse_date
 from hdx.utilities.dictandlist import write_list_to_csv
 from sqlalchemy.orm import Session
 
@@ -96,7 +95,7 @@ class OperationalPresence(BaseUploader):
                                 admin_code
                             )
                         if admin_level == "adminone":
-                            country_code = self._admintwo.pcode_to_iso3.get(
+                            country_code = self._adminone.pcode_to_iso3.get(
                                 admin_code
                             )
                         org_info = self._org.get_org_info(
@@ -129,29 +128,24 @@ class OperationalPresence(BaseUploader):
                             logger.error(
                                 f"Org type {org_type_name} not in table"
                             )
-                        # TODO: find out how unique orgs are. Currently checking that
-                        #  combo of acronym/name/type is unique. (More clarity will come
-                        #  from HAPI-166).
                         if (
                             org_acronym is not None
                             and org_name is not None
                             and (
                                 clean_name(org_acronym).upper(),
-                                clean_name(org_name),
-                                org_type_code,
+                                clean_name(org_name).upper(),
                             )
                             not in self._org.data
                         ):
-                            # Date is release date of HAPI v1
                             self._org.populate_single(
                                 acronym=org_acronym,
                                 org_name=org_name,
                                 org_type=org_type_code,
-                                time_period_start=parse_date("2023-11-21"),
                             )
                         sector_code = self._sector.get_sector_code(sector_orig)
                         if debug:
                             debug_row = {
+                                "location": country_code,
                                 "org_name_orig": org_name_orig,
                                 "org_acronym_orig": org_acronym_orig,
                                 "org_type_orig": org_type_orig,
@@ -168,15 +162,14 @@ class OperationalPresence(BaseUploader):
                             logger.error(f"Sector {sector_orig} not in table")
                             continue
 
-                        org_ref = self._org.data[
+                        org_acronym, org_name = self._org.data[
                             (
                                 clean_name(org_acronym).upper(),
-                                clean_name(org_name),
-                                org_type_code,
+                                clean_name(org_name).upper(),
                             )
                         ]
                         admin2_ref = self._admins.admin2_data[admin2_code]
-                        row = (resource_id, org_ref, sector_code, admin2_ref)
+                        row = (resource_id, admin2_ref, org_acronym, org_name, sector_code)
                         if row in rows:
                             number_duplicates += 1
                             continue
@@ -184,11 +177,10 @@ class OperationalPresence(BaseUploader):
                         operational_presence_row = DBOperationalPresence(
                             resource_hdx_id=resource_id,
                             admin2_ref=admin2_ref,
-                            org_ref=org_ref,
+                            org_acronym=org_acronym,
+                            org_name=org_name,
                             sector_code=sector_code,
                             reference_period_start=time_period_start,
-                            # TODO: Add to scraper (HAPI-199)
-                            source_data="not yet implemented",
                         )
                         self._session.add(operational_presence_row)
 

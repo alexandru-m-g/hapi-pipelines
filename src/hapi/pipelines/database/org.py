@@ -5,7 +5,6 @@ from hapi_schema.db_org import DBOrg
 from hdx.location.names import clean_name
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dictandlist import dict_of_sets_add
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader
@@ -41,36 +40,30 @@ class Org(BaseUploader):
             canonical_org_name = row.get("#org+name")
             if canonical_org_name:
                 self._org_map[canonical_org_name] = row
+            org_acronym = row.get("#org+acronym")
+            if org_acronym:
+                self._org_map[org_acronym] = row
 
     def populate_single(
         self,
         acronym,
         org_name,
         org_type,
-        time_period_start,
-        time_period_end=None,
     ):
         logger.info(f"Adding org {org_name}")
         org_row = DBOrg(
             acronym=acronym,
             name=org_name,
             org_type_code=org_type,
-            reference_period_start=time_period_start,
-            reference_period_end=time_period_end,
         )
         self._session.add(org_row)
         self._session.commit()
-        results = self._session.execute(
-            select(DBOrg.id, DBOrg.acronym, DBOrg.name, DBOrg.org_type_code)
-        )
-        for result in results:
-            self.data[
-                (
-                    clean_name(result[1]).upper(),
-                    clean_name(result[2]),
-                    result[3],
-                )
-            ] = result[0]
+        self.data[
+            (
+                clean_name(acronym).upper(),
+                clean_name(org_name).upper(),
+            )
+        ] = (acronym, org_name)
 
     def get_org_info(self, org_name: str, location: str) -> Dict[str, str]:
         org_name_map = {
