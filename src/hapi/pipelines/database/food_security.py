@@ -5,6 +5,7 @@ from logging import getLogger
 from typing import Dict
 
 from hapi_schema.db_food_security import DBFoodSecurity
+from hapi_schema.utils.enums import IPCPhase
 from hdx.utilities.dateparse import parse_date_range
 from sqlalchemy.orm import Session
 
@@ -49,7 +50,7 @@ class FoodSecurity(BaseUploader):
                     "4": column_names.index("population_phase4"),
                     "5": column_names.index("population_phase5"),
                     "3+": column_names.index("population_phase3+"),
-                    "all": column_names.index("population_total"),
+                    "*": column_names.index("population_total"),
                 }
                 # Loop through each pcode
                 values = admin_results["values"]
@@ -78,13 +79,13 @@ class FoodSecurity(BaseUploader):
                         )
                         # Total population required to calculate fraction in phase
                         population_total = int(
-                            values[population_in_phase_columns["all"]][
+                            values[population_in_phase_columns["*"]][
                                 admin_code
                             ][irow]
                         )
-                        for ipc_phase in self._ipc_phase.data:
+                        for ipc_phase in IPCPhase:
                             population_in_phase = values[
-                                population_in_phase_columns[ipc_phase]
+                                population_in_phase_columns[ipc_phase.value]
                             ][admin_code][irow]
                             if population_in_phase is None:
                                 population_in_phase = 0
@@ -92,8 +93,8 @@ class FoodSecurity(BaseUploader):
                             food_security_row = DBFoodSecurity(
                                 resource_hdx_id=resource_id,
                                 admin2_ref=admin2_ref,
-                                ipc_phase=ipc_phase,
-                                ipc_typee=ipc_type,
+                                ipc_phase=ipc_phase.value,
+                                ipc_type=ipc_type,
                                 reference_period_start=time_period_start,
                                 reference_period_end=time_period_end,
                                 population_in_phase=population_in_phase,

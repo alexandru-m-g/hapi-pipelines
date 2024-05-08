@@ -49,11 +49,10 @@ class Population(BaseUploader):
                     gender, age_range = _get_gender_and_age_range_hxl_mapping(
                         hxl_tag=hxl_tag
                     )
-                    if age_range is None:
-                        age_range = "*"
+                    if age_range == "*":
                         min_age, max_age = None, None
                     else:
-                        min_age, max_age = _get_age_min_and_max(age_range)
+                        min_age, max_age = _get_min_and_max_age(age_range)
                     for admin_code, value in values.items():
                         admin2_code = admins.get_admin2_code_based_on_level(
                             admin_code=admin_code, admin_level=admin_level
@@ -91,8 +90,8 @@ def _validate_gender_and_age_range_hxl_tag(hxl_tag: str) -> bool:
 
 def _get_gender_and_age_range_hxl_mapping(hxl_tag: str) -> (str, str):
     components = hxl_tag.split("+")
-    gender = None
-    age_range = None
+    gender = "*"
+    age_range = "*"
     for component in components[1:]:
         # components can only be age, gender, or the word "total"
         if component.startswith("age_"):
@@ -106,7 +105,7 @@ def _get_gender_and_age_range_hxl_mapping(hxl_tag: str) -> (str, str):
     return gender, age_range
 
 
-def _get_age_min_and_max(age_range: str) -> (int, int):
+def _get_min_and_max_age(age_range: str) -> (int, int):
     ages = age_range.split("-")
     if len(ages) == 2:
         # Format: 0-5

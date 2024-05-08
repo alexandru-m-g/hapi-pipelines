@@ -11,8 +11,11 @@ from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.food_security import FoodSecurity
+from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
+from hapi.pipelines.database.national_risk import NationalRisk
+from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
@@ -175,27 +178,27 @@ class Pipelines:
                 results=results,
             )
             population.populate()
-        #
-        # if (
-        #     not self.themes_to_run
-        #     or "operational_presence" in self.themes_to_run
-        # ):
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["operational_presence"]
-        #     )
-        #     operational_presence = OperationalPresence(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         adminone=self.adminone,
-        #         admintwo=self.admintwo,
-        #         org=self.org,
-        #         org_type=self.org_type,
-        #         sector=self.sector,
-        #         results=results,
-        #     )
-        #     operational_presence.populate()
-        #
+
+        if (
+            not self.themes_to_run
+            or "operational_presence" in self.themes_to_run
+        ):
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["operational_presence"]
+            )
+            operational_presence = OperationalPresence(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                adminone=self.adminone,
+                admintwo=self.admintwo,
+                org=self.org,
+                org_type=self.org_type,
+                sector=self.sector,
+                results=results,
+            )
+            operational_presence.populate()
+
         if not self.themes_to_run or "food_security" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["food_security"]
@@ -208,32 +211,32 @@ class Pipelines:
             )
             food_security.populate()
 
-        # if (
-        #     not self.themes_to_run
-        #     or "humanitarian_needs" in self.themes_to_run
-        # ):
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["humanitarian_needs"]
-        #     )
-        #
-        #     humanitarian_needs = HumanitarianNeeds(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         sector=self.sector,
-        #         results=results,
-        #     )
-        #     humanitarian_needs.populate()
-        #
-        # if not self.themes_to_run or "national_risk" in self.themes_to_run:
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["national_risk"]
-        #     )
-        #
-        #     national_risk = NationalRisk(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         results=results,
-        #     )
-        #     national_risk.populate()
+        if (
+            not self.themes_to_run
+            or "humanitarian_needs" in self.themes_to_run
+        ):
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["humanitarian_needs"]
+            )
+
+            humanitarian_needs = HumanitarianNeeds(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                sector=self.sector,
+                results=results,
+            )
+            humanitarian_needs.populate()
+
+        if not self.themes_to_run or "national_risk" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["national_risk"]
+            )
+
+            national_risk = NationalRisk(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                results=results,
+            )
+            national_risk.populate()
