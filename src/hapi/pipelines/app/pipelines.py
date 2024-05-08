@@ -236,7 +236,7 @@ class Pipelines:
             national_risk = NationalRisk(
                 session=self.session,
                 metadata=self.metadata,
-                admins=self.admins,
+                locations=self.locations,
                 results=results,
             )
             national_risk.populate()
