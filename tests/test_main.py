@@ -5,8 +5,12 @@ import pytest
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_dataset import DBDataset
+from hapi_schema.db_ipc_phase import DBIpcPhase
+from hapi_schema.db_ipc_type import DBIpcType
 from hapi_schema.db_location import DBLocation
+from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_resource import DBResource
+from hapi_schema.db_sector import DBSector
 from hapi_schema.views import prepare_hapi_views
 from hdx.api.configuration import Configuration
 from hdx.database import Database
@@ -111,14 +115,15 @@ class TestHAPIPipelines:
                     # TODO
                     # count = session.scalar(select(func.count(DBOrg.id)))
                     # assert count == 497
-                    # count = session.scalar(select(func.count(DBOrgType.code)))
-                    # assert count == 18
-                    # count = session.scalar(select(func.count(DBSector.code)))
-                    # assert count == 18
-                    # count = session.scalar(select(func.count(DBIpcPhase.code)))
-                    # assert count == 7
-                    # count = session.scalar(select(func.count(DBIpcType.code)))
-                    # assert count == 3
+                    count = session.scalar(select(func.count(DBOrgType.code)))
+                    assert count == 18
+                    count = session.scalar(select(func.count(DBSector.code)))
+                    assert count == 18
+                    count = session.scalar(select(func.count(DBIpcPhase.code)))
+                    assert count == 7
+                    count = session.scalar(select(func.count(DBIpcType.code)))
+                    assert count == 3
+                    # TODO
                     # count = session.scalar(select(func.count(DBPopulation.id)))
                     # assert count == 54123
                     # count = session.scalar(

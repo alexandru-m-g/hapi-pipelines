@@ -169,13 +169,13 @@ class Pipelines:
         self.locations.populate()
         self.admins.populate()
         self.metadata.populate()
-        # TODO
-        # self.org.populate()
-        # self.org_type.populate()
-        # self.sector.populate()
-        # self.ipc_phase.populate()
-        # self.ipc_type.populate()
+        self.org.populate()
+        self.org_type.populate()
+        self.sector.populate()
+        self.ipc_phase.populate()
+        self.ipc_type.populate()
         #
+        # TODO
         # if not self.themes_to_run or "population" in self.themes_to_run:
         #     results = self.runner.get_hapi_results(
         #         self.configurable_scrapers["population"]
