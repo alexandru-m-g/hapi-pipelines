@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Dict, Optional
 
+from hdx.api.configuration import Configuration
 from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.runner import Runner
 from hdx.scraper.utilities.sources import Sources
@@ -30,7 +31,7 @@ from hapi.pipelines.database.sector import Sector
 class Pipelines:
     def __init__(
         self,
-        configuration: Dict,
+        configuration: Configuration,
         session: Session,
         today: datetime,
         themes_to_run: Optional[Dict] = None,

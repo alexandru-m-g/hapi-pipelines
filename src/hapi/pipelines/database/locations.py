@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Dict
 
 from hapi_schema.db_location import DBLocation
+from hdx.api.configuration import Configuration
 from hdx.location.country import Country
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
@@ -12,7 +12,7 @@ from .base_uploader import BaseUploader
 class Locations(BaseUploader):
     def __init__(
         self,
-        configuration: Dict,
+        configuration: Configuration,
         session: Session,
         today: datetime,
         use_live: bool = True,

@@ -2,13 +2,14 @@
 
 import argparse
 import logging
-from os import getenv, remove
-from os.path import exists
+from os import getenv
 from typing import Dict, Optional
 
 from hdx.api.configuration import Configuration
 from hdx.database import Database
-from hdx.database.dburi import get_params_from_connection_uri
+from hdx.database.dburi import (
+    get_params_from_connection_uri,
+)
 from hdx.facades.keyword_arguments import facade
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import now_utc
@@ -23,6 +24,7 @@ from hapi.pipelines.app import (
     build_db_views,  # noqa: F401
     load_yamls,
 )
+from hapi.pipelines.app.build_db_views import prepare_hapi_views
 from hapi.pipelines.app.pipelines import Pipelines
 from hapi.pipelines.utilities.process_config_defaults import add_defaults
 
@@ -98,24 +100,22 @@ def main(
     logger.info(f"##### {lookup} version {__version__} ####")
     if db_params:
         params = args_to_dict(db_params)
-    elif db_uri:
-        params = get_params_from_connection_uri(db_uri)
     else:
-        filename = "hapi.db"
-        if exists(filename):
-            remove(filename)
-        params = {"dialect": "sqlite", "database": filename}
+        if not db_uri:
+            db_uri = (
+                "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
+            )
+        params = get_params_from_connection_uri(db_uri)
+    if "recreate_schema" not in params:
+        params["recreate_schema"] = True
+    if "prepare_fn" not in params:
+        params["prepare_fn"] = prepare_hapi_views
     logger.info(f"> Database parameters: {params}")
     configuration = Configuration.read()
     with ErrorsOnExit() as errors_on_exit:
         with temp_dir() as temp_folder:
             with Database(**params) as database:
                 session = database.get_session()
-                testsession = None
-                if save:
-                    testsession = Database.get_session(
-                        "sqlite:///test_serialize.db"
-                    )
                 today = now_utc()
                 Read.create_readers(
                     temp_folder,
@@ -138,8 +138,6 @@ def main(
                 )
                 pipelines.run()
                 pipelines.output()
-                if testsession:
-                    testsession.close()
     logger.info("HAPI pipelines completed!")
 
 

@@ -7,6 +7,7 @@ import hxl
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_location import DBLocation
+from hdx.api.configuration import Configuration
 from hdx.utilities.dateparse import parse_date
 from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
@@ -24,7 +25,7 @@ _ADMIN_LEVELS_LITERAL = Literal["1", "2"]
 class Admins(BaseUploader):
     def __init__(
         self,
-        configuration: Dict,
+        configuration: Configuration,
         session: Session,
         locations: Locations,
         libhxl_dataset: hxl.Dataset,

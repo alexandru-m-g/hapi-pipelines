@@ -1,5 +1,4 @@
 import logging
-from os import remove
 from os.path import join
 
 import pytest
@@ -33,6 +32,7 @@ from sqlalchemy import func, select
 
 from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.__main__ import add_defaults
+from hapi.pipelines.app.build_db_views import prepare_hapi_views
 from hapi.pipelines.app.pipelines import Pipelines
 
 logger = logging.getLogger(__name__)
@@ -70,13 +70,13 @@ class TestHAPIPipelines:
                 delete_on_success=True,
                 delete_on_failure=False,
             ) as temp_folder:
-                dbpath = join(temp_folder, "test_hapi.db")
-                try:
-                    remove(dbpath)
-                except OSError:
-                    pass
-                logger.info(f"Creating database {dbpath}")
-                with Database(database=dbpath, dialect="sqlite") as database:
+                db_uri = "postgresql+psycopg://postgres:postgres@localhost:5432/hapitest"
+                logger.info(f"Connecting to database {db_uri}")
+                with Database(
+                    db_uri=db_uri,
+                    recreate_schema=True,
+                    prepare_fn=prepare_hapi_views,
+                ) as database:
                     session = database.get_session()
                     today = parse_date("2023-10-11")
                     Read.create_readers(

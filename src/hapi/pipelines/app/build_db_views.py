@@ -21,29 +21,31 @@ from hapi_schema.db_resource import view_params_resource
 from hapi_schema.db_sector import view_params_sector
 from hdx.database import Database
 
-Database.prepare_views(
-    view_params_list=[
-        view_params.__dict__
-        for view_params in [
-            view_params_admin1,
-            view_params_admin2,
-            view_params_age_range,
-            view_params_dataset,
-            view_params_food_security,
-            view_params_gender,
-            view_params_humanitarian_needs,
-            view_params_ipc_phase,
-            view_params_ipc_type,
-            view_params_location,
-            view_params_national_risk,
-            view_params_operational_presence,
-            view_params_org,
-            view_params_org_type,
-            view_params_population,
-            view_params_population_group,
-            view_params_population_status,
-            view_params_resource,
-            view_params_sector,
+
+def prepare_hapi_views():
+    Database.prepare_views(
+        view_params_list=[
+            view_params.__dict__
+            for view_params in [
+                view_params_admin1,
+                view_params_admin2,
+                view_params_age_range,
+                view_params_dataset,
+                view_params_food_security,
+                view_params_gender,
+                view_params_humanitarian_needs,
+                view_params_ipc_phase,
+                view_params_ipc_type,
+                view_params_location,
+                view_params_national_risk,
+                view_params_operational_presence,
+                view_params_org,
+                view_params_org_type,
+                view_params_population,
+                view_params_population_group,
+                view_params_population_status,
+                view_params_resource,
+                view_params_sector,
+            ]
         ]
-    ]
-)
+    )
