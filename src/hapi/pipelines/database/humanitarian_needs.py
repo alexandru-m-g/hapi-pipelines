@@ -8,12 +8,8 @@ from hxl.model import Column, TagPattern
 from sqlalchemy.orm import Session
 
 from . import admins
-from .age_range import AgeRange
 from .base_uploader import BaseUploader
-from .gender import Gender
 from .metadata import Metadata
-from .population_group import PopulationGroup
-from .population_status import PopulationStatus
 from .sector import Sector
 
 logger = getLogger(__name__)
@@ -25,25 +21,13 @@ class HumanitarianNeeds(BaseUploader):
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
-        population_status: PopulationStatus,
-        population_group: PopulationGroup,
         sector: Sector,
-        gender: Gender,
-        age_range: AgeRange,
         results: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
-        self.population_status_pattern_to_code = (
-            population_status.pattern_to_code
-        )
-        self.population_group_pattern_to_code = (
-            population_group.pattern_to_code
-        )
         self.sector_pattern_to_code = sector.pattern_to_code
-        self.gender_pattern_to_code = gender.pattern_to_code
-        self.age_range_pattern_to_code = age_range.pattern_to_code
         self.disabled_pattern = TagPattern.parse("#*+disabled")
         self._results = results
 

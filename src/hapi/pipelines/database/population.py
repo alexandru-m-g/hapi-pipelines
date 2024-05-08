@@ -8,9 +8,7 @@ from hapi_schema.db_population import DBPopulation
 from sqlalchemy.orm import Session
 
 from . import admins
-from .age_range import AgeRange
 from .base_uploader import BaseUploader
-from .gender import Gender
 from .metadata import Metadata
 
 logger = getLogger(__name__)
@@ -26,15 +24,11 @@ class Population(BaseUploader):
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
-        gender: Gender,
-        age_range: AgeRange,
         results: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
-        self._gender = gender
-        self._age_range = age_range
         self._results = results
 
     def populate(self):
