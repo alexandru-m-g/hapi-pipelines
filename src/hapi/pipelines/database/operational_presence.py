@@ -169,7 +169,13 @@ class OperationalPresence(BaseUploader):
                             )
                         ]
                         admin2_ref = self._admins.admin2_data[admin2_code]
-                        row = (resource_id, admin2_ref, org_acronym, org_name, sector_code)
+                        row = (
+                            resource_id,
+                            admin2_ref,
+                            org_acronym,
+                            org_name,
+                            sector_code,
+                        )
                         if row in rows:
                             number_duplicates += 1
                             continue

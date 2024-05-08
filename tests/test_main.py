@@ -5,8 +5,6 @@ import pytest
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_dataset import DBDataset
-from hapi_schema.db_ipc_phase import DBIpcPhase
-from hapi_schema.db_ipc_type import DBIpcType
 from hapi_schema.db_location import DBLocation
 from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_resource import DBResource
@@ -119,10 +117,6 @@ class TestHAPIPipelines:
                     assert count == 18
                     count = session.scalar(select(func.count(DBSector.code)))
                     assert count == 18
-                    count = session.scalar(select(func.count(DBIpcPhase.code)))
-                    assert count == 7
-                    count = session.scalar(select(func.count(DBIpcType.code)))
-                    assert count == 3
                     # TODO
                     # count = session.scalar(select(func.count(DBPopulation.id)))
                     # assert count == 54123
