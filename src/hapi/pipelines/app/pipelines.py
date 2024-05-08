@@ -10,8 +10,6 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
-from hapi.pipelines.database.ipc_phase import IpcPhase
-from hapi.pipelines.database.ipc_type import IpcType
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
 from hapi.pipelines.database.org import Org
@@ -36,13 +34,12 @@ class Pipelines:
         self.locations = Locations(
             configuration=configuration,
             session=session,
-            today=today,
             use_live=use_live,
         )
         countries = configuration["HAPI_countries"]
         libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
         self.admins = Admins(
-            configuration, session, self.locations, libhxl_dataset, today
+            configuration, session, self.locations, libhxl_dataset
         )
         self.adminone = AdminLevel(admin_level=1)
         self.admintwo = AdminLevel(admin_level=2)
@@ -55,7 +52,6 @@ class Pipelines:
         self.org = Org(
             session=session,
             datasetinfo=configuration["org"],
-            today=today,
         )
         self.org_type = OrgType(
             session=session,
@@ -67,20 +63,11 @@ class Pipelines:
             datasetinfo=configuration["sector"],
             sector_map=configuration["sector_map"],
         )
-        self.ipc_phase = IpcPhase(
-            session=session,
-            ipc_phase_names=configuration["ipc_phase_names"],
-            ipc_phase_descriptions=configuration["ipc_phase_descriptions"],
-        )
-        self.ipc_type = IpcType(
-            session=session,
-            ipc_type_descriptions=configuration["ipc_type_descriptions"],
-        )
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
             countries,
-            today,
+            today=today,
             errors_on_exit=errors_on_exit,
             scrapers_to_run=scrapers_to_run,
         )
@@ -172,8 +159,6 @@ class Pipelines:
         self.org.populate()
         self.org_type.populate()
         self.sector.populate()
-        self.ipc_phase.populate()
-        self.ipc_type.populate()
         #
         # TODO
         # if not self.themes_to_run or "population" in self.themes_to_run:
