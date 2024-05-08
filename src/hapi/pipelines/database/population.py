@@ -61,8 +61,8 @@ class Population(BaseUploader):
                         population_row = DBPopulation(
                             resource_hdx_id=resource_id,
                             admin2_ref=self._admins.admin2_data[admin2_code],
-                            gender_code=gender,
-                            age_range_code=age_range,
+                            gender=gender,
+                            age_range=age_range,
                             min_age=min_age,
                             max_age=max_age,
                             population=int(value),

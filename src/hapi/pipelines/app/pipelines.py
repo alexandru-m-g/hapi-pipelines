@@ -10,10 +10,12 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
+from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
+from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.sector import Sector
 
 
@@ -161,18 +163,18 @@ class Pipelines:
         self.sector.populate()
         #
         # TODO
-        # if not self.themes_to_run or "population" in self.themes_to_run:
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["population"]
-        #     )
-        #
-        #     population = Population(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         results=results,
-        #     )
-        #     population.populate()
+        if not self.themes_to_run or "population" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["population"]
+            )
+
+            population = Population(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                results=results,
+            )
+            population.populate()
         #
         # if (
         #     not self.themes_to_run
@@ -194,20 +196,18 @@ class Pipelines:
         #     )
         #     operational_presence.populate()
         #
-        # if not self.themes_to_run or "food_security" in self.themes_to_run:
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["food_security"]
-        #     )
-        #     food_security = FoodSecurity(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         ipc_phase=self.ipc_phase,
-        #         ipc_type=self.ipc_type,
-        #         results=results,
-        #     )
-        #     food_security.populate()
-        #
+        if not self.themes_to_run or "food_security" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["food_security"]
+            )
+            food_security = FoodSecurity(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                results=results,
+            )
+            food_security.populate()
+
         # if (
         #     not self.themes_to_run
         #     or "humanitarian_needs" in self.themes_to_run

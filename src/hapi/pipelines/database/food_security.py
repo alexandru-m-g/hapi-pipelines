@@ -10,8 +10,6 @@ from sqlalchemy.orm import Session
 
 from . import admins
 from .base_uploader import BaseUploader
-from .ipc_phase import IpcPhase
-from .ipc_type import IpcType
 from .metadata import Metadata
 
 logger = getLogger(__name__)
@@ -23,15 +21,11 @@ class FoodSecurity(BaseUploader):
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
-        ipc_phase: IpcPhase,
-        ipc_type: IpcType,
         results: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
-        self._ipc_phase = ipc_phase
-        self._ipc_type = ipc_type
         self._results = results
 
     def populate(self):
@@ -66,7 +60,7 @@ class FoodSecurity(BaseUploader):
                     admin2_ref = self._admins.admin2_data[admin2_code]
                     # Loop through all entries in each pcode
                     for irow in range(len(values[0][admin_code])):
-                        ipc_type_code = _get_ipc_type_code_from_data(
+                        ipc_type = _get_ipc_type_code_from_data(
                             ipc_type_from_data=values[ipc_type_column][
                                 admin_code
                             ][irow]
@@ -88,9 +82,9 @@ class FoodSecurity(BaseUploader):
                                 admin_code
                             ][irow]
                         )
-                        for ipc_phase_code in self._ipc_phase.data:
+                        for ipc_phase in self._ipc_phase.data:
                             population_in_phase = values[
-                                population_in_phase_columns[ipc_phase_code]
+                                population_in_phase_columns[ipc_phase]
                             ][admin_code][irow]
                             if population_in_phase is None:
                                 population_in_phase = 0
@@ -98,8 +92,8 @@ class FoodSecurity(BaseUploader):
                             food_security_row = DBFoodSecurity(
                                 resource_hdx_id=resource_id,
                                 admin2_ref=admin2_ref,
-                                ipc_phase_code=ipc_phase_code,
-                                ipc_type_code=ipc_type_code,
+                                ipc_phase=ipc_phase,
+                                ipc_typee=ipc_type,
                                 reference_period_start=time_period_start,
                                 reference_period_end=time_period_end,
                                 population_in_phase=population_in_phase,
@@ -108,8 +102,6 @@ class FoodSecurity(BaseUploader):
                                     if population_in_phase
                                     else 0.0
                                 ),
-                                # TODO: For v2+, add to scraper (HAPI-199)
-                                source_data="not yet implemented",
                             )
                             self._session.add(food_security_row)
         self._session.commit()
