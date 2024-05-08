@@ -5,6 +5,7 @@ import logging
 from os import getenv
 from typing import Dict, Optional
 
+from hapi_schema.views import prepare_hapi_views
 from hdx.api.configuration import Configuration
 from hdx.database import Database
 from hdx.database.dburi import (
@@ -23,8 +24,6 @@ from hapi.pipelines._version import __version__
 from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.pipelines import Pipelines
 from hapi.pipelines.utilities.process_config_defaults import add_defaults
-
-from hapi_schema.views import prepare_hapi_views
 
 setup_logging()
 logger = logging.getLogger(__name__)

@@ -5,18 +5,8 @@ import pytest
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_dataset import DBDataset
-from hapi_schema.db_food_security import DBFoodSecurity
-from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
-from hapi_schema.db_ipc_phase import DBIpcPhase
-from hapi_schema.db_ipc_type import DBIpcType
 from hapi_schema.db_location import DBLocation
-from hapi_schema.db_national_risk import DBNationalRisk
-from hapi_schema.db_operational_presence import DBOperationalPresence
-from hapi_schema.db_org import DBOrg
-from hapi_schema.db_org_type import DBOrgType
-from hapi_schema.db_population import DBPopulation
 from hapi_schema.db_resource import DBResource
-from hapi_schema.db_sector import DBSector
 from hapi_schema.views import prepare_hapi_views
 from hdx.api.configuration import Configuration
 from hdx.database import Database
@@ -119,14 +109,6 @@ class TestHAPIPipelines:
                     count = session.scalar(select(func.count(DBAdmin2.id)))
                     assert count == 5936
                     # TODO
-                    # count = session.scalar(
-                    #     select(func.count(DBPopulationStatus.code))
-                    # )
-                    # assert count == 5
-                    # count = session.scalar(
-                    #     select(func.count(DBPopulationGroup.code))
-                    # )
-                    # assert count == 4
                     # count = session.scalar(select(func.count(DBOrg.id)))
                     # assert count == 497
                     # count = session.scalar(select(func.count(DBOrgType.code)))
@@ -137,10 +119,6 @@ class TestHAPIPipelines:
                     # assert count == 7
                     # count = session.scalar(select(func.count(DBIpcType.code)))
                     # assert count == 3
-                    # count = session.scalar(select(func.count(DBGender.code)))
-                    # assert count == 3
-                    # count = session.scalar(select(func.count(DBAgeRange.code)))
-                    # assert count == 29
                     # count = session.scalar(select(func.count(DBPopulation.id)))
                     # assert count == 54123
                     # count = session.scalar(

@@ -10,17 +10,12 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
-from hapi.pipelines.database.food_security import FoodSecurity
-from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
 from hapi.pipelines.database.ipc_phase import IpcPhase
 from hapi.pipelines.database.ipc_type import IpcType
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
-from hapi.pipelines.database.national_risk import NationalRisk
-from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
-from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.sector import Sector
 
 
