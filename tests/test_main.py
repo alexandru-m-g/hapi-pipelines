@@ -76,7 +76,8 @@ class TestHAPIPipelines:
                 except OSError:
                     pass
                 logger.info(f"Creating database {dbpath}")
-                with Database(database=dbpath, dialect="sqlite") as session:
+                with Database(database=dbpath, dialect="sqlite") as database:
+                    session = database.get_session()
                     today = parse_date("2023-10-11")
                     Read.create_readers(
                         temp_folder,

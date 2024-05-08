@@ -109,7 +109,8 @@ def main(
     configuration = Configuration.read()
     with ErrorsOnExit() as errors_on_exit:
         with temp_dir() as temp_folder:
-            with Database(**params) as session:
+            with Database(**params) as database:
+                session = database.get_session()
                 testsession = None
                 if save:
                     testsession = Database.get_session(

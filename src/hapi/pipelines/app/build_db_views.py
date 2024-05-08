@@ -19,9 +19,9 @@ from hapi_schema.db_population_group import view_params_population_group
 from hapi_schema.db_population_status import view_params_population_status
 from hapi_schema.db_resource import view_params_resource
 from hapi_schema.db_sector import view_params_sector
-from hdx.database.views import build_views
+from hdx.database import Database
 
-build_views(
+Database.prepare_views(
     view_params_list=[
         view_params.__dict__
         for view_params in [
