@@ -28,7 +28,6 @@ class HumanitarianNeeds(BaseUploader):
         self._metadata = metadata
         self._admins = admins
         self.sector_pattern_to_code = sector.pattern_to_code
-        self.disabled_pattern = TagPattern.parse("#*+disabled")
         self._results = results
 
     def populate(self):
@@ -54,16 +53,16 @@ class HumanitarianNeeds(BaseUploader):
                     sector_code = match_column(
                         column, self.sector_pattern_to_code
                     )
-                    if sector_code:
-                        sector_code = sector_code.upper()
+                    # TODO: either make sector_code nullable, create a value for Unspecified, or don't pull in this data
+                    if not sector_code:
+                        continue
+                    sector_code = sector_code.upper()
                     gender = _get_gender(column)
                     # "#*+age0_4" "#*+age80plus"
                     age_range = _get_age_range(hxl_tag)
                     min_age, max_age = _get_min_and_max_age(age_range)
                     # "#*+disabled"
-                    disabled_marker = self.disabled_pattern.match(column)
-                    if not disabled_marker:
-                        disabled_marker = None  # no disabled attribute
+                    disabled_marker = _get_disabled_marker(column)
                     # TODO: Will there be columns for able bodied?
                     for admin_code, value in values.items():
                         try:
@@ -147,6 +146,15 @@ def _get_age_range(hxl_tag: str) -> str:
     return age_range
 
 
+def _get_disabled_marker(col: Column) -> str:
+    disabled_marker = TagPattern.parse("#*+disabled").match(col)
+    if disabled_marker:
+        return "y"
+    if not disabled_marker:
+        return "*"
+
+
+# TODO: this is duplicate code, either move to shared location or overwrite with new HNO pipeline
 def _get_min_and_max_age(age_range: str) -> (int | None, int | None):
     if age_range == "*":
         return None, None
