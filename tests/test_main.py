@@ -5,6 +5,7 @@ import pytest
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_dataset import DBDataset
+from hapi_schema.db_food_security import DBFoodSecurity
 from hapi_schema.db_location import DBLocation
 from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_resource import DBResource
@@ -117,17 +118,17 @@ class TestHAPIPipelines:
                     assert count == 18
                     count = session.scalar(select(func.count(DBSector.code)))
                     assert count == 18
+                    count = session.scalar(select(func.count(DBPopulation.resource_hdx_id)))
+                    assert count == 54123
                     # TODO
-                    # count = session.scalar(select(func.count(DBPopulation.id)))
-                    # assert count == 54123
                     # count = session.scalar(
                     #     select(func.count(DBOperationalPresence.id))
                     # )
                     # assert count == 12215
-                    # count = session.scalar(
-                    #     select(func.count(DBFoodSecurity.id))
-                    # )
-                    # assert count == 137144
+                    count = session.scalar(
+                        select(func.count(DBFoodSecurity.resource_hdx_id))
+                    )
+                    assert count == 100961
                     # count = session.scalar(
                     #     select(func.count(DBHumanitarianNeeds.id))
                     # )

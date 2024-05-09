@@ -7,6 +7,7 @@ from typing import Dict
 from hapi_schema.db_food_security import DBFoodSecurity
 from hapi_schema.utils.enums import IPCPhase
 from hdx.utilities.dateparse import parse_date_range
+from hdx.utilities.dictandlist import dict_of_lists_add
 from sqlalchemy.orm import Session
 
 from . import admins
@@ -60,6 +61,8 @@ class FoodSecurity(BaseUploader):
                     )
                     admin2_ref = self._admins.admin2_data[admin2_code]
                     # Loop through all entries in each pcode
+                    population_totals = {}
+                    population_in_phases = {}
                     for irow in range(len(values[0][admin_code])):
                         ipc_type = _get_ipc_type_code_from_data(
                             ipc_type_from_data=values[ipc_type_column][
@@ -83,6 +86,15 @@ class FoodSecurity(BaseUploader):
                                 admin_code
                             ][irow]
                         )
+                        dict_of_lists_add(
+                            population_totals,
+                            (
+                                ipc_type,
+                                time_period_start,
+                                time_period_end,
+                            ),
+                            population_total,
+                        )
                         for ipc_phase in IPCPhase:
                             population_in_phase = values[
                                 population_in_phase_columns[ipc_phase.value]
@@ -90,21 +102,36 @@ class FoodSecurity(BaseUploader):
                             if population_in_phase is None:
                                 population_in_phase = 0
                             population_in_phase = int(population_in_phase)
-                            food_security_row = DBFoodSecurity(
-                                resource_hdx_id=resource_id,
-                                admin2_ref=admin2_ref,
-                                ipc_phase=ipc_phase.value,
-                                ipc_type=ipc_type,
-                                reference_period_start=time_period_start,
-                                reference_period_end=time_period_end,
-                                population_in_phase=population_in_phase,
-                                population_fraction_in_phase=(
-                                    population_in_phase / population_total
-                                    if population_in_phase
-                                    else 0.0
+                            dict_of_lists_add(
+                                population_in_phases,
+                                (
+                                    ipc_phase.value,
+                                    ipc_type,
+                                    time_period_start,
+                                    time_period_end,
                                 ),
+                                population_in_phase,
                             )
-                            self._session.add(food_security_row)
+                    for key in population_in_phases:
+                        population_total = sum(
+                            filter(None, population_totals[key[1:]])
+                        )
+                        population_in_phase = sum(population_in_phases[key])
+                        food_security_row = DBFoodSecurity(
+                            resource_hdx_id=resource_id,
+                            admin2_ref=admin2_ref,
+                            ipc_phase=key[0],
+                            ipc_type=key[1],
+                            reference_period_start=key[2],
+                            reference_period_end=key[3],
+                            population_in_phase=population_in_phase,
+                            population_fraction_in_phase=(
+                                population_in_phase / population_total
+                                if population_in_phase > 0
+                                else 0.0
+                            ),
+                        )
+                        self._session.add(food_security_row)
         self._session.commit()
 
 
