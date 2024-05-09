@@ -101,10 +101,8 @@ class OperationalPresence(BaseUploader):
                         org_info = self._org.get_org_info(
                             org_name_orig, location=country_code
                         )
-                        self._org.add_org_to_lookup(
-                            org_name_orig, org_info.get("#org+name")
-                        )
                         org_name = org_info.get("#org+name")
+                        self._org.add_org_to_lookup(org_name_orig, org_name)
                         org_acronym = org_info.get(
                             "#org+acronym",
                             values[org_acronym_index][admin_code][i],
@@ -129,19 +127,20 @@ class OperationalPresence(BaseUploader):
                                 f"Org type {org_type_name} not in table"
                             )
                         if (
-                            org_acronym is not None
-                            and org_name is not None
-                            and (
-                                clean_name(org_acronym).upper(),
-                                clean_name(org_name).upper(),
-                            )
-                            not in self._org.data
-                        ):
+                            clean_name(org_acronym).upper(),
+                            clean_name(org_name).upper(),
+                        ) not in self._org.data:
                             self._org.populate_single(
                                 acronym=org_acronym,
                                 org_name=org_name,
                                 org_type=org_type_code,
                             )
+                        org_acronym, org_name = self._org.data[
+                            (
+                                clean_name(org_acronym).upper(),
+                                clean_name(org_name).upper(),
+                            )
+                        ]
                         sector_code = self._sector.get_sector_code(sector_orig)
                         if debug:
                             debug_row = {
@@ -162,12 +161,6 @@ class OperationalPresence(BaseUploader):
                             logger.error(f"Sector {sector_orig} not in table")
                             continue
 
-                        org_acronym, org_name = self._org.data[
-                            (
-                                clean_name(org_acronym).upper(),
-                                clean_name(org_name).upper(),
-                            )
-                        ]
                         admin2_ref = self._admins.admin2_data[admin2_code]
                         row = (
                             resource_id,
