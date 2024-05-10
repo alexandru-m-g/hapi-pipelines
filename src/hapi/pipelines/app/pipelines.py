@@ -164,8 +164,7 @@ class Pipelines:
         self.org.populate()
         self.org_type.populate()
         self.sector.populate()
-        #
-        # TODO
+
         if not self.themes_to_run or "population" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["population"]

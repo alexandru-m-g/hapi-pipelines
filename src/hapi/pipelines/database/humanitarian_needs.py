@@ -53,9 +53,8 @@ class HumanitarianNeeds(BaseUploader):
                     sector_code = match_column(
                         column, self.sector_pattern_to_code
                     )
-                    # TODO: either make sector_code nullable, create a value for Unspecified, or don't pull in this data
                     if not sector_code:
-                        continue
+                        sector_code = "*"
                     sector_code = sector_code.upper()
                     gender = _get_gender(column)
                     # "#*+age0_4" "#*+age80plus"
