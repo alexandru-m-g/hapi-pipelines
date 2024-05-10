@@ -9,6 +9,8 @@ from hapi_schema.db_food_security import DBFoodSecurity
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 from hapi_schema.db_location import DBLocation
 from hapi_schema.db_national_risk import DBNationalRisk
+from hapi_schema.db_operational_presence import DBOperationalPresence
+from hapi_schema.db_org import DBOrg
 from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_population import DBPopulation
 from hapi_schema.db_resource import DBResource
@@ -82,7 +84,7 @@ class TestHAPIPipelines:
                     logger.info("Initialising pipelines")
                     themes_to_run = {
                         "population": ("AFG", "BFA", "MLI", "NGA", "TCD"),
-                        # "operational_presence": ("AFG", "MLI", "NGA"),
+                        "operational_presence": ("AFG", "MLI", "NGA"),
                         "food_security": None,
                         "humanitarian_needs": None,
                         "national_risk": None,
@@ -103,20 +105,19 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBResource.hdx_id))
                     )
-                    assert count == 20
+                    assert count == 23
                     count = session.scalar(
                         select(func.count(DBDataset.hdx_id))
                     )
-                    assert count == 10
+                    assert count == 13
                     count = session.scalar(select(func.count(DBLocation.id)))
                     assert count == 25
                     count = session.scalar(select(func.count(DBAdmin1.id)))
                     assert count == 479
                     count = session.scalar(select(func.count(DBAdmin2.id)))
                     assert count == 5936
-                    # TODO
-                    # count = session.scalar(select(func.count(DBOrg.id)))
-                    # assert count == 497
+                    count = session.scalar(select(func.count(DBOrg.acronym)))
+                    assert count == 484
                     count = session.scalar(select(func.count(DBOrgType.code)))
                     assert count == 18
                     count = session.scalar(select(func.count(DBSector.code)))
@@ -125,11 +126,12 @@ class TestHAPIPipelines:
                         select(func.count(DBPopulation.resource_hdx_id))
                     )
                     assert count == 54123
-                    # TODO
-                    # count = session.scalar(
-                    #     select(func.count(DBOperationalPresence.id))
-                    # )
-                    # assert count == 12215
+                    count = session.scalar(
+                        select(
+                            func.count(DBOperationalPresence.resource_hdx_id)
+                        )
+                    )
+                    assert count == 12215
                     count = session.scalar(
                         select(func.count(DBFoodSecurity.resource_hdx_id))
                     )
@@ -143,14 +145,13 @@ class TestHAPIPipelines:
                     )
                     assert count == 25
 
-                    # TODO
-                    # org_mapping = pipelines.org._org_lookup
-                    # assert org_mapping["Action against Hunger"] == {
-                    #     "Action contre la Faim",
-                    #     "Action Against Hunger",
-                    # }
-                    # assert org_mapping["United Nations Children's Fund"] == {
-                    #     "Fonds des Nations Unies pour l'Enfance",
-                    #     "United Nations Children's Fund",
-                    #     "United Nations Children's Emergency Fund",
-                    # }
+                    org_mapping = pipelines.org._org_lookup
+                    assert org_mapping["Action against Hunger"] == {
+                        "Action contre la Faim",
+                        "Action Against Hunger",
+                    }
+                    assert org_mapping["United Nations Children's Fund"] == {
+                        "Fonds des Nations Unies pour l'Enfance",
+                        "United Nations Children's Fund",
+                        "United Nations Children's Emergency Fund",
+                    }

@@ -182,6 +182,8 @@ class OperationalPresence(BaseUploader):
                             reference_period_start=time_period_start,
                         )
                         self._session.add(operational_presence_row)
+                        # TODO: move this commit out of the loop once you figure out why it needs to be here
+                        self._session.commit()
 
         if debug:
             write_list_to_csv(
@@ -189,7 +191,6 @@ class OperationalPresence(BaseUploader):
                 debug_rows,
             )
             return
-        self._session.commit()
         logger.info(
             f"There were {number_duplicates} duplicate operational presence rows!"
         )
