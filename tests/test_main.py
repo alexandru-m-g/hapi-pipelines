@@ -66,7 +66,7 @@ class TestHAPIPipelines:
                 delete_on_success=True,
                 delete_on_failure=False,
             ) as temp_folder:
-                db_uri = "postgresql+psycopg://postgres:postgres@localhost:5433/hapi"
+                db_uri = "postgresql+psycopg://postgres:postgres@localhost:5432/hapitest"
                 logger.info(f"Connecting to database {db_uri}")
                 with Database(
                     db_uri=db_uri,
