@@ -1,4 +1,6 @@
-from hapi.pipelines.database.population import _validate_hxl_tag
+from hapi.pipelines.database.population import (
+    _validate_gender_and_age_range_hxl_tag,
+)
 
 
 def test_validate_hxl_tag():
@@ -11,7 +13,7 @@ def test_validate_hxl_tag():
         "#population+f+age_80_plus",
     ]
     for hxl_tag in correct_hxl_tags:
-        assert _validate_hxl_tag(hxl_tag=hxl_tag)
+        assert _validate_gender_and_age_range_hxl_tag(hxl_tag=hxl_tag)
     incorrect_hxl_tags = [
         "population+total",
         "#population+nonsense",
@@ -20,4 +22,4 @@ def test_validate_hxl_tag():
         "#population+age_5-12+total",
     ]
     for hxl_tag in incorrect_hxl_tags:
-        assert not _validate_hxl_tag(hxl_tag)
+        assert not _validate_gender_and_age_range_hxl_tag(hxl_tag)
