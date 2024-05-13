@@ -38,19 +38,6 @@ country_name_mappings:
 orphan_admin2s:
   SS0001: "SSD"
 
-population_status_descriptions:
-  population: "number of people assessed"
-  affected: "number of people in affected"
-  inneed: "number of people in need"
-  targeted: "number of people in targeted"
-  reached: "number of people reached"
-
-population_group_descriptions:
-  residents: "residents"
-  refugees: "refugees"
-  idps: "internally displaced persons"
-  returnees: "returnees"
-
 sector:
   dataset: "global-coordination-groups-beta"
   resource: "Global Coordination Groups (Beta) CSV"
@@ -196,39 +183,3 @@ sector_map:
   violencia basada en genero: "PRO-GBV"
   wash: "WSH"
   water sanitation and hygiene: "WSH"
-
-gender_descriptions:
-  f: "female"
-  m: "male"
-  x: "non-binary"
-
-age_range_codes:
-  - "0-4"
-  - "10-14"
-  - "15-19"
-  - "20-24"
-  - "25-29"
-  - "30-34"
-  - "35-39"
-  - "40-44"
-  - "45-49"
-  - "5-9"
-  - "50-54"
-  - "55-59"
-  - "60-64"
-  - "65-69"
-  - "65+"
-  - "70-74"
-  - "70+"
-  - "75-79"
-  - "80-84"
-  - "80+"
-  - "85-89"
-  - "85+"
-  - "90-94"
-  - "90+"
-  - "95-99"
-  - "100+"
-  - "0-17"
-  - "18+"
-  - "18-64"

@@ -10,12 +10,15 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
-from hapi.pipelines.database.ipc_phase import IpcPhase
-from hapi.pipelines.database.ipc_type import IpcType
+from hapi.pipelines.database.food_security import FoodSecurity
+from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
+from hapi.pipelines.database.national_risk import NationalRisk
+from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
+from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.sector import Sector
 
 
@@ -36,13 +39,12 @@ class Pipelines:
         self.locations = Locations(
             configuration=configuration,
             session=session,
-            today=today,
             use_live=use_live,
         )
         countries = configuration["HAPI_countries"]
         libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
         self.admins = Admins(
-            configuration, session, self.locations, libhxl_dataset, today
+            configuration, session, self.locations, libhxl_dataset
         )
         self.adminone = AdminLevel(admin_level=1)
         self.admintwo = AdminLevel(admin_level=2)
@@ -55,7 +57,6 @@ class Pipelines:
         self.org = Org(
             session=session,
             datasetinfo=configuration["org"],
-            today=today,
         )
         self.org_type = OrgType(
             session=session,
@@ -67,20 +68,11 @@ class Pipelines:
             datasetinfo=configuration["sector"],
             sector_map=configuration["sector_map"],
         )
-        self.ipc_phase = IpcPhase(
-            session=session,
-            ipc_phase_names=configuration["ipc_phase_names"],
-            ipc_phase_descriptions=configuration["ipc_phase_descriptions"],
-        )
-        self.ipc_type = IpcType(
-            session=session,
-            ipc_type_descriptions=configuration["ipc_type_descriptions"],
-        )
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
             countries,
-            today,
+            today=today,
             errors_on_exit=errors_on_exit,
             scrapers_to_run=scrapers_to_run,
         )
@@ -172,83 +164,78 @@ class Pipelines:
         self.org.populate()
         self.org_type.populate()
         self.sector.populate()
-        self.ipc_phase.populate()
-        self.ipc_type.populate()
-        #
-        # TODO
-        # if not self.themes_to_run or "population" in self.themes_to_run:
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["population"]
-        #     )
-        #
-        #     population = Population(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         results=results,
-        #     )
-        #     population.populate()
-        #
-        # if (
-        #     not self.themes_to_run
-        #     or "operational_presence" in self.themes_to_run
-        # ):
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["operational_presence"]
-        #     )
-        #     operational_presence = OperationalPresence(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         adminone=self.adminone,
-        #         admintwo=self.admintwo,
-        #         org=self.org,
-        #         org_type=self.org_type,
-        #         sector=self.sector,
-        #         results=results,
-        #     )
-        #     operational_presence.populate()
-        #
-        # if not self.themes_to_run or "food_security" in self.themes_to_run:
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["food_security"]
-        #     )
-        #     food_security = FoodSecurity(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         ipc_phase=self.ipc_phase,
-        #         ipc_type=self.ipc_type,
-        #         results=results,
-        #     )
-        #     food_security.populate()
-        #
-        # if (
-        #     not self.themes_to_run
-        #     or "humanitarian_needs" in self.themes_to_run
-        # ):
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["humanitarian_needs"]
-        #     )
-        #
-        #     humanitarian_needs = HumanitarianNeeds(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         sector=self.sector,
-        #         results=results,
-        #     )
-        #     humanitarian_needs.populate()
-        #
-        # if not self.themes_to_run or "national_risk" in self.themes_to_run:
-        #     results = self.runner.get_hapi_results(
-        #         self.configurable_scrapers["national_risk"]
-        #     )
-        #
-        #     national_risk = NationalRisk(
-        #         session=self.session,
-        #         metadata=self.metadata,
-        #         admins=self.admins,
-        #         results=results,
-        #     )
-        #     national_risk.populate()
+
+        if not self.themes_to_run or "population" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["population"]
+            )
+
+            population = Population(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                results=results,
+            )
+            population.populate()
+
+        if (
+            not self.themes_to_run
+            or "operational_presence" in self.themes_to_run
+        ):
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["operational_presence"]
+            )
+            operational_presence = OperationalPresence(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                adminone=self.adminone,
+                admintwo=self.admintwo,
+                org=self.org,
+                org_type=self.org_type,
+                sector=self.sector,
+                results=results,
+            )
+            operational_presence.populate()
+
+        if not self.themes_to_run or "food_security" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["food_security"]
+            )
+            food_security = FoodSecurity(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                results=results,
+            )
+            food_security.populate()
+
+        if (
+            not self.themes_to_run
+            or "humanitarian_needs" in self.themes_to_run
+        ):
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["humanitarian_needs"]
+            )
+
+            humanitarian_needs = HumanitarianNeeds(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                sector=self.sector,
+                results=results,
+            )
+            humanitarian_needs.populate()
+
+        if not self.themes_to_run or "national_risk" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["national_risk"]
+            )
+
+            national_risk = NationalRisk(
+                session=self.session,
+                metadata=self.metadata,
+                locations=self.locations,
+                results=results,
+            )
+            national_risk.populate()

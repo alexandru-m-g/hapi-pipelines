@@ -42,27 +42,17 @@ class Population(BaseUploader):
                 for hxl_tag, values in zip(
                     admin_results["headers"][1], admin_results["values"]
                 ):
-                    if not _validate_hxl_tag(hxl_tag):
+                    if not _validate_gender_and_age_range_hxl_tag(hxl_tag):
                         raise ValueError(
                             f"HXL tag {hxl_tag} not in valid format"
                         )
-                    gender_code, age_range_code = _get_hxl_mapping(
+                    gender, age_range = _get_gender_and_age_range_hxl_mapping(
                         hxl_tag=hxl_tag
                     )
-                    if (
-                        gender_code is not None
-                        and gender_code not in self._gender.data
-                    ):
-                        raise ValueError(
-                            f"Gender code {gender_code} not in table"
-                        )
-                    if (
-                        age_range_code is not None
-                        and age_range_code not in self._age_range.data
-                    ):
-                        raise ValueError(
-                            f"Age range code {age_range_code} not in table"
-                        )
+                    if age_range == "*":
+                        min_age, max_age = None, None
+                    else:
+                        min_age, max_age = _get_min_and_max_age(age_range)
                     for admin_code, value in values.items():
                         admin2_code = admins.get_admin2_code_based_on_level(
                             admin_code=admin_code, admin_level=admin_level
@@ -70,20 +60,20 @@ class Population(BaseUploader):
                         population_row = DBPopulation(
                             resource_hdx_id=resource_id,
                             admin2_ref=self._admins.admin2_data[admin2_code],
-                            gender_code=gender_code,
-                            age_range_code=age_range_code,
+                            gender=gender,
+                            age_range=age_range,
+                            min_age=min_age,
+                            max_age=max_age,
                             population=int(value),
                             reference_period_start=time_period_start,
                             reference_period_end=time_period_end,
-                            # TODO: For v2+, add to scraper (HAPI-199)
-                            source_data="not yet implemented",
                         )
 
                         self._session.add(population_row)
         self._session.commit()
 
 
-def _validate_hxl_tag(hxl_tag: str) -> bool:
+def _validate_gender_and_age_range_hxl_tag(hxl_tag: str) -> bool:
     """Validate HXL tags
 
     Assume they have the form:
@@ -98,18 +88,30 @@ def _validate_hxl_tag(hxl_tag: str) -> bool:
     return bool(_HXL_PATTERN.match(hxl_tag))
 
 
-def _get_hxl_mapping(hxl_tag: str) -> (str, str):
+def _get_gender_and_age_range_hxl_mapping(hxl_tag: str) -> (str, str):
     components = hxl_tag.split("+")
-    gender_code = None
-    age_range_code = None
+    gender = "*"
+    age_range = "*"
     for component in components[1:]:
         # components can only be age, gender, or the word "total"
         if component.startswith("age_"):
             age_component = component[4:]
             if age_component.endswith("_plus"):
-                age_range_code = age_component[:-5] + "+"
+                age_range = age_component[:-5] + "+"
             else:
-                age_range_code = age_component.replace("_", "-")
+                age_range = age_component.replace("_", "-")
         elif component != "total":
-            gender_code = component
-    return gender_code, age_range_code
+            gender = component
+    return gender, age_range
+
+
+def _get_min_and_max_age(age_range: str) -> (int, int):
+    ages = age_range.split("-")
+    if len(ages) == 2:
+        # Format: 0-5
+        min_age, max_age = int(ages[0]), int(ages[1])
+    else:
+        # Format: 80+
+        min_age = int(age_range.replace("+", ""))
+        max_age = None
+    return min_age, max_age

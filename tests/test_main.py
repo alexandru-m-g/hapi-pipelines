@@ -5,10 +5,14 @@ import pytest
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_dataset import DBDataset
-from hapi_schema.db_ipc_phase import DBIpcPhase
-from hapi_schema.db_ipc_type import DBIpcType
+from hapi_schema.db_food_security import DBFoodSecurity
+from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 from hapi_schema.db_location import DBLocation
+from hapi_schema.db_national_risk import DBNationalRisk
+from hapi_schema.db_operational_presence import DBOperationalPresence
+from hapi_schema.db_org import DBOrg
 from hapi_schema.db_org_type import DBOrgType
+from hapi_schema.db_population import DBPopulation
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_sector import DBSector
 from hapi_schema.views import prepare_hapi_views
@@ -112,44 +116,42 @@ class TestHAPIPipelines:
                     assert count == 479
                     count = session.scalar(select(func.count(DBAdmin2.id)))
                     assert count == 5936
-                    # TODO
-                    # count = session.scalar(select(func.count(DBOrg.id)))
-                    # assert count == 497
+                    count = session.scalar(select(func.count(DBOrg.acronym)))
+                    assert count == 484
                     count = session.scalar(select(func.count(DBOrgType.code)))
                     assert count == 18
                     count = session.scalar(select(func.count(DBSector.code)))
-                    assert count == 18
-                    count = session.scalar(select(func.count(DBIpcPhase.code)))
-                    assert count == 7
-                    count = session.scalar(select(func.count(DBIpcType.code)))
-                    assert count == 3
-                    # TODO
-                    # count = session.scalar(select(func.count(DBPopulation.id)))
-                    # assert count == 54123
-                    # count = session.scalar(
-                    #     select(func.count(DBOperationalPresence.id))
-                    # )
-                    # assert count == 12215
-                    # count = session.scalar(
-                    #     select(func.count(DBFoodSecurity.id))
-                    # )
-                    # assert count == 137144
-                    # count = session.scalar(
-                    #     select(func.count(DBHumanitarianNeeds.id))
-                    # )
-                    # assert count == 47582
-                    # count = session.scalar(
-                    #     select(func.count(DBNationalRisk.id))
-                    # )
-                    # assert count == 25
-                    #
-                    # org_mapping = pipelines.org._org_lookup
-                    # assert org_mapping["Action against Hunger"] == {
-                    #     "Action contre la Faim",
-                    #     "Action Against Hunger",
-                    # }
-                    # assert org_mapping["United Nations Children's Fund"] == {
-                    #     "Fonds des Nations Unies pour l'Enfance",
-                    #     "United Nations Children's Fund",
-                    #     "United Nations Children's Emergency Fund",
-                    # }
+                    assert count == 19
+                    count = session.scalar(
+                        select(func.count(DBPopulation.resource_hdx_id))
+                    )
+                    assert count == 54123
+                    count = session.scalar(
+                        select(
+                            func.count(DBOperationalPresence.resource_hdx_id)
+                        )
+                    )
+                    assert count == 12215
+                    count = session.scalar(
+                        select(func.count(DBFoodSecurity.resource_hdx_id))
+                    )
+                    assert count == 100961
+                    count = session.scalar(
+                        select(func.count(DBHumanitarianNeeds.resource_hdx_id))
+                    )
+                    assert count == 47582
+                    count = session.scalar(
+                        select(func.count(DBNationalRisk.resource_hdx_id))
+                    )
+                    assert count == 25
+
+                    org_mapping = pipelines.org._org_lookup
+                    assert org_mapping["Action against Hunger"] == {
+                        "Action contre la Faim",
+                        "Action Against Hunger",
+                    }
+                    assert org_mapping["United Nations Children's Fund"] == {
+                        "Fonds des Nations Unies pour l'Enfance",
+                        "United Nations Children's Fund",
+                        "United Nations Children's Emergency Fund",
+                    }

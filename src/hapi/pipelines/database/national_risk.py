@@ -6,7 +6,7 @@ from typing import Dict
 from hapi_schema.db_national_risk import DBNationalRisk
 from sqlalchemy.orm import Session
 
-from . import admins
+from . import locations
 from .base_uploader import BaseUploader
 from .metadata import Metadata
 
@@ -18,12 +18,12 @@ class NationalRisk(BaseUploader):
         self,
         session: Session,
         metadata: Metadata,
-        admins: admins.Admins,
+        locations: locations,
         results: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
-        self._admins = admins
+        self._locations = locations
         self._results = results
 
     def populate(self):
@@ -38,9 +38,6 @@ class NationalRisk(BaseUploader):
                 values = admin_results["values"]
 
                 for admin_code in admin_codes:
-                    admin2_code = admins.get_admin2_code_based_on_level(
-                        admin_code=admin_code, admin_level=admin_level
-                    )
                     risk_class = values[hxl_tags.index("#risk+class")].get(
                         admin_code
                     )
@@ -49,7 +46,7 @@ class NationalRisk(BaseUploader):
 
                     national_risk_row = DBNationalRisk(
                         resource_hdx_id=resource_id,
-                        admin2_ref=self._admins.admin2_data[admin2_code],
+                        location_ref=self._locations.data[admin_code],
                         risk_class=risk_class,
                         global_rank=values[hxl_tags.index("#risk+rank")].get(
                             admin_code
@@ -74,8 +71,6 @@ class NationalRisk(BaseUploader):
                         ].get(admin_code),
                         reference_period_start=time_period_start,
                         reference_period_end=time_period_end,
-                        # TODO: For v2+, add to scraper (HAPI-199)
-                        source_data="not yet implemented",
                     )
 
                     self._session.add(national_risk_row)
@@ -86,13 +81,13 @@ def _get_risk_class_code_from_data(risk_class: str) -> int:
     risk_class = risk_class.lower()
     risk_class_code = None
     if risk_class == "very high":
-        risk_class_code = 5
+        risk_class_code = "5"
     if risk_class == "high":
-        risk_class_code = 4
+        risk_class_code = "4"
     if risk_class == "medium":
-        risk_class_code = 3
+        risk_class_code = "3"
     if risk_class == "low":
-        risk_class_code = 2
+        risk_class_code = "2"
     if risk_class == "very low":
-        risk_class_code = 1
+        risk_class_code = "1"
     return risk_class_code
