@@ -51,6 +51,7 @@ class Sector(BaseUploader):
                 name=row["#sector +name +preferred +i_en"],
             )
 
+        # TODO: Decide on meaning of "*" (all, intersectoral, etc)
         extra_entries = {
             "Cash": "Cash programming",
             "Hum": "Humanitarian assistance (unspecified)",
