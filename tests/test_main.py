@@ -13,6 +13,7 @@ from hapi_schema.db_operational_presence import DBOperationalPresence
 from hapi_schema.db_org import DBOrg
 from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_population import DBPopulation
+from hapi_schema.db_refugees import DBRefugees
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_sector import DBSector
 from hapi_schema.views import prepare_hapi_views
@@ -43,6 +44,7 @@ class TestHAPIPipelines:
             "national_risk.yaml",
             "operational_presence.yaml",
             "population.yaml",
+            "refugees.yaml",
         ]
         project_config_dict = load_yamls(project_configs)
         project_config_dict = add_defaults(project_config_dict)
@@ -64,7 +66,7 @@ class TestHAPIPipelines:
                 delete_on_success=True,
                 delete_on_failure=False,
             ) as temp_folder:
-                db_uri = "postgresql+psycopg://postgres:postgres@localhost:5432/hapitest"
+                db_uri = "postgresql+psycopg://postgres:postgres@localhost:5433/hapi"
                 logger.info(f"Connecting to database {db_uri}")
                 with Database(
                     db_uri=db_uri,
@@ -88,6 +90,7 @@ class TestHAPIPipelines:
                         "food_security": None,
                         "humanitarian_needs": None,
                         "national_risk": None,
+                        "refugees": None,
                     }
                     pipelines = Pipelines(
                         configuration,
@@ -105,11 +108,11 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBResource.hdx_id))
                     )
-                    assert count == 23
+                    assert count == 24
                     count = session.scalar(
                         select(func.count(DBDataset.hdx_id))
                     )
-                    assert count == 13
+                    assert count == 14
                     count = session.scalar(select(func.count(DBLocation.id)))
                     assert count == 25
                     count = session.scalar(select(func.count(DBAdmin1.id)))
@@ -144,6 +147,10 @@ class TestHAPIPipelines:
                         select(func.count(DBNationalRisk.resource_hdx_id))
                     )
                     assert count == 25
+                    count = session.scalar(
+                        select(func.count(DBRefugees.resource_hdx_id))
+                    )
+                    assert count == 7650
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {

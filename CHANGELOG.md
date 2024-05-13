@@ -14,6 +14,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - ipc_phase, ipc_type, age_range, gender classes
 
+### Added
+
+- Refugees data and tests
+- HXL tag parsing functions to get age and gender
+
 ## [0.8.0] - 2024-05-06
 
 ### Changed
