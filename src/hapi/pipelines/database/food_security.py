@@ -86,6 +86,7 @@ class FoodSecurity(BaseUploader):
                                 admin_code
                             ][irow]
                         )
+                        # Sum the population in each row by type and date to aggregate admin 1.5 to admin 1
                         dict_of_lists_add(
                             population_totals,
                             (
@@ -102,6 +103,7 @@ class FoodSecurity(BaseUploader):
                             if population_in_phase is None:
                                 population_in_phase = 0
                             population_in_phase = int(population_in_phase)
+                            # Sum the phase population in each row to aggregate admin 1.5 to admin 1
                             dict_of_lists_add(
                                 population_in_phases,
                                 (
