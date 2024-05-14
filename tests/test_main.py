@@ -1,27 +1,21 @@
 import logging
-from os import remove
 from os.path import join
 
 import pytest
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
-from hapi_schema.db_age_range import DBAgeRange
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_food_security import DBFoodSecurity
-from hapi_schema.db_gender import DBGender
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
-from hapi_schema.db_ipc_phase import DBIpcPhase
-from hapi_schema.db_ipc_type import DBIpcType
 from hapi_schema.db_location import DBLocation
 from hapi_schema.db_national_risk import DBNationalRisk
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hapi_schema.db_org import DBOrg
 from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_population import DBPopulation
-from hapi_schema.db_population_group import DBPopulationGroup
-from hapi_schema.db_population_status import DBPopulationStatus
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_sector import DBSector
+from hapi_schema.views import prepare_hapi_views
 from hdx.api.configuration import Configuration
 from hdx.database import Database
 from hdx.scraper.utilities.reader import Read
@@ -70,13 +64,13 @@ class TestHAPIPipelines:
                 delete_on_success=True,
                 delete_on_failure=False,
             ) as temp_folder:
-                dbpath = join(temp_folder, "test_hapi.db")
-                try:
-                    remove(dbpath)
-                except OSError:
-                    pass
-                logger.info(f"Creating database {dbpath}")
-                with Database(database=dbpath, dialect="sqlite") as database:
+                db_uri = "postgresql+psycopg://postgres:postgres@localhost:5432/hapitest"
+                logger.info(f"Connecting to database {db_uri}")
+                with Database(
+                    db_uri=db_uri,
+                    recreate_schema=True,
+                    prepare_fn=prepare_hapi_views,
+                ) as database:
                     session = database.get_session()
                     today = parse_date("2023-10-11")
                     Read.create_readers(
@@ -122,44 +116,32 @@ class TestHAPIPipelines:
                     assert count == 479
                     count = session.scalar(select(func.count(DBAdmin2.id)))
                     assert count == 5936
-                    count = session.scalar(
-                        select(func.count(DBPopulationStatus.code))
-                    )
-                    assert count == 5
-                    count = session.scalar(
-                        select(func.count(DBPopulationGroup.code))
-                    )
-                    assert count == 4
-                    count = session.scalar(select(func.count(DBOrg.id)))
-                    assert count == 497
+                    count = session.scalar(select(func.count(DBOrg.acronym)))
+                    assert count == 484
                     count = session.scalar(select(func.count(DBOrgType.code)))
                     assert count == 18
                     count = session.scalar(select(func.count(DBSector.code)))
-                    assert count == 18
-                    count = session.scalar(select(func.count(DBIpcPhase.code)))
-                    assert count == 7
-                    count = session.scalar(select(func.count(DBIpcType.code)))
-                    assert count == 3
-                    count = session.scalar(select(func.count(DBGender.code)))
-                    assert count == 3
-                    count = session.scalar(select(func.count(DBAgeRange.code)))
-                    assert count == 29
-                    count = session.scalar(select(func.count(DBPopulation.id)))
+                    assert count == 19
+                    count = session.scalar(
+                        select(func.count(DBPopulation.resource_hdx_id))
+                    )
                     assert count == 54123
                     count = session.scalar(
-                        select(func.count(DBOperationalPresence.id))
+                        select(
+                            func.count(DBOperationalPresence.resource_hdx_id)
+                        )
                     )
                     assert count == 12215
                     count = session.scalar(
-                        select(func.count(DBFoodSecurity.id))
+                        select(func.count(DBFoodSecurity.resource_hdx_id))
                     )
-                    assert count == 137144
+                    assert count == 100961
                     count = session.scalar(
-                        select(func.count(DBHumanitarianNeeds.id))
+                        select(func.count(DBHumanitarianNeeds.resource_hdx_id))
                     )
                     assert count == 47582
                     count = session.scalar(
-                        select(func.count(DBNationalRisk.id))
+                        select(func.count(DBNationalRisk.resource_hdx_id))
                     )
                     assert count == 25
 

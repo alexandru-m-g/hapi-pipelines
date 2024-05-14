@@ -1,12 +1,12 @@
 import logging
 from abc import ABC
-from datetime import datetime
 from typing import Dict, List, Literal
 
 import hxl
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_location import DBLocation
+from hdx.api.configuration import Configuration
 from hdx.utilities.dateparse import parse_date
 from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
@@ -24,18 +24,16 @@ _ADMIN_LEVELS_LITERAL = Literal["1", "2"]
 class Admins(BaseUploader):
     def __init__(
         self,
-        configuration: Dict,
+        configuration: Configuration,
         session: Session,
         locations: Locations,
         libhxl_dataset: hxl.Dataset,
-        today: datetime,
     ):
         super().__init__(session)
         self._limit = configuration["commit_limit"]
         self._orphan_admin2s = configuration["orphan_admin2s"]
         self._locations = locations
         self._libhxl_dataset = libhxl_dataset
-        self.today = today
         self.admin1_data = {}
         self.admin2_data = {}
 
@@ -96,7 +94,6 @@ class Admins(BaseUploader):
                     code=code,
                     name=name,
                     reference_period_start=time_period_start,
-                    hapi_updated_date=self.today,
                 )
             elif desired_admin_level == "2":
                 admin_row = DBAdmin2(
@@ -104,7 +101,6 @@ class Admins(BaseUploader):
                     code=code,
                     name=name,
                     reference_period_start=time_period_start,
-                    hapi_updated_date=self.today,
                 )
             self._session.add(admin_row)
             if i % self._limit == 0:
@@ -127,7 +123,6 @@ class Admins(BaseUploader):
                 name="UNSPECIFIED",
                 is_unspecified=True,
                 reference_period_start=time_period_start,
-                hapi_updated_date=self.today,
             )
             self._session.add(admin_row)
         self._session.commit()
@@ -148,7 +143,6 @@ class Admins(BaseUploader):
                 name="UNSPECIFIED",
                 is_unspecified=True,
                 reference_period_start=time_period_start,
-                hapi_updated_date=self.today,
             )
             self._session.add(admin_row)
         self._session.commit()
