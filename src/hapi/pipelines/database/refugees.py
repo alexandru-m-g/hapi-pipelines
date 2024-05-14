@@ -65,6 +65,7 @@ class Refugees(BaseUploader):
                             population_group = results[population_group_i][
                                 origin_location
                             ][i]
+                            # Append the population in each row to a list to aggregate subnational locations
                             dict_of_lists_add(
                                 rows,
                                 (
