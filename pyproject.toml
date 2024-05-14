@@ -34,7 +34,7 @@ classifiers = [
 requires-python = ">=3.8"
 
 dependencies = [
-    "hapi-schema@git+https://git@github.com/OCHA-DAP/hapi-sqlalchemy-schema@develop#egg=hapi-schema",
+    "hapi-schema>=0.8.0",
     "hdx-python-country>= 3.7.0",
     "hdx-python-database[postgresql]>= 1.3.1",
     "hdx-python-scraper>= 2.3.5",
