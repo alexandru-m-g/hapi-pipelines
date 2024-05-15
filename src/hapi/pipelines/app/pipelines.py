@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.food_security import FoodSecurity
+from hapi.pipelines.database.funding import Funding
 from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
@@ -153,6 +154,7 @@ class Pipelines:
             "humanitarian_needs", "admintwo", adminlevel=self.admintwo
         )
         _create_configurable_scrapers("national_risk", "national")
+        _create_configurable_scrapers("funding", "national")
 
     def run(self):
         self.runner.run()
@@ -239,3 +241,16 @@ class Pipelines:
                 results=results,
             )
             national_risk.populate()
+
+        if not self.themes_to_run or "funding" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["funding"]
+            )
+
+            funding = Funding(
+                session=self.session,
+                metadata=self.metadata,
+                locations=self.locations,
+                results=results,
+            )
+            funding.populate()

@@ -43,6 +43,7 @@ class TestHAPIPipelines:
             "national_risk.yaml",
             "operational_presence.yaml",
             "population.yaml",
+            "funding.yaml",
         ]
         project_config_dict = load_yamls(project_configs)
         project_config_dict = add_defaults(project_config_dict)
@@ -88,6 +89,7 @@ class TestHAPIPipelines:
                         "food_security": None,
                         "humanitarian_needs": None,
                         "national_risk": None,
+                        "funding": ("AFG", "BFA", "UKR"),
                     }
                     pipelines = Pipelines(
                         configuration,
@@ -105,11 +107,11 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBResource.hdx_id))
                     )
-                    assert count == 23
+                    assert count == 26
                     count = session.scalar(
                         select(func.count(DBDataset.hdx_id))
                     )
-                    assert count == 13
+                    assert count == 16
                     count = session.scalar(select(func.count(DBLocation.id)))
                     assert count == 25
                     count = session.scalar(select(func.count(DBAdmin1.id)))
@@ -144,6 +146,10 @@ class TestHAPIPipelines:
                         select(func.count(DBNationalRisk.resource_hdx_id))
                     )
                     assert count == 25
+                    count = session.scalar(
+                        select(func.count(DBFunding.resource_hdx_id))
+                    )
+                    assert count == 57
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {
