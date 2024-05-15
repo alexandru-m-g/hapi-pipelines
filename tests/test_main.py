@@ -114,11 +114,11 @@ class TestHAPIPipelines:
                     )
                     assert count == 14
                     count = session.scalar(select(func.count(DBLocation.id)))
-                    assert count == 25
+                    assert count == 249
                     count = session.scalar(select(func.count(DBAdmin1.id)))
-                    assert count == 479
+                    assert count == 703
                     count = session.scalar(select(func.count(DBAdmin2.id)))
-                    assert count == 5936
+                    assert count == 6160
                     count = session.scalar(select(func.count(DBOrg.acronym)))
                     assert count == 484
                     count = session.scalar(select(func.count(DBOrgType.code)))
@@ -150,7 +150,7 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBRefugees.resource_hdx_id))
                     )
-                    assert count == 7650
+                    assert count == 65355
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {

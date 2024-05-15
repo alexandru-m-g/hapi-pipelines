@@ -9,8 +9,7 @@ refugees_national:
       - "#indicator+population_type"
       - "#country+code+origin"
       - "#country+code+asylum"
-    # TODO: decide if this is the filter we want to use, otherwise add more countries to the locations table
-    prefilter: "#indicator+population_type in ['REF', 'OOC'] and (#country+code+origin in ['AFG', 'BFA', 'CAF', 'CMR', 'COD', 'COL', 'ETH', 'GTM', 'HND', 'HTI', 'MLI', 'MMR', 'MOZ', 'NER', 'NGA', 'PSE', 'SDN', 'SLV', 'SOM', 'SSD', 'SYR', 'TCD', 'UKR', 'VEN', 'YEM'] and #country+code+asylum in ['AFG', 'BFA', 'CAF', 'CMR', 'COD', 'COL', 'ETH', 'GTM', 'HND', 'HTI', 'MLI', 'MMR', 'MOZ', 'NER', 'NGA', 'PSE', 'SDN', 'SLV', 'SOM', 'SSD', 'SYR', 'TCD', 'UKR', 'VEN', 'YEM'])"
+    prefilter: "#indicator+population_type in ['REF', 'OOC']"
     admin:
       - "#country+code+origin"
     admin_exact: True
