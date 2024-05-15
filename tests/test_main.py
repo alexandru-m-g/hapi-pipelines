@@ -6,6 +6,7 @@ from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_food_security import DBFoodSecurity
+from hapi_schema.db_funding import DBFunding
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 from hapi_schema.db_location import DBLocation
 from hapi_schema.db_national_risk import DBNationalRisk
