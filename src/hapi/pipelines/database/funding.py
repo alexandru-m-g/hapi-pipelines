@@ -37,7 +37,9 @@ class Funding(BaseUploader):
                 appeal_code_i = hxl_tags.index("#activity+appeal+id+external")
                 appeal_name_i = hxl_tags.index("#activity+appeal+name")
                 appeal_type_i = hxl_tags.index("#activity+appeal+type+name")
-                requirements_usd_i = hxl_tags.index("#value+funding+required+usd")
+                requirements_usd_i = hxl_tags.index(
+                    "#value+funding+required+usd"
+                )
                 funding_usd_i = hxl_tags.index("#value+funding+total+usd")
                 funding_pct_i = hxl_tags.index("#value+funding+pct")
                 reference_period_start_i = hxl_tags.index("#date+start")
@@ -45,20 +47,38 @@ class Funding(BaseUploader):
 
                 for admin_code in values[0].keys():
                     for irow in range(len(values[0][admin_code])):
-                        reference_period_start = parse_date(values[reference_period_start_i][admin_code][irow])
-                        reference_period_end = parse_date(values[reference_period_end_i][admin_code][irow])
+                        reference_period_start = parse_date(
+                            values[reference_period_start_i][admin_code][irow]
+                        )
+                        reference_period_end = parse_date(
+                            values[reference_period_end_i][admin_code][irow]
+                        )
                         if reference_period_start > reference_period_end:
-                            logger.error(f"Date misalignment in funding data for {admin_code}")
+                            logger.error(
+                                f"Date misalignment in funding data for {admin_code}"
+                            )
                             continue
                         funding_row = DBFunding(
                             resource_hdx_id=resource_id,
                             location_ref=self._locations.data[admin_code],
-                            appeal_code=values[appeal_code_i][admin_code][irow],
-                            appeal_name=values[appeal_name_i][admin_code][irow],
-                            appeal_type=values[appeal_type_i][admin_code][irow],
-                            requirements_usd=values[requirements_usd_i][admin_code][irow],
-                            funding_usd=values[funding_usd_i][admin_code][irow],
-                            funding_pct=values[funding_pct_i][admin_code][irow],
+                            appeal_code=values[appeal_code_i][admin_code][
+                                irow
+                            ],
+                            appeal_name=values[appeal_name_i][admin_code][
+                                irow
+                            ],
+                            appeal_type=values[appeal_type_i][admin_code][
+                                irow
+                            ],
+                            requirements_usd=values[requirements_usd_i][
+                                admin_code
+                            ][irow],
+                            funding_usd=values[funding_usd_i][admin_code][
+                                irow
+                            ],
+                            funding_pct=values[funding_pct_i][admin_code][
+                                irow
+                            ],
                             reference_period_start=reference_period_start,
                             reference_period_end=reference_period_end,
                         )
