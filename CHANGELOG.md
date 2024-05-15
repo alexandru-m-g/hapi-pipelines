@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Refugees data and tests
 - HXL tag parsing functions to get age and gender
 
+### Changed
+
+- Extended locations to global coverage
+
 ## [0.9.1] - 2024-05-14
 
 ### Changed
@@ -26,10 +30,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Removed
 
 - ipc_phase, ipc_type, age_range, gender classes
-
-### Changed
-
-- Extended locations to global coverage
 
 ## [0.8.0] - 2024-05-06
 

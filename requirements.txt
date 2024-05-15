@@ -141,10 +141,10 @@ ply==3.11
     #   libhxl
 pockets==0.9.1
     # via sphinxcontrib-napoleon
-pre-commit==3.7.0
-psycopg==3.1.18
+pre-commit==3.7.1
+psycopg==3.1.19
     # via hdx-python-database
-psycopg-binary==3.1.18
+psycopg-binary==3.1.19
     # via psycopg
 pyasn1==0.6.0
     # via
@@ -198,7 +198,7 @@ referencing==0.35.1
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2024.4.28
+regex==2024.5.10
     # via hdx-python-scraper
 requests==2.31.0
     # via
@@ -285,7 +285,7 @@ urllib3==2.2.1
     #   requests
 validators==0.28.1
     # via frictionless
-virtualenv==20.26.1
+virtualenv==20.26.2
     # via pre-commit
 wheel==0.43.0
     # via libhxl
