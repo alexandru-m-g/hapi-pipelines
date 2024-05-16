@@ -111,11 +111,6 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBResource.hdx_id))
                     )
-                    assert count == 26
-                    count = session.scalar(
-                        select(func.count(DBDataset.hdx_id))
-                    )
-                    assert count == 16
                     assert count == 27
                     count = session.scalar(
                         select(func.count(DBDataset.hdx_id))
