@@ -42,7 +42,6 @@ class TestHAPIPipelines:
             "core.yaml",
             "food_security.yaml",
             "funding.yaml",
-            "humanitarian_needs.yaml",
             "national_risk.yaml",
             "operational_presence.yaml",
             "population.yaml",
@@ -115,7 +114,7 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBDataset.hdx_id))
                     )
-                    assert count == 17
+                    assert count == 18
                     count = session.scalar(select(func.count(DBLocation.id)))
                     assert count == 249
                     count = session.scalar(select(func.count(DBAdmin1.id)))
@@ -145,7 +144,7 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBHumanitarianNeeds.resource_hdx_id))
                     )
-                    assert count == 47582
+                    assert count == 139085
                     count = session.scalar(
                         select(func.count(DBNationalRisk.resource_hdx_id))
                     )
