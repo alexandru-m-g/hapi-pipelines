@@ -176,6 +176,7 @@ if __name__ == "__main__":
     project_configs = [
         "core.yaml",
         "food_security.yaml",
+        "funding.yaml",
         "humanitarian_needs.yaml",
         "national_risk.yaml",
         "operational_presence.yaml",
