@@ -47,6 +47,7 @@ class Funding(BaseUploader):
 
                 for admin_code in values[0].keys():
                     for irow in range(len(values[0][admin_code])):
+                        appeal_code = values[appeal_code_i][admin_code][irow]
                         reference_period_start = parse_date(
                             values[reference_period_start_i][admin_code][irow]
                         )
@@ -55,15 +56,13 @@ class Funding(BaseUploader):
                         )
                         if reference_period_start > reference_period_end:
                             logger.error(
-                                f"Date misalignment in funding data for {admin_code}"
+                                f"Date misalignment in funding data for {appeal_code} in {admin_code}"
                             )
                             continue
                         funding_row = DBFunding(
                             resource_hdx_id=resource_id,
                             location_ref=self._locations.data[admin_code],
-                            appeal_code=values[appeal_code_i][admin_code][
-                                irow
-                            ],
+                            appeal_code=appeal_code,
                             appeal_name=values[appeal_name_i][admin_code][
                                 irow
                             ],
