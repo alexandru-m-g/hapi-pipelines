@@ -176,11 +176,12 @@ if __name__ == "__main__":
     project_configs = [
         "core.yaml",
         "food_security.yaml",
+        "funding.yaml",
         "humanitarian_needs.yaml",
         "national_risk.yaml",
         "operational_presence.yaml",
         "population.yaml",
-        "funding.yaml",
+        "refugees.yaml",
     ]
     project_config_dict = load_yamls(project_configs)
     project_config_dict = add_defaults(project_config_dict)

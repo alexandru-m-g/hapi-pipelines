@@ -20,6 +20,7 @@ from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
+from hapi.pipelines.database.refugees import Refugees
 from hapi.pipelines.database.sector import Sector
 
 
@@ -155,6 +156,7 @@ class Pipelines:
         )
         _create_configurable_scrapers("national_risk", "national")
         _create_configurable_scrapers("funding", "national")
+        _create_configurable_scrapers("refugees", "national")
 
     def run(self):
         self.runner.run()
@@ -171,7 +173,6 @@ class Pipelines:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["population"]
             )
-
             population = Population(
                 session=self.session,
                 metadata=self.metadata,
@@ -219,7 +220,6 @@ class Pipelines:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["humanitarian_needs"]
             )
-
             humanitarian_needs = HumanitarianNeeds(
                 session=self.session,
                 metadata=self.metadata,
@@ -233,7 +233,6 @@ class Pipelines:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["national_risk"]
             )
-
             national_risk = NationalRisk(
                 session=self.session,
                 metadata=self.metadata,
@@ -242,11 +241,22 @@ class Pipelines:
             )
             national_risk.populate()
 
+        if not self.themes_to_run or "refugees" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["refugees"]
+            )
+            refugees = Refugees(
+                session=self.session,
+                metadata=self.metadata,
+                locations=self.locations,
+                results=results,
+            )
+            refugees.populate()
+
         if not self.themes_to_run or "funding" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["funding"]
             )
-
             funding = Funding(
                 session=self.session,
                 metadata=self.metadata,

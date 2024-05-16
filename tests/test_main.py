@@ -14,6 +14,7 @@ from hapi_schema.db_operational_presence import DBOperationalPresence
 from hapi_schema.db_org import DBOrg
 from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_population import DBPopulation
+from hapi_schema.db_refugees import DBRefugees
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_sector import DBSector
 from hapi_schema.views import prepare_hapi_views
@@ -40,11 +41,12 @@ class TestHAPIPipelines:
         project_configs = [
             "core.yaml",
             "food_security.yaml",
+            "funding.yaml",
             "humanitarian_needs.yaml",
             "national_risk.yaml",
             "operational_presence.yaml",
             "population.yaml",
-            "funding.yaml",
+            "refugees.yaml",
         ]
         project_config_dict = load_yamls(project_configs)
         project_config_dict = add_defaults(project_config_dict)
@@ -90,6 +92,7 @@ class TestHAPIPipelines:
                         "food_security": None,
                         "humanitarian_needs": None,
                         "national_risk": None,
+                        "refugees": None,
                         "funding": ("AFG", "BFA", "UKR"),
                     }
                     pipelines = Pipelines(
@@ -113,12 +116,17 @@ class TestHAPIPipelines:
                         select(func.count(DBDataset.hdx_id))
                     )
                     assert count == 16
+                    assert count == 27
+                    count = session.scalar(
+                        select(func.count(DBDataset.hdx_id))
+                    )
+                    assert count == 17
                     count = session.scalar(select(func.count(DBLocation.id)))
-                    assert count == 25
+                    assert count == 249
                     count = session.scalar(select(func.count(DBAdmin1.id)))
-                    assert count == 479
+                    assert count == 703
                     count = session.scalar(select(func.count(DBAdmin2.id)))
-                    assert count == 5936
+                    assert count == 6160
                     count = session.scalar(select(func.count(DBOrg.acronym)))
                     assert count == 484
                     count = session.scalar(select(func.count(DBOrgType.code)))
@@ -147,6 +155,10 @@ class TestHAPIPipelines:
                         select(func.count(DBNationalRisk.resource_hdx_id))
                     )
                     assert count == 25
+                    count = session.scalar(
+                        select(func.count(DBRefugees.resource_hdx_id))
+                    )
+                    assert count == 65355
                     count = session.scalar(
                         select(func.count(DBFunding.resource_hdx_id))
                     )
