@@ -163,7 +163,7 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBConflictEvent.resource_hdx_id))
                     )
-                    assert count == 443
+                    assert count == 50227
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {

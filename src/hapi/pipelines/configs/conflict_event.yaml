@@ -17,6 +17,10 @@ conflict_event_default:
     - "Month"
     - "Year"
     - "Events"
+  list:
+    - "Month"
+    - "Year"
+    - "Events"
   output:
     - "Month"
     - "Year"
@@ -32,6 +36,8 @@ conflict_event_admintwo:
     resource: "afghanistan_hrp_political_violence_events_and_fatalities_by_month-year"
     input:
       - "Fatalities"
+    list:
+      - "Fatalities"
     output:
       - "Fatalities"
     output_hxl:
@@ -41,6 +47,8 @@ conflict_event_admintwo:
     dataset: "afghanistan-acled-conflict-data"
     resource: "afghanistan_hrp_civilian_targeting_events_and_fatalities_by_month-year"
     input:
+      - "Fatalities"
+    list:
       - "Fatalities"
     output:
       - "Fatalities"
@@ -56,6 +64,8 @@ conflict_event_admintwo:
     resource: "burkina faso_hrp_political_violence_events_and_fatalities_by_month-year"
     input:
       - "Fatalities"
+    list:
+      - "Fatalities"
     output:
       - "Fatalities"
     output_hxl:
@@ -65,6 +75,8 @@ conflict_event_admintwo:
     dataset: "burkina-faso-acled-conflict-data"
     resource: "burkina faso_hrp_civilian_targeting_events_and_fatalities_by_month-year"
     input:
+      - "Fatalities"
+    list:
       - "Fatalities"
     output:
       - "Fatalities"

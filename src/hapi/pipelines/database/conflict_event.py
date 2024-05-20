@@ -29,6 +29,8 @@ class ConflictEvent(BaseUploader):
 
     def populate(self):
         logger.info("Populating conflict event table")
+        rows = []
+        number_duplicates = 0
         for dataset in self._results.values():
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
@@ -42,42 +44,57 @@ class ConflictEvent(BaseUploader):
                     "civilian_targeting",
                     "demonstration",
                 ]
-                event_type = [et for et in event_types if et in resource_name]
-                if len(event_type) != 1:
-                    logger.error(
-                        f"Missing conflict event type for resource {resource_name}"
-                    )
-                    continue
-                event_type = event_type[0]
+                event_type = [et for et in event_types if et in resource_name][
+                    0
+                ]
 
                 for admin_code in admin_codes:
                     admin2_code = admins.get_admin2_code_based_on_level(
                         admin_code=admin_code, admin_level=admin_level
                     )
-                    events = values[hxl_tags.index("#event+num")].get(
-                        admin_code
-                    )
-                    fatalities = None
-                    if "#fatalities+num" in hxl_tags:
-                        fatalities = values[
-                            hxl_tags.index("#fatalities+num")
-                        ].get(admin_code)
-                    month = values[hxl_tags.index("#date+month")].get(
-                        admin_code
-                    )
-                    year = values[hxl_tags.index("#date+year")].get(admin_code)
-                    time_period_range = parse_date_range(
-                        f"{month} {year}", "%B %Y"
-                    )
-                    conflict_event_row = DBConflictEvent(
-                        resource_hdx_id=resource_id,
-                        admin2_ref=self._admins.admin2_data[admin2_code],
-                        event_type=event_type,
-                        events=events,
-                        fatalities=fatalities,
-                        reference_period_start=time_period_range[0],
-                        reference_period_end=time_period_range[1],
-                    )
-                    self._session.add(conflict_event_row)
+                    for irow in range(len(values[0][admin_code])):
+                        events = values[hxl_tags.index("#event+num")][
+                            admin_code
+                        ][irow]
+                        fatalities = None
+                        if "#fatalities+num" in hxl_tags:
+                            fatalities = values[
+                                hxl_tags.index("#fatalities+num")
+                            ][admin_code][irow]
+                        month = values[hxl_tags.index("#date+month")][
+                            admin_code
+                        ][irow]
+                        year = values[hxl_tags.index("#date+year")][
+                            admin_code
+                        ][irow]
+                        time_period_range = parse_date_range(
+                            f"{month} {year}", "%B %Y"
+                        )
+                        row = (
+                            resource_id,
+                            admin2_code,
+                            event_type,
+                            events,
+                            fatalities,
+                            time_period_range[0],
+                            time_period_range[1],
+                        )
+                        if row in rows:
+                            number_duplicates += 1
+                            continue
+                        rows.append(row)
+                        conflict_event_row = DBConflictEvent(
+                            resource_hdx_id=resource_id,
+                            admin2_ref=self._admins.admin2_data[admin2_code],
+                            event_type=event_type,
+                            events=events,
+                            fatalities=fatalities,
+                            reference_period_start=time_period_range[0],
+                            reference_period_end=time_period_range[1],
+                        )
+                        self._session.add(conflict_event_row)
 
-            self._session.commit()
+        self._session.commit()
+        logger.info(
+            f"There were {number_duplicates} duplicate conflict event rows!"
+        )
