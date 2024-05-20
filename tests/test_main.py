@@ -4,6 +4,7 @@ from os.path import join
 import pytest
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
+from hapi_schema.db_conflict_event import DBConflictEvent
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_food_security import DBFoodSecurity
 from hapi_schema.db_funding import DBFunding
@@ -40,6 +41,7 @@ class TestHAPIPipelines:
         UserAgent.set_global("test")
         project_configs = [
             "core.yaml",
+            "conflict_event.yaml",
             "food_security.yaml",
             "funding.yaml",
             "national_risk.yaml",
@@ -93,6 +95,7 @@ class TestHAPIPipelines:
                         "national_risk": None,
                         "refugees": None,
                         "funding": ("AFG", "BFA", "UKR"),
+                        "conflict_event": ("AFG", "BFA"),
                     }
                     pipelines = Pipelines(
                         configuration,
@@ -110,11 +113,11 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBResource.hdx_id))
                     )
-                    assert count == 27
+                    assert count == 33
                     count = session.scalar(
                         select(func.count(DBDataset.hdx_id))
                     )
-                    assert count == 18
+                    assert count == 20
                     count = session.scalar(select(func.count(DBLocation.id)))
                     assert count == 249
                     count = session.scalar(select(func.count(DBAdmin1.id)))
@@ -157,6 +160,10 @@ class TestHAPIPipelines:
                         select(func.count(DBFunding.resource_hdx_id))
                     )
                     assert count == 57
+                    count = session.scalar(
+                        select(func.count(DBConflictEvent.resource_hdx_id))
+                    )
+                    assert count == 443
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {
