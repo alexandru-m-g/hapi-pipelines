@@ -7,6 +7,7 @@ from hapi_schema.db_conflict_event import DBConflictEvent
 from hdx.utilities.dateparse import parse_date_range
 from sqlalchemy.orm import Session
 
+from ..utilities.logging_helpers import add_message
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -29,9 +30,11 @@ class ConflictEvent(BaseUploader):
 
     def populate(self):
         logger.info("Populating conflict event table")
-        rows = []
-        number_duplicates = 0
+        errors = set()
         for dataset in self._results.values():
+            dataset_name = dataset["hdx_stub"]
+            rows = []
+            number_duplicates = 0
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
                 resource_name = admin_results["hapi_resource_metadata"]["name"]
@@ -93,8 +96,9 @@ class ConflictEvent(BaseUploader):
                             reference_period_end=time_period_range[1],
                         )
                         self._session.add(conflict_event_row)
+            if number_duplicates > 0:
+                add_message(errors, dataset_name, f"{number_duplicates} duplicate rows")
 
         self._session.commit()
-        logger.info(
-            f"There were {number_duplicates} duplicate conflict event rows!"
-        )
+        for error in sorted(errors):
+            logger.error(error)
