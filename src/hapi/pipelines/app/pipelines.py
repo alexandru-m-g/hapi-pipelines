@@ -265,6 +265,7 @@ class Pipelines:
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
+                locations=self.locations,
                 config=self.configuration["poverty_rate_national"],
                 results=results,
             )
