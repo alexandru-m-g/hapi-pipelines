@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.9.6] - 2024-05-21
+
+### Added
+
+- Conflict event theme for all HRP countries
+- Ability to specify more default parameters in yaml
+
+## [0.9.5] - 2024-05-20
+
+### Added
+
+- Output operational presence errors at end
+- Logging functions for consistent output format
+
 ## [0.9.4] - 2024-05-17
 
 ### Added

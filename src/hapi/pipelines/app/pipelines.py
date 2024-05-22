@@ -10,6 +10,7 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
+from hapi.pipelines.database.conflict_event import ConflictEvent
 from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.funding import Funding
 from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
@@ -153,6 +154,10 @@ class Pipelines:
         _create_configurable_scrapers("funding", "national")
         _create_configurable_scrapers("refugees", "national")
         _create_configurable_scrapers("poverty_rate", "national")
+        _create_configurable_scrapers("conflict_event", "national")
+        _create_configurable_scrapers(
+            "conflict_event", "admintwo", adminlevel=self.admintwo
+        )
 
     def run(self):
         self.runner.run()
@@ -270,3 +275,15 @@ class Pipelines:
                 results=results,
             )
             poverty_rate.populate()
+
+        if not self.themes_to_run or "conflict_event" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["conflict_event"]
+            )
+            conflict_event = ConflictEvent(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                results=results,
+            )
+            conflict_event.populate()
