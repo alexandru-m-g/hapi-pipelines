@@ -58,7 +58,7 @@ greenlet==3.0.3
     # via sqlalchemy
 gspread==6.1.2
     # via hdx-python-scraper
-hapi-schema @ git+ssh://git@github.com/OCHA-DAP/hapi-sqlalchemy-schema#egg=HDXDSYS-698-update-poverty-rate@039a2195dd564d9fc4fe50ea1f731cee52c74cb6
+hapi-schema==0.8.5
     # via hapi-pipelines (pyproject.toml)
 hdx-python-api==6.2.8
     # via
