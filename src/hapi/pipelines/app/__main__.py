@@ -178,6 +178,7 @@ if __name__ == "__main__":
     else:
         scrapers_to_run = None
     project_configs = [
+        "conflict_event.yaml",
         "core.yaml",
         "food_security.yaml",
         "funding.yaml",
