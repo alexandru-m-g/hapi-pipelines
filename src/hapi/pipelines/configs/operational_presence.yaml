@@ -356,11 +356,9 @@ operational_presence_admintwo:
     admin_exact: True
     input:
       - "#org+impl"
-      - "#org+type"
       - "#sector+acronym"
     list:
       - "#org+impl"
-      - "#org+type"
       - "#sector+acronym"
     output:
       - "org_name"

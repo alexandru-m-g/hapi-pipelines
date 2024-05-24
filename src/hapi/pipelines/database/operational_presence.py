@@ -8,6 +8,7 @@ from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.location.adminlevel import AdminLevel
 from hdx.location.names import clean_name
 from hdx.utilities.dictandlist import write_list_to_csv
+from sqlalchemy import insert
 from sqlalchemy.orm import Session
 
 from ..utilities.logging_helpers import add_missing_value_message
@@ -19,6 +20,8 @@ from .org_type import OrgType
 from .sector import Sector
 
 logger = getLogger(__name__)
+
+_BATCH_SIZE = 1000
 
 
 class OperationalPresence(BaseUploader):
@@ -46,7 +49,7 @@ class OperationalPresence(BaseUploader):
 
     def populate(self, debug=False):
         logger.info("Populating operational presence table")
-        rows = []
+        operational_presence_rows = []
         if debug:
             debug_rows = []
         number_duplicates = 0
@@ -130,16 +133,12 @@ class OperationalPresence(BaseUploader):
                             add_missing_value_message(
                                 errors, dataset_name, "org type", org_type_name
                             )
-                        if (
-                            clean_name(org_acronym).upper(),
-                            clean_name(org_name).upper(),
-                        ) not in self._org.data:
-                            self._org.populate_single(
-                                acronym=org_acronym,
-                                org_name=org_name,
-                                org_type=org_type_code,
-                            )
-                        org_acronym, org_name = self._org.data[
+                        self._org.populate_single(
+                            acronym=org_acronym,
+                            org_name=org_name,
+                            org_type=org_type_code,
+                        )
+                        org_acronym, org_name, org_type = self._org.data[
                             (
                                 clean_name(org_acronym).upper(),
                                 clean_name(org_name).upper(),
@@ -170,18 +169,7 @@ class OperationalPresence(BaseUploader):
                             continue
 
                         admin2_ref = self._admins.admin2_data[admin2_code]
-                        row = (
-                            resource_id,
-                            admin2_ref,
-                            org_acronym,
-                            org_name,
-                            sector_code,
-                        )
-                        if row in rows:
-                            number_duplicates += 1
-                            continue
-                        rows.append(row)
-                        operational_presence_row = DBOperationalPresence(
+                        operational_presence_row = dict(
                             resource_hdx_id=resource_id,
                             admin2_ref=admin2_ref,
                             org_acronym=org_acronym,
@@ -190,9 +178,18 @@ class OperationalPresence(BaseUploader):
                             reference_period_start=time_period_start,
                             reference_period_end=time_period_end,
                         )
-                        self._session.add(operational_presence_row)
-                        # TODO: move this commit out of the loop once you figure out why it needs to be here
-                        self._session.commit()
+                        if (
+                            operational_presence_row
+                            in operational_presence_rows
+                        ):
+                            number_duplicates += 1
+                            continue
+                        operational_presence_rows.append(
+                            operational_presence_row
+                        )
+
+        self._org.populate_multiple()
+        self.populate_multiple(operational_presence_rows)
 
         logger.info(
             f"There were {number_duplicates} duplicate operational presence rows!"
@@ -204,3 +201,13 @@ class OperationalPresence(BaseUploader):
                 join("saved_data", "debug_operational_presence.csv"),
                 debug_rows,
             )
+
+    def populate_multiple(self, rows):
+        batches = range(len(rows) // _BATCH_SIZE + 1)
+        for batch in batches:
+            start_row = batch * 1000
+            end_row = start_row + _BATCH_SIZE
+            batch_rows = rows[start_row:end_row]
+            self._session.execute(insert(DBOperationalPresence), batch_rows)
+        self._session.commit()
+        return
