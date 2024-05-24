@@ -61,10 +61,7 @@ class Org(BaseUploader):
         if key in self.data:
             org_type_old = self.data[key][2]
             if org_type_old:
-                if org_type_old != org_type:
-                    logger.warning(
-                        f"Overwriting org type {org_type} for {org_name}"
-                    )
+                # TODO: should we flag these units?
                 return
         self.data[
             (
