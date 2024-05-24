@@ -97,7 +97,7 @@ class TestHAPIPipelines:
                         "national_risk": None,
                         "refugees": None,
                         "funding": ("AFG", "BFA", "UKR"),
-                        "conflict_event": ("AFG", "BFA"),
+                        "conflict_event": ("BFA", "GTM"),
                         "poverty_rate": (
                             "AFG",
                             "BFA",
@@ -169,7 +169,7 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBConflictEvent.resource_hdx_id))
                     )
-                    assert count == 150681
+                    assert count == 690
                     count = session.scalar(
                         select(func.count(DBPovertyRate.resource_hdx_id))
                     )
