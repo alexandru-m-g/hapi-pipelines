@@ -284,5 +284,6 @@ class Pipelines:
                 metadata=self.metadata,
                 admins=self.admins,
                 results=results,
+                config=self.configuration,
             )
             conflict_event.populate()
