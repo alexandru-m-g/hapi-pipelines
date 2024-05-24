@@ -36,10 +36,11 @@ class Org(BaseUploader):
         )
         for row in iterator:
             org_name = row.get("#x_pattern")
-            self._org_map[org_name] = row
             canonical_org_name = row.get("#org+name")
-            if canonical_org_name:
-                self._org_map[canonical_org_name] = row
+            if not canonical_org_name:
+                continue
+            self._org_map[org_name] = row
+            self._org_map[canonical_org_name] = row
             org_acronym = row.get("#org+acronym")
             if org_acronym:
                 self._org_map[org_acronym] = row

@@ -53,7 +53,8 @@ class OperationalPresence(BaseUploader):
         errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
-            time_period_start = dataset["time_period"]["end"]
+            time_period_start = dataset["time_period"]["start"]
+            time_period_end = dataset["time_period"]["end"]
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
                 hxl_tags = admin_results["headers"][1]
@@ -71,7 +72,7 @@ class OperationalPresence(BaseUploader):
                 try:
                     sector_index = hxl_tags.index("#sector")
                 except ValueError:
-                    logger.error("Sector missing from dataset")
+                    logger.error(f"{dataset_name} missing sector")
                     continue
 
                 for admin_code, org_names in values[org_name_index].items():
@@ -92,7 +93,7 @@ class OperationalPresence(BaseUploader):
                             org_type_orig = values[org_type_name_index][
                                 admin_code
                             ][i]
-                        country_code = None
+                        country_code = admin_code
                         if admin_level == "admintwo":
                             country_code = self._admintwo.pcode_to_iso3.get(
                                 admin_code
@@ -157,6 +158,8 @@ class OperationalPresence(BaseUploader):
                                 "org_type": org_type_code,
                                 "sector": sector_code,
                             }
+                            if debug_row in debug_rows:
+                                continue
                             debug_rows.append(debug_row)
                             continue
 
@@ -185,19 +188,19 @@ class OperationalPresence(BaseUploader):
                             org_name=org_name,
                             sector_code=sector_code,
                             reference_period_start=time_period_start,
+                            reference_period_end=time_period_end,
                         )
                         self._session.add(operational_presence_row)
                         # TODO: move this commit out of the loop once you figure out why it needs to be here
                         self._session.commit()
 
-        if debug:
-            write_list_to_csv(
-                join("saved_data", "debug_operational_presence.csv"),
-                debug_rows,
-            )
-            return
         logger.info(
             f"There were {number_duplicates} duplicate operational presence rows!"
         )
         for error in sorted(errors):
             logger.error(error)
+        if debug:
+            write_list_to_csv(
+                join("saved_data", "debug_operational_presence.csv"),
+                debug_rows,
+            )
