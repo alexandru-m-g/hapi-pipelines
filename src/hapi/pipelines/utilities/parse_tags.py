@@ -1,3 +1,5 @@
+import re
+
 from hdx.utilities.text import multiple_replace
 from hxl.model import Column, TagPattern
 
@@ -7,7 +9,8 @@ def get_gender_and_age_range(hxl_tag: str) -> (str, str):
     age_range = "all"
     col = Column.parse(hxl_tag)
     gender_patterns = {
-        TagPattern.parse(f"#*+{g}"): g for g in ["f", "m", "x", "u", "o", "e"]
+        TagPattern.parse(f"#*+{gender}"): gender
+        for gender in ["f", "m", "x", "u", "o", "e"]
     }
     for pattern in gender_patterns:
         if pattern.match(col):
@@ -23,12 +26,14 @@ def get_gender_and_age_range(hxl_tag: str) -> (str, str):
     age_component = multiple_replace(
         age_component[0], {"age_": "", "age": "", "_age": ""}
     )
-    if age_component.endswith("plus"):
-        age_range = multiple_replace(
-            age_component, {"plus": "+", "_plus": "+"}
-        )
-    else:
-        age_range = age_component.replace("_", "-")
+    # Check if age component contains any numbers
+    if re.search(r"\d", age_component):
+        if age_component.endswith("plus"):
+            age_range = multiple_replace(
+                age_component, {"plus": "+", "_plus": "+"}
+            )
+        else:
+            age_range = age_component.replace("_", "-")
 
     return gender, age_range
 

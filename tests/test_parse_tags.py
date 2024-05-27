@@ -21,7 +21,7 @@ def test_get_gender_and_age_range():
     )
     assert get_gender_and_age_range("#affected+m+unknown_age") == (
         "m",
-        "unknown",
+        "all",
     )
     assert get_gender_and_age_range("#affected+f+adolescents+age_12_17") == (
         "f",

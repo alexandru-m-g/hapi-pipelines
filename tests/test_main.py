@@ -161,7 +161,7 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBRefugees.resource_hdx_id))
                     )
-                    assert count == 65355
+                    assert count == 56641
                     count = session.scalar(
                         select(func.count(DBFunding.resource_hdx_id))
                     )
