@@ -3,8 +3,8 @@ from hxl.model import Column, TagPattern
 
 
 def get_gender_and_age_range(hxl_tag: str) -> (str, str):
-    gender = "*"
-    age_range = "*"
+    gender = "all"
+    age_range = "all"
     col = Column.parse(hxl_tag)
     gender_patterns = {
         TagPattern.parse(f"#*+{g}"): g for g in ["f", "m", "x", "u", "o", "e"]
@@ -34,7 +34,7 @@ def get_gender_and_age_range(hxl_tag: str) -> (str, str):
 
 
 def get_min_and_max_age(age_range: str) -> (int | None, int | None):
-    if age_range == "*" or age_range == "unknown":
+    if age_range == "all" or age_range == "unknown":
         return None, None
     ages = age_range.split("-")
     if len(ages) == 2:
