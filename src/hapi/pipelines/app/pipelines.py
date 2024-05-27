@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Dict, Optional
 
@@ -11,6 +12,8 @@ from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.conflict_event import ConflictEvent
+from hapi.pipelines.database.currency import Currency
+from hapi.pipelines.database.food_price import FoodPrice
 from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.funding import Funding
 from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
@@ -24,6 +27,10 @@ from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.poverty_rate import PovertyRate
 from hapi.pipelines.database.refugees import Refugees
 from hapi.pipelines.database.sector import Sector
+from hapi.pipelines.database.wfp_commodity import WFPCommodity
+from hapi.pipelines.database.wfp_market import WFPMarket
+
+logger = logging.getLogger(__name__)
 
 
 class Pipelines:
@@ -50,13 +57,21 @@ class Pipelines:
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
         )
-        self.adminone = AdminLevel(admin_level=1)
-        self.admintwo = AdminLevel(admin_level=2)
+        admin1_config = configuration["admin1"]
+        self.adminone = AdminLevel(admin_config=admin1_config, admin_level=1)
+        admin2_config = configuration["admin2"]
+        self.admintwo = AdminLevel(admin_config=admin2_config, admin_level=2)
         self.adminone.setup_from_libhxl_dataset(libhxl_dataset, countries)
         self.adminone.load_pcode_formats()
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset, countries)
         self.admintwo.load_pcode_formats()
         self.admintwo.set_parent_admins_from_adminlevels([self.adminone])
+        logger.info("Admin one name mappings:")
+        self.adminone.output_admin_name_mappings()
+        logger.info("Admin two name mappings:")
+        self.admintwo.output_admin_name_mappings()
+        logger.info("Admin two name replacements:")
+        self.admintwo.output_admin_name_replacements()
 
         self.org = Org(
             session=session,
@@ -72,6 +87,7 @@ class Pipelines:
             datasetinfo=configuration["sector"],
             sector_map=configuration["sector_map"],
         )
+        self.currency = Currency(configuration=configuration, session=session)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -84,6 +100,27 @@ class Pipelines:
         self.create_configurable_scrapers()
         self.metadata = Metadata(
             runner=self.runner, session=session, today=today
+        )
+        self.wfp_commodity = WFPCommodity(
+            session=session,
+            datasetinfo=configuration["wfp_commodity"],
+        )
+        self.wfp_market = WFPMarket(
+            session=session,
+            datasetinfo=configuration["wfp_market"],
+            countryiso3s=countries,
+            admins=self.admins,
+            adminone=self.adminone,
+            admintwo=self.admintwo,
+        )
+        self.food_price = FoodPrice(
+            session=session,
+            datasetinfo=configuration["wfp_countries"],
+            countryiso3s=countries,
+            metadata=self.metadata,
+            currency=self.currency,
+            commodity=self.wfp_commodity,
+            market=self.wfp_market,
         )
 
     def create_configurable_scrapers(self):
@@ -169,6 +206,7 @@ class Pipelines:
         self.org.populate()
         self.org_type.populate()
         self.sector.populate()
+        self.currency.populate()
 
         if not self.themes_to_run or "population" in self.themes_to_run:
             results = self.runner.get_hapi_results(
@@ -287,3 +325,8 @@ class Pipelines:
                 config=self.configuration,
             )
             conflict_event.populate()
+
+        if not self.themes_to_run or "food_prices" in self.themes_to_run:
+            self.wfp_commodity.populate()
+            self.wfp_market.populate()
+            self.food_price.populate()
