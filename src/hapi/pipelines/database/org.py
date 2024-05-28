@@ -48,7 +48,7 @@ class Org(BaseUploader):
             if org_acronym:
                 self._org_map[org_acronym] = row
 
-    def populate_single(
+    def add_or_match_org(
         self,
         acronym,
         org_name,

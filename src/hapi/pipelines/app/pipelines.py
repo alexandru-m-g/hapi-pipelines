@@ -200,6 +200,7 @@ class Pipelines:
                 org_type=self.org_type,
                 sector=self.sector,
                 results=results,
+                config=self.configuration,
             )
             operational_presence.populate()
 

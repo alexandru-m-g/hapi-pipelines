@@ -1,3 +1,8 @@
+#Operational presence config file
+operational_presence_error_messages:
+  burkina-faso-presence-operationnelle: "Data file cannot be read"
+  drc_presence_operationnelle: "Data file cannot be read"
+
 operational_presence_default:
   scrapers_with_defaults:
     - "operational_presence_afg"
