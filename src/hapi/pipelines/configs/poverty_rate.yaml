@@ -10,6 +10,7 @@ poverty_rate_default:
     - "poverty_rate_cod"
     - "poverty_rate_eth"
     - "poverty_rate_hti"
+    - "poverty_rate_hnd"
     - "poverty_rate_mli"
     - "poverty_rate_moz"
     - "poverty_rate_ner"
@@ -117,6 +118,10 @@ poverty_rate_national:
     dataset: "haiti-mpi"
     resource: "HTI_hot.xlsx"
     admin_single: "HTI"
+  poverty_rate_hnd:
+    dataset: "honduras-mpi"
+    resource: "HND_hot.xlsx"
+    admin_single: "HND"
   poverty_rate_mli:
     dataset: "mali-mpi"
     resource: "MLI_hot.xlsx"
@@ -150,6 +155,102 @@ poverty_rate_national:
     format: "xlsx"
     sheet: "MPI Region"
     admin_single: "BFA"
+    number_of_timepoints: 1
+    headers:
+      - 5
+      - 6
+      - 7
+      - 8
+    use_hxl: False
+    filter_cols:
+      - "MPI data source Year"
+    prefilter: "MPI data source Year is not None"
+    input:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+    list:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+    output:
+      - "year_t0"
+      - "adm1_name"
+      - "multidimensional_poverty_index_t0"
+      - "multidimensional_headcount_ratio_t0"
+      - "intensity_of_poverty_t0"
+      - "vulnerable_to_poverty_t0"
+      - "in_severe_poverty_t0"
+    output_hxl:
+      - "#year+t0"
+      - "#adm1+name"
+      - "#poverty+index+multidimensional+t0"
+      - "#poverty+headcount+ratio+t0"
+      - "#poverty+intensity+t0"
+      - "#poverty+vulnerable+t0"
+      - "#poverty+severe+t0"
+  poverty_rate_slv:
+    dataset: "el-salvador-mpi"
+    resource: "SLV.xlsx"
+    format: "xlsx"
+    sheet: "MPI Region"
+    admin_single: "SLV"
+    number_of_timepoints: 1
+    headers:
+      - 5
+      - 6
+      - 7
+      - 8
+    use_hxl: False
+    filter_cols:
+      - "MPI data source Year"
+    prefilter: "MPI data source Year is not None"
+    input:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+    list:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+    output:
+      - "year_t0"
+      - "adm1_name"
+      - "multidimensional_poverty_index_t0"
+      - "multidimensional_headcount_ratio_t0"
+      - "intensity_of_poverty_t0"
+      - "vulnerable_to_poverty_t0"
+      - "in_severe_poverty_t0"
+    output_hxl:
+      - "#year+t0"
+      - "#adm1+name"
+      - "#poverty+index+multidimensional+t0"
+      - "#poverty+headcount+ratio+t0"
+      - "#poverty+intensity+t0"
+      - "#poverty+vulnerable+t0"
+      - "#poverty+severe+t0"
+  poverty_rate_gtm:
+    dataset: "guatemala-mpi"
+    resource: "GTM.xlsx"
+    format: "xlsx"
+    sheet: "MPI Region"
+    admin_single: "GTM"
     number_of_timepoints: 1
     headers:
       - 5
