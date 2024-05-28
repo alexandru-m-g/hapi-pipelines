@@ -176,11 +176,12 @@ class Pipelines:
             "population", "admintwo", adminlevel=self.admintwo
         )
         _create_configurable_scrapers(
-            "operational_presence", "adminone", adminlevel=self.adminone
-        )
-        _create_configurable_scrapers(
             "operational_presence", "admintwo", adminlevel=self.admintwo
         )
+        _create_configurable_scrapers(
+            "operational_presence", "adminone", adminlevel=self.adminone
+        )
+        _create_configurable_scrapers("operational_presence", "national")
         _create_configurable_scrapers(
             "food_security", "adminone", adminlevel=self.adminone
         )
@@ -237,6 +238,7 @@ class Pipelines:
                 org_type=self.org_type,
                 sector=self.sector,
                 results=results,
+                config=self.configuration,
             )
             operational_presence.populate()
 

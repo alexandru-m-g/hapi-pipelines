@@ -138,7 +138,7 @@ class TestHAPIPipelines:
                     count = session.scalar(select(func.count(DBAdmin2.id)))
                     check.equal(count, 6160)
                     count = session.scalar(select(func.count(DBOrg.acronym)))
-                    check.equal(count, 484)
+                    check.equal(count, 544)
                     count = session.scalar(select(func.count(DBOrgType.code)))
                     check.equal(count, 18)
                     count = session.scalar(select(func.count(DBSector.code)))
@@ -162,7 +162,7 @@ class TestHAPIPipelines:
                             func.count(DBOperationalPresence.resource_hdx_id)
                         )
                     )
-                    check.equal(count, 12215)
+                    check.equal(count, 15148)
                     count = session.scalar(
                         select(func.count(DBFoodSecurity.resource_hdx_id))
                     )
@@ -196,12 +196,15 @@ class TestHAPIPipelines:
                     )
                     check.equal(count, 31615)
                     org_mapping = pipelines.org._org_lookup
-                    assert org_mapping["Action against Hunger"] == {
-                        "Action contre la Faim",
-                        "Action Against Hunger",
+                    assert org_mapping[
+                        "International Organization for Migration"
+                    ] == {
+                        "Organisation Internationale pour les Migrations",
+                        "International Organization for Migration",
+                        "IOM",
                     }
                     assert org_mapping["United Nations Children's Fund"] == {
                         "Fonds des Nations Unies pour l'Enfance",
                         "United Nations Children's Fund",
-                        "United Nations Children's Emergency Fund",
+                        "UNICEF",
                     }

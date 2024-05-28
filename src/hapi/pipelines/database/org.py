@@ -7,11 +7,14 @@ from hapi_schema.db_org import DBOrg
 from hdx.location.names import clean_name
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dictandlist import dict_of_sets_add
+from sqlalchemy import insert
 from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader
 
 logger = logging.getLogger(__name__)
+
+_BATCH_SIZE = 1000
 
 
 class Org(BaseUploader):
@@ -38,33 +41,53 @@ class Org(BaseUploader):
         )
         for row in iterator:
             org_name = row.get("#x_pattern")
-            self._org_map[org_name] = row
             canonical_org_name = row.get("#org+name")
-            if canonical_org_name:
-                self._org_map[canonical_org_name] = row
+            if not canonical_org_name:
+                continue
+            self._org_map[org_name] = row
+            self._org_map[canonical_org_name] = row
             org_acronym = row.get("#org+acronym")
             if org_acronym:
                 self._org_map[org_acronym] = row
 
-    def populate_single(
+    def add_or_match_org(
         self,
         acronym,
         org_name,
         org_type,
     ):
-        org_row = DBOrg(
-            acronym=acronym,
-            name=org_name,
-            org_type_code=org_type,
+        key = (
+            clean_name(acronym).upper(),
+            clean_name(org_name).upper(),
         )
-        self._session.add(org_row)
-        self._session.commit()
+        if key in self.data:
+            org_type_old = self.data[key][2]
+            if org_type_old:
+                # TODO: should we flag these units?
+                return
         self.data[
             (
                 clean_name(acronym).upper(),
                 clean_name(org_name).upper(),
             )
-        ] = (acronym, org_name)
+        ] = (acronym, org_name, org_type)
+
+    def populate_multiple(self):
+        batch = []
+        for key in self.data:
+            values = self.data[key]
+            org_row = dict(
+                acronym=values[0],
+                name=values[1],
+                org_type_code=values[2],
+            )
+            batch.append(org_row)
+            if len(batch) >= _BATCH_SIZE:
+                self._session.execute(insert(DBOrg), batch)
+                batch = []
+        if batch:
+            self._session.execute(insert(DBOrg), batch)
+        self._session.commit()
 
     def get_org_info(self, org_name: str, location: str) -> Dict[str, str]:
         org_name_map = {
