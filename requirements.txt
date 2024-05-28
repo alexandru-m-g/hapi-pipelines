@@ -24,7 +24,7 @@ ckanapi==4.8
     # via hdx-python-api
 click==8.1.7
     # via typer
-coverage==7.5.2
+coverage==7.5.3
     # via pytest-cov
 cryptography==42.0.7
     # via pyopenssl
@@ -181,8 +181,11 @@ pyphonetics==0.5.3
 pytest==8.2.1
     # via
     #   hapi-pipelines (pyproject.toml)
+    #   pytest-check
     #   pytest-cov
     #   pytest-mock
+pytest-check==2.3.1
+    # via hapi-pipelines (pyproject.toml)
 pytest-cov==5.0.0
     # via hapi-pipelines (pyproject.toml)
 pytest-mock==3.14.0
@@ -265,7 +268,7 @@ sqlalchemy==2.0.30
     #   hdx-python-database
 stringcase==1.2.0
     # via frictionless
-structlog==24.1.0
+structlog==24.2.0
     # via libhxl
 tableschema-to-template==0.0.13
     # via hdx-python-utilities

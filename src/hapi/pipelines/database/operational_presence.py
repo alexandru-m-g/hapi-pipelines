@@ -11,7 +11,7 @@ from hdx.utilities.dictandlist import write_list_to_csv
 from sqlalchemy import insert
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import add_missing_value_message
+from ..utilities.logging_helpers import add_message, add_missing_value_message
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -36,6 +36,7 @@ class OperationalPresence(BaseUploader):
         org_type: OrgType,
         sector: Sector,
         results: Dict,
+        config: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
@@ -46,6 +47,7 @@ class OperationalPresence(BaseUploader):
         self._org_type = org_type
         self._sector = sector
         self._results = results
+        self._config = config
 
     def populate(self, debug=False):
         logger.info("Populating operational presence table")
@@ -75,7 +77,7 @@ class OperationalPresence(BaseUploader):
                 try:
                     sector_index = hxl_tags.index("#sector")
                 except ValueError:
-                    logger.error(f"{dataset_name} missing sector")
+                    add_message(errors, dataset_name, "missing sector")
                     continue
 
                 for admin_code, org_names in values[org_name_index].items():
@@ -133,7 +135,7 @@ class OperationalPresence(BaseUploader):
                             add_missing_value_message(
                                 errors, dataset_name, "org type", org_type_name
                             )
-                        self._org.populate_single(
+                        self._org.add_or_match_org(
                             acronym=org_acronym,
                             org_name=org_name,
                             org_type=org_type_code,
@@ -191,9 +193,13 @@ class OperationalPresence(BaseUploader):
         self._org.populate_multiple()
         self.populate_multiple(operational_presence_rows)
 
-        logger.info(
+        logger.warning(
             f"There were {number_duplicates} duplicate operational presence rows!"
         )
+        for dataset, msg in self._config.get(
+            "conflict_event_error_messages", dict()
+        ).items():
+            add_message(errors, dataset, msg)
         for error in sorted(errors):
             logger.error(error)
         if debug:

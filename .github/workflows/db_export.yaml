@@ -42,9 +42,10 @@ jobs:
           pip install .
 
       - name: Run Pipeline
-        run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
         env:
+          BASIC_AUTHS: ${{ secrets.BASIC_AUTHS }}
           HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
+        run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
 
       - name: Dump PostgreSQL Views
         run: |
