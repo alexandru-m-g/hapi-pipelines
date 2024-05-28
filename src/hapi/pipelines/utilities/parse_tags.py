@@ -1,5 +1,6 @@
 import re
 
+from hapi_schema.utils.enums import Gender
 from hdx.utilities.text import multiple_replace
 from hxl.model import Column, TagPattern
 
@@ -9,8 +10,8 @@ def get_gender_and_age_range(hxl_tag: str) -> (str, str):
     age_range = "all"
     col = Column.parse(hxl_tag)
     gender_patterns = {
-        TagPattern.parse(f"#*+{gender}"): gender
-        for gender in ["f", "m", "x", "u", "o", "e"]
+        TagPattern.parse(f"#*+{gender.value}"): gender.value
+        for gender in Gender
     }
     for pattern in gender_patterns:
         if pattern.match(col):
