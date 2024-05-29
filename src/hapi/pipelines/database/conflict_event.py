@@ -45,6 +45,9 @@ class ConflictEvent(BaseUploader):
                 hxl_tags = admin_results["headers"][1]
                 admin_codes = list(admin_results["values"][0].keys())
                 values = admin_results["values"]
+                if len(admin_codes) == 0:
+                    add_message(errors, dataset_name, "no rows found")
+                    continue
 
                 for admin_code in admin_codes:
                     admin_rows = []
