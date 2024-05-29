@@ -74,7 +74,7 @@ class ConflictEvent(BaseUploader):
                             time_period_range = parse_date_range(
                                 f"{month} {year}", "%B %Y"
                             )
-                            conflict_event_row = DBConflictEvent(
+                            conflict_event_row = dict(
                                 resource_hdx_id=resource_id,
                                 admin2_ref=self._admins.admin2_data[
                                     admin2_code
