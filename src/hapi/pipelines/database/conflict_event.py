@@ -39,7 +39,6 @@ class ConflictEvent(BaseUploader):
         errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
-            conflict_event_rows = []
             number_duplicates = 0
             for admin_level, admin_results in dataset["results"].items():
                 # TODO: this is only one resource id, but three resources are downloaded per dataset
@@ -49,6 +48,7 @@ class ConflictEvent(BaseUploader):
                 values = admin_results["values"]
 
                 for admin_code in admin_codes:
+                    conflict_event_rows = []
                     admin2_code = admins.get_admin2_code_based_on_level(
                         admin_code=admin_code, admin_level=admin_level
                     )
@@ -89,12 +89,12 @@ class ConflictEvent(BaseUploader):
                                 number_duplicates += 1
                                 continue
                             conflict_event_rows.append(conflict_event_row)
+                    self.populate_multiple(conflict_event_rows)
 
             if number_duplicates > 0:
                 add_message(
                     errors, dataset_name, f"{number_duplicates} duplicate rows"
                 )
-            self.populate_multiple(conflict_event_rows)
 
         for dataset, msg in self._config.get(
             "conflict_event_error_messages", dict()
