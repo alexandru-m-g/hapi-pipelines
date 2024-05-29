@@ -6,6 +6,7 @@ from typing import Dict
 from hapi_schema.db_conflict_event import DBConflictEvent
 from hapi_schema.utils.enums import EventType
 from hdx.utilities.dateparse import parse_date_range
+from sqlalchemy import insert
 from sqlalchemy.orm import Session
 
 from ..utilities.logging_helpers import add_message
@@ -14,6 +15,8 @@ from .base_uploader import BaseUploader
 from .metadata import Metadata
 
 logger = getLogger(__name__)
+
+_BATCH_SIZE = 1000
 
 
 class ConflictEvent(BaseUploader):
@@ -36,7 +39,7 @@ class ConflictEvent(BaseUploader):
         errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
-            rows = []
+            conflict_event_rows = []
             number_duplicates = 0
             for admin_level, admin_results in dataset["results"].items():
                 # TODO: this is only one resource id, but three resources are downloaded per dataset
@@ -71,19 +74,6 @@ class ConflictEvent(BaseUploader):
                             time_period_range = parse_date_range(
                                 f"{month} {year}", "%B %Y"
                             )
-                            row = (
-                                resource_id,
-                                admin2_code,
-                                event_type,
-                                events,
-                                fatalities,
-                                time_period_range[0],
-                                time_period_range[1],
-                            )
-                            if row in rows:
-                                number_duplicates += 1
-                                continue
-                            rows.append(row)
                             conflict_event_row = DBConflictEvent(
                                 resource_hdx_id=resource_id,
                                 admin2_ref=self._admins.admin2_data[
@@ -95,12 +85,16 @@ class ConflictEvent(BaseUploader):
                                 reference_period_start=time_period_range[0],
                                 reference_period_end=time_period_range[1],
                             )
-                            self._session.add(conflict_event_row)
-                    self._session.commit()
+                            if conflict_event_row in conflict_event_rows:
+                                number_duplicates += 1
+                                continue
+                            conflict_event_rows.append(conflict_event_row)
+
             if number_duplicates > 0:
                 add_message(
                     errors, dataset_name, f"{number_duplicates} duplicate rows"
                 )
+            self.populate_multiple(conflict_event_rows)
 
         for dataset, msg in self._config.get(
             "conflict_event_error_messages", dict()
@@ -108,3 +102,13 @@ class ConflictEvent(BaseUploader):
             add_message(errors, dataset, msg)
         for error in sorted(errors):
             logger.error(error)
+
+    def populate_multiple(self, rows):
+        batches = range(len(rows) // _BATCH_SIZE + 1)
+        for batch in batches:
+            start_row = batch * _BATCH_SIZE
+            end_row = start_row + _BATCH_SIZE
+            batch_rows = rows[start_row:end_row]
+            self._session.execute(insert(DBConflictEvent), batch_rows)
+        self._session.commit()
+        return
