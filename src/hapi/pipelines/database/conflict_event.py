@@ -6,17 +6,15 @@ from typing import Dict
 from hapi_schema.db_conflict_event import DBConflictEvent
 from hapi_schema.utils.enums import EventType
 from hdx.utilities.dateparse import parse_date_range
-from sqlalchemy import insert
 from sqlalchemy.orm import Session
 
+from ..utilities.batch_populate import batch_populate
 from ..utilities.logging_helpers import add_message
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
 
 logger = getLogger(__name__)
-
-_BATCH_SIZE = 1000
 
 
 class ConflictEvent(BaseUploader):
@@ -39,6 +37,7 @@ class ConflictEvent(BaseUploader):
         errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
+            conflict_event_rows = []
             number_duplicates = 0
             for admin_level, admin_results in dataset["results"].items():
                 # TODO: this is only one resource id, but three resources are downloaded per dataset
@@ -48,7 +47,7 @@ class ConflictEvent(BaseUploader):
                 values = admin_results["values"]
 
                 for admin_code in admin_codes:
-                    conflict_event_rows = []
+                    admin_rows = []
                     admin2_code = admins.get_admin2_code_based_on_level(
                         admin_code=admin_code, admin_level=admin_level
                     )
@@ -85,16 +84,17 @@ class ConflictEvent(BaseUploader):
                                 reference_period_start=time_period_range[0],
                                 reference_period_end=time_period_range[1],
                             )
-                            if conflict_event_row in conflict_event_rows:
+                            if conflict_event_row in admin_rows:
                                 number_duplicates += 1
                                 continue
+                            admin_rows.append(conflict_event_row)
                             conflict_event_rows.append(conflict_event_row)
-                    self.populate_multiple(conflict_event_rows)
 
             if number_duplicates > 0:
                 add_message(
                     errors, dataset_name, f"{number_duplicates} duplicate rows"
                 )
+            batch_populate(conflict_event_rows, self._session, DBConflictEvent)
 
         for dataset, msg in self._config.get(
             "conflict_event_error_messages", dict()
@@ -102,13 +102,3 @@ class ConflictEvent(BaseUploader):
             add_message(errors, dataset, msg)
         for error in sorted(errors):
             logger.error(error)
-
-    def populate_multiple(self, rows):
-        batches = range(len(rows) // _BATCH_SIZE + 1)
-        for batch in batches:
-            start_row = batch * _BATCH_SIZE
-            end_row = start_row + _BATCH_SIZE
-            batch_rows = rows[start_row:end_row]
-            self._session.execute(insert(DBConflictEvent), batch_rows)
-        self._session.commit()
-        return
