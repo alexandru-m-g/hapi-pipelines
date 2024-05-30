@@ -83,7 +83,7 @@ conflict_event_default:
   format: "xlsx"
   sheet: "Data"
   admin:
-    - ~
+    - "ISO3"
     - "Admin2 Pcode"
   admin_exact: True
   input:
@@ -639,6 +639,7 @@ conflict_event_admintwo:
   conflict_event_ner_political_violence:
     dataset: "niger-acled-conflict-data"
     resource: "niger_HRP_political_violence_events_and_fatalities_by_month-year"
+    admin_exact: False
     input:
       - "Fatalities"
     list:
@@ -657,6 +658,7 @@ conflict_event_admintwo:
   conflict_event_ner_civilian_targeting:
     dataset: "niger-acled-conflict-data"
     resource: "niger_HRP_civilian_targeting_events_and_fatalities_by_month-year"
+    admin_exact: False
     input:
       - "Fatalities"
     list:
@@ -675,6 +677,7 @@ conflict_event_admintwo:
   conflict_event_ner_demonstration:
     dataset: "niger-acled-conflict-data"
     resource: "niger_HRP_demonstration_events_by_month-year"
+    admin_exact: False
     output:
       - "Month demonstration"
       - "Year demonstration"
