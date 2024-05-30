@@ -138,7 +138,7 @@ class TestHAPIPipelines:
                     count = session.scalar(select(func.count(DBAdmin2.id)))
                     check.equal(count, 6160)
                     count = session.scalar(select(func.count(DBOrg.acronym)))
-                    check.equal(count, 544)
+                    check.equal(count, 568)
                     count = session.scalar(select(func.count(DBOrgType.code)))
                     check.equal(count, 18)
                     count = session.scalar(select(func.count(DBSector.code)))
@@ -162,7 +162,7 @@ class TestHAPIPipelines:
                             func.count(DBOperationalPresence.resource_hdx_id)
                         )
                     )
-                    check.equal(count, 15148)
+                    check.equal(count, 14070)
                     count = session.scalar(
                         select(func.count(DBFoodSecurity.resource_hdx_id))
                     )

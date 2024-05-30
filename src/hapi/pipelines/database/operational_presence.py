@@ -187,6 +187,12 @@ class OperationalPresence(BaseUploader):
                         operational_presence_rows.append(
                             operational_presence_row
                         )
+        if debug:
+            write_list_to_csv(
+                join("saved_data", "debug_operational_presence.csv"),
+                debug_rows,
+            )
+            return
 
         self._org.populate_multiple()
         batch_populate(
@@ -202,8 +208,3 @@ class OperationalPresence(BaseUploader):
             add_message(errors, dataset, msg)
         for error in sorted(errors):
             logger.error(error)
-        if debug:
-            write_list_to_csv(
-                join("saved_data", "debug_operational_presence.csv"),
-                debug_rows,
-            )

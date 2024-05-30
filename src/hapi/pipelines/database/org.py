@@ -7,9 +7,9 @@ from hapi_schema.db_org import DBOrg
 from hdx.location.names import clean_name
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dictandlist import dict_of_sets_add
-from sqlalchemy import insert
 from sqlalchemy.orm import Session
 
+from ..utilities.batch_populate import batch_populate
 from .base_uploader import BaseUploader
 
 logger = logging.getLogger(__name__)
@@ -73,21 +73,15 @@ class Org(BaseUploader):
         ] = (acronym, org_name, org_type)
 
     def populate_multiple(self):
-        batch = []
-        for key in self.data:
-            values = self.data[key]
-            org_row = dict(
+        org_rows = [
+            dict(
                 acronym=values[0],
                 name=values[1],
                 org_type_code=values[2],
             )
-            batch.append(org_row)
-            if len(batch) >= _BATCH_SIZE:
-                self._session.execute(insert(DBOrg), batch)
-                batch = []
-        if batch:
-            self._session.execute(insert(DBOrg), batch)
-        self._session.commit()
+            for values in self.data.values()
+        ]
+        batch_populate(org_rows, self._session, DBOrg)
 
     def get_org_info(self, org_name: str, location: str) -> Dict[str, str]:
         org_name_map = {
