@@ -45,9 +45,6 @@ class ConflictEvent(BaseUploader):
                 hxl_tags = admin_results["headers"][1]
                 admin_codes = list(admin_results["values"][0].keys())
                 values = admin_results["values"]
-                if len(admin_codes) == 0:
-                    add_message(errors, dataset_name, "no rows found")
-                    continue
 
                 for admin_code in admin_codes:
                     admin_rows = []
@@ -97,6 +94,9 @@ class ConflictEvent(BaseUploader):
                 add_message(
                     errors, dataset_name, f"{number_duplicates} duplicate rows"
                 )
+            if len(conflict_event_rows) == 0:
+                add_message(errors, dataset_name, "no rows found")
+                continue
             batch_populate(conflict_event_rows, self._session, DBConflictEvent)
 
         for dataset, msg in self._config.get(
