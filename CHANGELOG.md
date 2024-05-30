@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- Increased speed of conflict event pipeline and included date for all HRP countries with dates in 2023 or later
+- Increased speed of conflict event pipeline and included data for all HRP countries with dates in 2023 or later
 
 ## [0.9.12] - 2024-05-29
 
