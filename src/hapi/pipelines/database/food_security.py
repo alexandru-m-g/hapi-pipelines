@@ -5,13 +5,13 @@ from logging import getLogger
 from typing import Dict
 
 from hapi_schema.db_food_security import DBFoodSecurity
+from hapi_schema.utils.enums import IPCPhase
 from hdx.utilities.dateparse import parse_date_range
+from hdx.utilities.dictandlist import dict_of_lists_add
 from sqlalchemy.orm import Session
 
 from . import admins
 from .base_uploader import BaseUploader
-from .ipc_phase import IpcPhase
-from .ipc_type import IpcType
 from .metadata import Metadata
 
 logger = getLogger(__name__)
@@ -23,15 +23,11 @@ class FoodSecurity(BaseUploader):
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
-        ipc_phase: IpcPhase,
-        ipc_type: IpcType,
         results: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
-        self._ipc_phase = ipc_phase
-        self._ipc_type = ipc_type
         self._results = results
 
     def populate(self):
@@ -39,7 +35,6 @@ class FoodSecurity(BaseUploader):
         for dataset in self._results.values():
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
-                resource_ref = self._metadata.resource_data[resource_id]
                 # Get all the column positions
                 column_names = admin_results["headers"][0]
                 ipc_type_column = column_names.index("ipc_type")
@@ -66,8 +61,10 @@ class FoodSecurity(BaseUploader):
                     )
                     admin2_ref = self._admins.admin2_data[admin2_code]
                     # Loop through all entries in each pcode
+                    population_totals = {}
+                    population_in_phases = {}
                     for irow in range(len(values[0][admin_code])):
-                        ipc_type_code = _get_ipc_type_code_from_data(
+                        ipc_type = _get_ipc_type_code_from_data(
                             ipc_type_from_data=values[ipc_type_column][
                                 admin_code
                             ][irow]
@@ -89,30 +86,54 @@ class FoodSecurity(BaseUploader):
                                 admin_code
                             ][irow]
                         )
-                        for ipc_phase_code in self._ipc_phase.data:
+                        # Sum the population in each row by type and date to aggregate admin 1.5 to admin 1
+                        dict_of_lists_add(
+                            population_totals,
+                            (
+                                ipc_type,
+                                time_period_start,
+                                time_period_end,
+                            ),
+                            population_total,
+                        )
+                        for ipc_phase in IPCPhase:
                             population_in_phase = values[
-                                population_in_phase_columns[ipc_phase_code]
+                                population_in_phase_columns[ipc_phase.value]
                             ][admin_code][irow]
                             if population_in_phase is None:
                                 population_in_phase = 0
                             population_in_phase = int(population_in_phase)
-                            food_security_row = DBFoodSecurity(
-                                resource_ref=resource_ref,
-                                admin2_ref=admin2_ref,
-                                ipc_phase_code=ipc_phase_code,
-                                ipc_type_code=ipc_type_code,
-                                reference_period_start=time_period_start,
-                                reference_period_end=time_period_end,
-                                population_in_phase=population_in_phase,
-                                population_fraction_in_phase=(
-                                    population_in_phase / population_total
-                                    if population_in_phase
-                                    else 0.0
+                            # Sum the phase population in each row to aggregate admin 1.5 to admin 1
+                            dict_of_lists_add(
+                                population_in_phases,
+                                (
+                                    ipc_phase.value,
+                                    ipc_type,
+                                    time_period_start,
+                                    time_period_end,
                                 ),
-                                # TODO: For v2+, add to scraper (HAPI-199)
-                                source_data="not yet implemented",
+                                population_in_phase,
                             )
-                            self._session.add(food_security_row)
+                    for key in population_in_phases:
+                        population_total = sum(
+                            filter(None, population_totals[key[1:]])
+                        )
+                        population_in_phase = sum(population_in_phases[key])
+                        food_security_row = DBFoodSecurity(
+                            resource_hdx_id=resource_id,
+                            admin2_ref=admin2_ref,
+                            ipc_phase=key[0],
+                            ipc_type=key[1],
+                            reference_period_start=key[2],
+                            reference_period_end=key[3],
+                            population_in_phase=population_in_phase,
+                            population_fraction_in_phase=(
+                                population_in_phase / population_total
+                                if population_in_phase > 0
+                                else 0.0
+                            ),
+                        )
+                        self._session.add(food_security_row)
         self._session.commit()
 
 

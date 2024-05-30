@@ -1,3 +1,5 @@
+"""Populate the org table."""
+
 import logging
 from typing import Dict
 
@@ -5,12 +7,14 @@ from hapi_schema.db_org import DBOrg
 from hdx.location.names import clean_name
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dictandlist import dict_of_sets_add
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ..utilities.batch_populate import batch_populate
 from .base_uploader import BaseUploader
 
 logger = logging.getLogger(__name__)
+
+_BATCH_SIZE = 1000
 
 
 class Org(BaseUploader):
@@ -37,40 +41,47 @@ class Org(BaseUploader):
         )
         for row in iterator:
             org_name = row.get("#x_pattern")
-            self._org_map[org_name] = row
             canonical_org_name = row.get("#org+name")
-            if canonical_org_name:
-                self._org_map[canonical_org_name] = row
+            if not canonical_org_name:
+                continue
+            self._org_map[org_name] = row
+            self._org_map[canonical_org_name] = row
+            org_acronym = row.get("#org+acronym")
+            if org_acronym:
+                self._org_map[org_acronym] = row
 
-    def populate_single(
+    def add_or_match_org(
         self,
         acronym,
         org_name,
         org_type,
-        time_period_start,
-        time_period_end=None,
     ):
-        logger.info(f"Adding org {org_name}")
-        org_row = DBOrg(
-            acronym=acronym,
-            name=org_name,
-            org_type_code=org_type,
-            reference_period_start=time_period_start,
-            reference_period_end=time_period_end,
+        key = (
+            clean_name(acronym).upper(),
+            clean_name(org_name).upper(),
         )
-        self._session.add(org_row)
-        self._session.commit()
-        results = self._session.execute(
-            select(DBOrg.id, DBOrg.acronym, DBOrg.name, DBOrg.org_type_code)
-        )
-        for result in results:
-            self.data[
-                (
-                    clean_name(result[1]).upper(),
-                    clean_name(result[2]),
-                    result[3],
-                )
-            ] = result[0]
+        if key in self.data:
+            org_type_old = self.data[key][2]
+            if org_type_old:
+                # TODO: should we flag these units?
+                return
+        self.data[
+            (
+                clean_name(acronym).upper(),
+                clean_name(org_name).upper(),
+            )
+        ] = (acronym, org_name, org_type)
+
+    def populate_multiple(self):
+        org_rows = [
+            dict(
+                acronym=values[0],
+                name=values[1],
+                org_type_code=values[2],
+            )
+            for values in self.data.values()
+        ]
+        batch_populate(org_rows, self._session, DBOrg)
 
     def get_org_info(self, org_name: str, location: str) -> Dict[str, str]:
         org_name_map = {

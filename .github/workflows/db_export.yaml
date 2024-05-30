@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
@@ -42,15 +42,14 @@ jobs:
           pip install .
 
       - name: Run Pipeline
-        run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
         env:
+          BASIC_AUTHS: ${{ secrets.BASIC_AUTHS }}
           HDX_KEY: ${{ secrets.HDX_BOT_SCRAPERS_API_TOKEN }}
+        run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
 
-      - name: Dump PostgreSQL DB
+      - name: Dump PostgreSQL Views
         run: |
-          mkdir database
-          docker exec -t postgres-container pg_dump -U postgres -Fc hapi -f hapi_db.pg_restore
-          docker cp postgres-container:/hapi_db.pg_restore database/hapi_db.pg_restore
+          ./dump_views.sh
 
       - name: Commit updated DB export
         uses: JamesIves/github-pages-deploy-action@v4
@@ -58,3 +57,9 @@ jobs:
           branch: db-export
           folder: database
           target-folder: database
+
+      - name: Archive warnings and errors
+        uses: actions/upload-artifact@v4
+        with:
+          name: warnings-errors
+          path: warnings_errors.log

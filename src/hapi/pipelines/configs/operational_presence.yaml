@@ -1,3 +1,8 @@
+#Operational presence config file
+operational_presence_error_messages:
+  burkina-faso-presence-operationnelle: "Data file cannot be read"
+  drc_presence_operationnelle: "Data file cannot be read"
+
 operational_presence_default:
   scrapers_with_defaults:
     - "operational_presence_afg"
@@ -30,8 +35,8 @@ operational_presence_default:
 
 operational_presence_admintwo:
   operational_presence_afg:
-    dataset: "afghanistan-who-does-what-where-january-to-march-2023"
-    resource: "afghanistan-3w-operational-presence-january-march-2023.csv"
+    dataset: "afghanistan-who-does-what-where-january-to-march-2024"
+    resource: "afghanistan-3w-operational-presence-january-march-2024.csv"
     format: "csv"
     headers: 1
     use_hxl: True
@@ -52,10 +57,13 @@ operational_presence_admintwo:
 
 #  operational_presence_bfa:
 #    dataset: "burkina-faso-presence-operationnelle"
-#    resource: "3W Burkina July-August 2023"
+#    resource: "3W Burkina Faso November-December 2023"
 #    format: "xlsx"
 #    sheet: "MATRICE"
 #    headers: 2
+#    source_date:
+#      start: "01/11/2023"
+#      end: "31/12/2023"
 #    use_hxl: True
 #    admin:
 #      - ~
@@ -80,6 +88,9 @@ operational_presence_admintwo:
 #    format: "xlsx"
 #    sheet: "Compil_3W_VF"
 #    headers: 1
+#    source_date:
+#      start: "01/10/2023"
+#      end: "31/12/2023"
 #    admin:
 #      - ~
 #      - "PCODE2"
@@ -101,6 +112,9 @@ operational_presence_admintwo:
     format: "xlsx"
     sheet: "data"
     headers: 1
+    source_date:
+      start: "01/07/2023"
+      end: "30/09/2023"
     admin:
       - ~
       - "adm2_pcode"
@@ -118,10 +132,13 @@ operational_presence_admintwo:
 
 #  operational_presence_cod:
 #    dataset: "drc_presence_operationnelle"
-#    resource: "rdc-3w_November-2023"
+#    resource: "rdc-3w_February-2024"
 #    format: "xlsx"
 #    sheet: "data"
 #    headers: 1
+#    source_date:
+#      start: "01/12/2023"
+#      end: "28/02/2024"
 #    admin:
 #      - ~
 #      - "adm2_pcode"
@@ -139,10 +156,13 @@ operational_presence_admintwo:
 
   operational_presence_col:
     dataset: "colombia-4ws"
-    resource: "3W.xlsx"
+    resource: "COL_345W_Jan-Dec2023.xlsx"
     format: "xlsx"
     sheet: "Hoja-1"
     headers: 1
+    source_date:
+      start: "01/01/2023"
+      end: "31/12/2023"
     admin:
       - ~
       - "Pcode 2"
@@ -157,27 +177,6 @@ operational_presence_admintwo:
       - "Organization acronym"
       - "Implementing organization type"
       - "SECTOR / CLUSTER"
-
-  operational_presence_eth:
-    dataset: "ethiopia-operational-presence"
-    resource: "Ethiopia Who is Doing What Where (4W) - December 2023.xlsx"
-    format: "xlsx"
-    sheet: "December 2023"
-    headers: 1
-    admin:
-      - ~
-      - "Zone"
-    admin_exact: False
-    input:
-      - "Implementing agency full name"
-      - "Implementing agency acronym"
-      - "Implementing agency type"
-      - "Sector"
-    list:
-      - "Implementing agency full name"
-      - "Implementing agency acronym"
-      - "Implementing agency type"
-      - "Sector"
 
   operational_presence_gtm:
     dataset: "guatemala-operational-presence"
@@ -221,32 +220,37 @@ operational_presence_admintwo:
 
   operational_presence_hti:
     dataset: "haiti-operational-presence"
-    resource: "3W_Haiti_HDX_20230511"
+    resource: "3W_Haiti_HDX_Presence operationnelle"
     format: "xlsx"
-    sheet: "PVT_Pres Op_FINAL"
+    sheet: "Pres Op_FINAL"
     headers: 1
+    source_date:
+      start: "01/09/2023"
+      end: "28/02/2024"
     admin:
       - ~
       - "adm2code"
     admin_exact: True
     input:
-      - "ORG_NAME_en"
-      - "ORG_ACRONYM_en"
-      - "ORG_TYPE_en"
-      - "SECTORS_en"
+      - "ORG_NAME_fr"
+      - "ORG_ACRONYM_fr"
+      - "ORG_TYPE_fr"
+      - "SECTORS_fr"
     list:
-      - "ORG_NAME_en"
-      - "ORG_ACRONYM_en"
-      - "ORG_TYPE_en"
-      - "SECTORS_en"
+      - "ORG_NAME_fr"
+      - "ORG_ACRONYM_fr"
+      - "ORG_TYPE_fr"
+      - "SECTORS_fr"
 
   operational_presence_mli:
     dataset: "mali-operational-presence"
-    resource: "MALI_3W_June_2023"
+    resource: "MALI_3W_December_2023"
     format: "xlsx"
     sheet: "ML_5W"
     headers: 1
-    source_date: "30/06/2023"
+    source_date:
+      start: "01/10/2023"
+      end: "31/12/2023"
     use_hxl: False
     admin:
       - ~
@@ -269,6 +273,9 @@ operational_presence_admintwo:
     format: "xlsx"
     sheet: "3W"
     headers: 4
+    source_date:
+      start: "01/01/2023"
+      end: "30/11/2023"
     use_hxl: True
     admin:
       - ~
@@ -285,104 +292,30 @@ operational_presence_admintwo:
       - "#org+type"
       - "#sector"
 
-  operational_presence_ner:
-    dataset: "niger-operational-presence"
-    resource: "NER_Sep_2023"
-    format: "xlsx"
-    sheet: "3W_Data_T2"
-    headers: 4
-    admin:
-      - ~
-      - "DEPARTEMENT
-        (Choisir dans la liste déroulante)"
-    admin_exact: False
-    input:
-      - "NOM ORGANISATION
-        (cette colonne est renseignée automatiquement selon la selection dans le colonne A)"
-      - "ACCRONYME
-        (Choisir dans la liste déroulante)"
-      - "TYPE ORGANISATION
-        (cette colonne est renseignée automatiquement selon la selection dans le colonne B)"
-      - "SECTEUR/DOMAINE
-        (Choisir dans la liste déroulante)"
-    list:
-      - "NOM ORGANISATION
-        (cette colonne est renseignée automatiquement selon la selection dans le colonne A)"
-      - "ACCRONYME
-        (Choisir dans la liste déroulante)"
-      - "TYPE ORGANISATION
-        (cette colonne est renseignée automatiquement selon la selection dans le colonne B)"
-      - "SECTEUR/DOMAINE
-        (Choisir dans la liste déroulante)"
-
   operational_presence_nga:
     dataset: "nigeria-3w"
-    resource: "who-is-doing-what-and-where_nga_3w_apr_jun_2023"
+    resource: "who-is-doing-what-and-where_nga_3w_oct_dec_2023_.xlsx"
     format: "xlsx"
-    sheet: "NGA_3Ws_Apr_Jun_2023"
+    sheet: "NGA 3Ws Data Q4 2023"
     headers: 1
-    source_date: "30/06/2023"
+    source_date:
+      start: "01/10/2023"
+      end: "31/12/2023"
     use_hxl: True
     admin:
       - ~
       - "#adm2 +code"
     admin_exact: True
     input:
-      - "#org+name"
+      - "#org +acronym"
       - "#org +acronym"
       - "#org +type"
-      - "#sector"
+      - "#sector +cluster"
     list:
-      - "#org+name"
+      - "#org +acronym"
       - "#org +acronym"
       - "#org +type"
-      - "#sector"
-
-  operational_presence_pse:
-    dataset: "state-of-palestine-who-does-what-and-where-3ws"
-    resource: "PSE - Who What Where(3w)"
-    format: "xlsx"
-    sheet: "All Clusters"
-    headers: 1
-    use_hxl: True
-    admin:
-      - ~
-      - "#adm2+name"
-    admin_exact: False
-    input:
-      - "#org+name"
-      - "#sector+name"
-    list:
-      - "#org+name"
-      - "#sector+name"
-    output:
-      - "org_name"
-      - "sector"
-    output_hxl:
-      - "#org+name"
-      - "#sector"
-
-  operational_presence_sdn:
-    dataset: "sudan-operational-presence"
-    resource: "2023 Consolidated 3W data April to 31 Dec_hxl"
-    format: "xlsx"
-    sheet: "3W_master_data"
-    headers: 1
-    use_hxl: True
-    admin:
-      - ~
-      - "#adm2+name"
-    admin_exact: False
-    input:
-      - "#org+name"
-      - "#org+acronym"
-      - "#org+type"
-      - "#sector+cluster"
-    list:
-      - "#org+name"
-      - "#org+acronym"
-      - "#org+type"
-      - "#sector+cluster"
+      - "#sector +cluster"
 
   operational_presence_som:
     dataset: "somalia-who-is-doing-what-and-where-3w"
@@ -390,6 +323,9 @@ operational_presence_admintwo:
     format: "xlsx"
     sheet: "Jan- Nov 2023"
     headers: 1
+    source_date:
+      start: "01/01/2023"
+      end: "30/11/2023"
     admin:
       - ~
       - "District_Pcode"
@@ -407,36 +343,15 @@ operational_presence_admintwo:
       - "#org+name"
       - "#org+type+name"
 
-  operational_presence_ssd:
-    dataset: "south-sudan-operational-presence"
-    resource: "ss_20240104_3w_op_January to December_2023.xlsx"
-    format: "xlsx"
-    sheet: "3W"
-    headers: 1
-    filter_cols:
-      - "Reporting or Implementing"
-    prefilter: "Reporting or Implementing == 'Implementing Organization'"
-    admin:
-      - ~
-      - "County"
-    admin_exact: False
-    input:
-      - "Organization name"
-      - "Organization"
-      - "Organization Type"
-      - "Sector"
-    list:
-      - "Organization name"
-      - "Organization"
-      - "Organization Type"
-      - "Sector"
-
   operational_presence_ven:
     dataset: "venezuela-who-does-what-and-where-3w"
     resource: "VEN_5W_Jan-Oct2023.xlsx"
     format: "xlsx"
     sheet: "DATOS"
     headers: 1
+    source_date:
+      start: "01/01/2023"
+      end: "31/10/2023"
     admin:
       - ~
       - "#adm2+code"
@@ -460,6 +375,9 @@ operational_presence_admintwo:
     format: "xlsx"
     sheet: "v_4w_presence_admin2"
     headers: 1
+    source_date:
+      start: "01/01/2023"
+      end: "31/12/2023"
     admin:
       - ~
       - "admin2pcode"
@@ -478,10 +396,13 @@ operational_presence_admintwo:
 operational_presence_adminone:
   operational_presence_tcd:
     dataset: "chad-operational-presence"
-    resource: "3W_TCD_Nov2023"
+    resource: "3W_TCD_May2024"
     format: "xlsx"
-    sheet: "Présence Oérationnelle des part"
+    sheet: "3w opérationnelle"
     headers: 1
+    source_date:
+      start: "01/12/2023"
+      end: "31/05/2024"
     use_hxl: False
     admin:
       - ~
@@ -496,4 +417,119 @@ operational_presence_adminone:
       - "Nom de l'organisation"
       - "Acronyme"
       - "Type d'organisation"
+      - "Cluster"
+
+operational_presence_national:
+  operational_presence_eth:
+    dataset: "ethiopia-operational-presence"
+    resource: "Ethiopia Who is Doing What Where (4W) - March 2024.xlsx"
+    format: "xlsx"
+    sheet: "March 2024"
+    headers: 1
+    use_hxl: True
+    source_date:
+      start: "01/03/2024"
+      end: "31/03/2024"
+    admin_single: "ETH"
+    input:
+      - "#org+impl+name"
+      - "#org+impl2+name"
+      - "#org+impl+type"
+      - "#sector+cluster"
+    list:
+      - "#org+impl+name"
+      - "#org+impl2+name"
+      - "#org+impl+type"
+      - "#sector+cluster"
+
+#  operational_presence_ner:
+#    dataset: "niger-operational-presence"
+#    resource: "NER_Sep_2023"
+#    format: "xlsx"
+#    sheet: "3W_Data_T2"
+#    headers: 4
+#    source_date:
+#      start: "01/07/2023"
+#      end: "30/09/2023"
+#    admin_single: "NER"
+#    input:
+#      - "NOM ORGANISATION
+#        (cette colonne est renseignée automatiquement selon la selection dans le colonne A)"
+#      - "ACCRONYME
+#        (Choisir dans la liste déroulante)"
+#      - "TYPE ORGANISATION
+#        (cette colonne est renseignée automatiquement selon la selection dans le colonne B)"
+#      - "SECTEUR/DOMAINE
+#        (Choisir dans la liste déroulante)"
+#    list:
+#      - "NOM ORGANISATION
+#        (cette colonne est renseignée automatiquement selon la selection dans le colonne A)"
+#      - "ACCRONYME
+#        (Choisir dans la liste déroulante)"
+#      - "TYPE ORGANISATION
+#        (cette colonne est renseignée automatiquement selon la selection dans le colonne B)"
+#      - "SECTEUR/DOMAINE
+#        (Choisir dans la liste déroulante)"
+
+  operational_presence_pse:
+    dataset: "state-of-palestine-who-does-what-and-where-3ws"
+    resource: "PSE - Who What Where(3w)"
+    format: "xlsx"
+    sheet: "All Clusters"
+    headers: 1
+    use_hxl: True
+    admin_single: "PSE"
+    input:
+      - "#org+name"
+      - "#sector+name"
+    list:
+      - "#org+name"
+      - "#sector+name"
+    output:
+      - "org_name"
+      - "sector"
+    output_hxl:
+      - "#org+name"
+      - "#sector"
+
+  operational_presence_sdn:
+    dataset: "sudan-operational-presence"
+    resource: "2024-consolidated-3w-data-jan-to-31-march.xlsx"
+    format: "xlsx"
+    sheet: "3W_master_data"
+    headers: 1
+    source_date:
+      start: "01/01/2024"
+      end: "31/03/2024"
+    admin_single: "SDN"
+    input:
+      - "Organization"
+      - "Org Acronym"
+      - "Org Type"
+      - "Sector"
+    list:
+      - "Organization"
+      - "Org Acronym"
+      - "Org Type"
+      - "Sector"
+
+  operational_presence_ssd:
+    dataset: "south-sudan-operational-presence"
+    resource: "ss_20240412_3w_oerational presence_Jan to Feb_2024.xlsx"
+    format: "xlsx"
+    sheet: "data"
+    headers: 1
+    source_date:
+      start: "01/01/2024"
+      end: "28/02/2024"
+    admin_single: "SSD"
+    input:
+      - "Organization"
+      - "Acronym"
+      - "Type"
+      - "Cluster"
+    list:
+      - "Organization"
+      - "Acronym"
+      - "Type"
       - "Cluster"

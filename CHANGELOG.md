@@ -4,6 +4,145 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.9.13] - 2024-05-30
+
+### Added
+
+- Function to add data to tables in batches
+
+### Changed
+
+- Updated operational presence data for AFG
+
+### Fixed
+
+- Increased speed of conflict event pipeline and included data for all HRP countries
+
+## [0.9.12] - 2024-05-29
+
+### Fixed
+
+- Use schema with fixed enum mappings
+
+## [0.9.11] - 2024-05-29
+
+### Changed
+
+- Roll ups use 'all' instead of '*'
+
+### Removed
+
+- 'unknown' age range
+
+### Fixed
+
+- Replaced line by line commit with batch commit for operational presence and org pipelines
+
+## [0.9.10] - 2024-05-29
+
+### Added
+
+- Missing poverty rate countries: HND, SLV, GTM
+
+## [0.9.9] - 2024-05-28
+
+### Added
+
+- Currencies
+- Commodities
+- Markets
+- Food prices
+
+## [0.9.8] - 2024-05-24
+
+### Fixed
+
+- Temporarily reduce data volume in conflict pipeline
+
+## [0.9.7] - 2024-05-24
+
+### Fixed
+
+- Filter miscoded unit in conflict data
+- Correct overwriting issue in conflict pipeline
+
+## [0.9.6] - 2024-05-23
+
+### Added
+
+- Conflict event theme for all HRP countries
+- Poverty rate theme for all countries where Oxford MPI is available
+- Ability to specify more default parameters in yaml
+
+## [0.9.5] - 2024-05-20
+
+### Added
+
+- Output operational presence errors at end
+- Logging functions for consistent output format
+
+## [0.9.4] - 2024-05-17
+
+### Added
+
+- HNO data and tests
+
+## [0.9.3] - 2024-05-16
+
+### Added
+
+- Funding data and tests
+
+## [0.9.2] - 2024-05-15
+
+### Added
+
+- Refugees data and tests
+- HXL tag parsing functions to get age and gender
+
+### Changed
+
+- Extended locations to global coverage
+
+## [0.9.1] - 2024-05-14
+
+### Changed
+
+- Don't do phonetic matching for names of 5 characters or less
+
+## [0.9.0] - 2024-05-14
+
+### Changed
+
+- Many changes to align with V1 of the schema
+
+### Removed
+
+- ipc_phase, ipc_type, age_range, gender classes
+
+## [0.8.0] - 2024-05-06
+
+### Changed
+
+- Use hdx id as primary key for resource and dataset tables
+
+## [0.7.9] - 2024-05-04
+
+### Added
+
+- Added hapi_updated_date fields to relevant tables
+
+### Changed
+
+- Updated test data for humanitarian needs theme
+- Updated operational presence data for Colombia
+
+## [0.7.8] - 2024-05-01
+
+### Added
+
+- Output views
+
 ## [0.7.7] - 2024-04-09
 
 ### Removed

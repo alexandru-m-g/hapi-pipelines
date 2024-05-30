@@ -1,3 +1,5 @@
+"""Populate the admin tables."""
+
 import logging
 from abc import ABC
 from typing import Dict, List, Literal
@@ -6,6 +8,7 @@ import hxl
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_location import DBLocation
+from hdx.api.configuration import Configuration
 from hdx.utilities.dateparse import parse_date
 from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
@@ -23,7 +26,7 @@ _ADMIN_LEVELS_LITERAL = Literal["1", "2"]
 class Admins(BaseUploader):
     def __init__(
         self,
-        configuration: Dict,
+        configuration: Configuration,
         session: Session,
         locations: Locations,
         libhxl_dataset: hxl.Dataset,
@@ -66,7 +69,7 @@ class Admins(BaseUploader):
         admin_filter = _AdminFilter(
             source=self._libhxl_dataset,
             desired_admin_level=desired_admin_level,
-            country_codes=list(self._locations.data.keys()),
+            country_codes=list(self._locations.hapi_countries),
         )
         for i, row in enumerate(admin_filter):
             code = row.get("#adm+code")
@@ -173,6 +176,21 @@ def _get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
 def _get_admin1_to_location_connector_code(location_code: str) -> str:
     """Get the code for an unspecified admin1, based on the location code."""
     return f"{location_code}-XXX"
+
+
+def get_admin1_code_based_on_level(admin_code: str, admin_level: str) -> str:
+    if admin_level == "national":
+        admin1_code = _get_admin1_to_location_connector_code(
+            location_code=admin_code
+        )
+    elif admin_level == "adminone":
+        admin1_code = admin_code
+    else:
+        raise KeyError(
+            f"Admin level {admin_level} not one of 'national',"
+            f"'adminone', 'admintwo'"
+        )
+    return admin1_code
 
 
 def get_admin2_code_based_on_level(admin_code: str, admin_level: str) -> str:
