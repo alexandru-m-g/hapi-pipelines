@@ -82,9 +82,6 @@ conflict_event_default:
     - "conflict_event_yem_demonstration"
   format: "xlsx"
   sheet: "Data"
-  filter_cols:
-    - "Year"
-  prefilter: "int(Year) >= 2023"
   admin:
     - ~
     - "Admin2 Pcode"
