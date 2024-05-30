@@ -35,13 +35,10 @@ operational_presence_default:
 
 operational_presence_admintwo:
   operational_presence_afg:
-    dataset: "afghanistan-who-does-what-where-july-to-september-2023"
-    resource: "afghanistan-3w-operational-presence-july-september-2023.csv"
+    dataset: "afghanistan-who-does-what-where-january-to-march-2024"
+    resource: "afghanistan-3w-operational-presence-january-march-2024.csv"
     format: "csv"
     headers: 1
-    source_date:
-      start: "01/07/2023"
-      end: "30/09/2023"
     use_hxl: True
     admin:
       - ~

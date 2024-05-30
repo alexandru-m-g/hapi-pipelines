@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.9.13] - 2024-05-30
+
+### Added
+
+- Function to add data to tables in batches
+
+### Changed
+
+- Updated operational presence data for AFG
+
+### Fixed
+
+- Increased speed of conflict event pipeline and included data for all HRP countries
+
 ## [0.9.12] - 2024-05-29
 
 ### Fixed

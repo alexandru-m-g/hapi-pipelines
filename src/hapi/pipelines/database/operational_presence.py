@@ -8,9 +8,9 @@ from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.location.adminlevel import AdminLevel
 from hdx.location.names import clean_name
 from hdx.utilities.dictandlist import write_list_to_csv
-from sqlalchemy import insert
 from sqlalchemy.orm import Session
 
+from ..utilities.batch_populate import batch_populate
 from ..utilities.logging_helpers import add_message, add_missing_value_message
 from . import admins
 from .base_uploader import BaseUploader
@@ -20,8 +20,6 @@ from .org_type import OrgType
 from .sector import Sector
 
 logger = getLogger(__name__)
-
-_BATCH_SIZE = 1000
 
 
 class OperationalPresence(BaseUploader):
@@ -189,9 +187,17 @@ class OperationalPresence(BaseUploader):
                         operational_presence_rows.append(
                             operational_presence_row
                         )
+        if debug:
+            write_list_to_csv(
+                join("saved_data", "debug_operational_presence.csv"),
+                debug_rows,
+            )
+            return
 
         self._org.populate_multiple()
-        self.populate_multiple(operational_presence_rows)
+        batch_populate(
+            operational_presence_rows, self._session, DBOperationalPresence
+        )
 
         logger.warning(
             f"There were {number_duplicates} duplicate operational presence rows!"
@@ -202,18 +208,3 @@ class OperationalPresence(BaseUploader):
             add_message(errors, dataset, msg)
         for error in sorted(errors):
             logger.error(error)
-        if debug:
-            write_list_to_csv(
-                join("saved_data", "debug_operational_presence.csv"),
-                debug_rows,
-            )
-
-    def populate_multiple(self, rows):
-        batches = range(len(rows) // _BATCH_SIZE + 1)
-        for batch in batches:
-            start_row = batch * 1000
-            end_row = start_row + _BATCH_SIZE
-            batch_rows = rows[start_row:end_row]
-            self._session.execute(insert(DBOperationalPresence), batch_rows)
-        self._session.commit()
-        return
