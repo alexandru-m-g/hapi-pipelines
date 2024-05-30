@@ -84,7 +84,7 @@ conflict_event_default:
   sheet: "Data"
   filter_cols:
     - "Year"
-  prefilter: "Year == '2024'"
+  prefilter: "int(Year) >= 2023"
   admin:
     - ~
     - "Admin2 Pcode"

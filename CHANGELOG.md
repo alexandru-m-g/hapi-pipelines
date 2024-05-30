@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.9.13] - 2024-05-30
+
+### Fixed
+
+- Increased speed of conflict event pipeline and included date for all HRP countries with dates in 2023 or later
+
 ## [0.9.12] - 2024-05-29
 
 ### Fixed
